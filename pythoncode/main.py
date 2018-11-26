@@ -1,31 +1,82 @@
-#!/usr/bin/python3
+
+# coding: utf-8
+
+# In[ ]:
+
+
+# %load setup
+#!/usr/bin/env python3
+#ofzo
+
+
+from pynq.overlays.base import BaseOverlay
+from pynq.lib.video import *
 import cv2
 import numpy as np
-import sys
+import time
+
+base = BaseOverlay("base.bit")
+hdmi_in = base.video.hdmi_in
+hdmi_out = base.video.hdmi_out
+
+hdmi_in.configure()
+# hdmi_out.configure(hdmi_in.mode)
+hdmi_out.configure(VideoMode(800,600,24))
+#hdmi_out.configure(640,360,24)
+
+# hdmi_in.cacheable_frames = True
+# hdmi_out.cacheable_frames = True
+
+hdmi_in.start()
+hdmi_out.start()
+
+# hdmi_in.tie(hdmi_out)
+# Now we have video
+
+grayscale = np.ndarray(shape=(hdmi_in.mode.height, hdmi_in.mode.width),
+                       dtype=np.uint8)
 
 
-cap = cv2.VideoCapture(0)
+# In[47]:
 
-width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH ) )
-height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT ))
-print("Working with size (w x h)" + str(width) + " x " + str(height))
 
-fps = int(cap.get(cv2.CAP_PROP_FPS))
+hdmi_in.mode
 
-tmp1 = np.ndarray(shape=(height,width),dtype=np.uint8)
-tmp2 = np.ndarray(shape=(height,width),dtype=np.uint8)
 
+# In[44]:
+
+
+
+
+
+# In[52]:
+
+
+result = np.ndarray(shape=(hdmi_in.mode.height, hdmi_in.mode.width),
+                       dtype=np.uint8)
+
+result2 = np.ndarray(shape=(hdmi_in.mode.height, hdmi_in.mode.width),
+                       dtype=np.uint8)
 while (True):
-    ret,frame = cap.read()
+    time.sleep(0.01)
+    start = time.time()
 
-    cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY, dst=tmp1)
+    inframe = hdmi_in.readframe()
+    outframe = hdmi_out.newframe()
+    cv2.cvtColor(inframe,cv2.COLOR_BGR2GRAY,dst=result)
+    inframe.freebuffer()
 
-    tmp2 = cv2.resize(tmp1, dsize=(50,45), fx=0, fy=0,interpolation=cv2.INTER_LINEAR)
-    tmp2 = cv2.resize(tmp2, dsize=(640,480), fx=0, fy=0,interpolation=cv2.INTER_NEAREST)
 
-    cv2.imshow('Image', tmp2)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    cv2.cvtColor(result, cv2.COLOR_GRAY2BGR,dst=result2)
+    cv2.pyrDown(result2, dstsize=(800,600), dst=outframe)
 
-cap.release()
-cv2.destroyAllWindows()
+    hdmi_out.writeframe(outframe)
+#     print("Duration (ms): " + str(1000*(time.time()-start)))
+
+
+
+# In[53]:
+
+
+hdmi_out.close()
+hdmi_in.close()
