@@ -38,14 +38,24 @@ class History:
                         dsize=(640,480), fx=0, fy=0, interpolation=cv2.INTER_NEAREST))
             cv2.moveWindow(self.framename + str(i), self.getPlacement(i)[0], self.getPlacement(i)[1])
 
-    def showPrevDiff(self):
+    def getPrevDiff(self):
         d = diff(self.getPrevFrame(2), self.getPrevFrame(1))
         cv2.imshow(self.framename + ' prev diff', cv2.resize(d, dsize=(640,480),
                                         fx=0, fy=0, interpolation=cv2.INTER_NEAREST))
+        return d
 
-    def showDiff(self):
+    def getDiff(self):
         d = diff(self.getPrevFrame(), self.getCurrentFrame())
         cv2.imshow(self.framename + ' diff', cv2.resize(d, dsize=(640,480),
+                                        fx=0, fy=0, interpolation=cv2.INTER_NEAREST))
+        return d
+
+    def diffdiff(self):
+        pd = self.getPrevDiff()
+        d = self.getDiff()
+
+        dd = diff(pd,d)
+        cv2.imshow(self.framename + ' difdif', cv2.resize(dd, dsize=(640,480),
                                         fx=0, fy=0, interpolation=cv2.INTER_NEAREST))
 
 
@@ -79,9 +89,8 @@ def main():
             break
         elif key == ord('p'):
             h.show()
-        elif key == ord('d'):
-            h.showPrevDiff()
-            h.showDiff()
+        # elif key == ord('d'):
+        h.diffdiff()
 
     cap.release()
     cv2.destroyAllWindows()
