@@ -1,0 +1,27 @@
+{"sourceFile": [{
+      "name": "",
+      "directive": [{
+          "functionName": "main",
+          "label": "",
+          "functionLabel": "",
+          "pragma": {
+            "name": "INTERFACE",
+            "option": [
+              {
+                "name": "s_axilite",
+                "value": "",
+                "positionalBoolean": "mode"
+              },
+              {
+                "name": "port",
+                "value": "a",
+                "positionalBoolean": "4"
+              },
+              {
+                "name": "bundle",
+                "value": "add_io"
+              }
+            ]
+          }
+        }]
+    }]}
