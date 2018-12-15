@@ -2,7 +2,7 @@
 #include "buffer.hpp"
 
 Buffer::Buffer() {
-	which = true;
+	which = 0;
 }
 
 uint8_t Buffer::compressRGB(uint32_t p) {
@@ -18,7 +18,10 @@ void Buffer::fill(uint16_t x, uint16_t y, uint32_t p) {
 	const uint16_t new_x = x * this->x / full_frame_x;
 	const uint16_t new_y = y * this->y / full_frame_y;
 
-	static const uint16_t factor = full_frame_x / this->x;
+	static const uint16_t factor =
+			full_frame_x * full_frame_y
+			/ this->x / this->y;
+	// Amount of pixels that appear in 1 px in the smaller version
 
 	const uint8_t data = compressRGB(p);
 
@@ -32,15 +35,15 @@ void Buffer::newFrame() {
 	which = (which + 1) % FRAME_COUNT;
 }
 
-uint8_t* Buffer::getFutureFrame() {
-	return &buf[(which + 1) % FRAME_COUNT];
+Frame* const Buffer::getFutureFrame() {
+	return &frames[(which + 1) % FRAME_COUNT];
 }
 
-uint8_t* Buffer::getCurrentFrame() {
-	return &buf[which];
+Frame* const Buffer::getCurrentFrame() {
+	return &frames[which];
 }
 
-uint8_t* Buffer::getHistoryFrame() {
-	return &buf[(which+FRAME_COUNT-1) % FRAME_COUNT];
+Frame* const Buffer::getHistoryFrame() {
+	return &frames[(which+FRAME_COUNT-1) % FRAME_COUNT];
 }
 
