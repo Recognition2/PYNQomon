@@ -1,8 +1,10 @@
 
 #include "buffer.hpp"
 
-Buffer::Buffer() {
-	which = 0;
+Buffer::Buffer(): which(0) {
+	for (int i = 0; i < FRAME_COUNT; i++) {
+		frames[i] = new Frame();
+	}
 }
 
 uint8_t Buffer::compressRGB(uint32_t p) {
@@ -27,8 +29,8 @@ void Buffer::fill(uint16_t x, uint16_t y, uint32_t p) {
 
 	const uint8_t new_data = data / factor;
 
-	auto future = getFutureFrame();
-	future[new_x + this->x * new_y] = new_data;
+	Frame *future = getFutureFrame();
+	future->fill(new_x, new_y, new_data);
 }
 
 void Buffer::newFrame() {
@@ -36,14 +38,14 @@ void Buffer::newFrame() {
 }
 
 Frame* const Buffer::getFutureFrame() {
-	return &frames[(which + 1) % FRAME_COUNT];
+	return frames[(which + 1) % FRAME_COUNT];
 }
 
 Frame* const Buffer::getCurrentFrame() {
-	return &frames[which];
+	return frames[which];
 }
 
 Frame* const Buffer::getHistoryFrame() {
-	return &frames[(which+FRAME_COUNT-1) % FRAME_COUNT];
+	return frames[(which+FRAME_COUNT-1) % FRAME_COUNT];
 }
 

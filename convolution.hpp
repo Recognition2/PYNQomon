@@ -3,7 +3,11 @@
 
 #include <stdint.h>
 
-uint8_t max_of_xcorr(uint16_t x, uint16_t y, uint8_t*, uint8_t*);
+#include "buffer.hpp"
+
+int16_t* get_correct_offset(Frame* curr, Frame* hist);
+
+uint32_t sum_diff(Frame* curr, Frame* hist, uint16_t x, uint16_t y);
 
 
 #endif

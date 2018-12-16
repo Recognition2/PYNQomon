@@ -1,14 +1,6 @@
-#include <stdint.h>
-#include <hls_stream.h>
-#include <ap_axi_sdata.h>
-
+#include "app_config.hpp"
 #include "buffer.hpp"
-
-typedef ap_axiu<32,1,1,1> pixel_data;
-typedef hls::stream<pixel_data> pixel_stream;
-
-#define WIDTH 1280
-#define HEIGHT 720
+#include "convolution.hpp"
 
 void stream(pixel_stream &src, pixel_stream &dst, uint32_t mask)
 {
@@ -23,6 +15,7 @@ void stream(pixel_stream &src, pixel_stream &dst, uint32_t mask)
 	static uint16_t y = 0;
 	static uint32_t d;
 
+	static int16_t moved_x = 0, moved_y = 0;
 	static Buffer buffer;
 
 //	static uint8_t rowbuf[WIDTH] = {};
@@ -41,7 +34,11 @@ void stream(pixel_stream &src, pixel_stream &dst, uint32_t mask)
 	if (pIn.user) {
 		x = y = 0;
 		buffer.newFrame();
-		unsigned char meuk[2];
+
+		// Takes a very long time
+		int16_t* indices = get_correct_offset(buffer.getCurrentFrame(), buffer.getHistoryFrame());
+
+
 //		// do analysis once a frame
 //
 //		// Setup history for next frame
@@ -66,13 +63,13 @@ void stream(pixel_stream &src, pixel_stream &dst, uint32_t mask)
 //		colbuf[y] = toGrey(pIn.data);
 //	}
 //	if (y == HEIGHT/2) {
-//		rowbuf[x] = toGrey(pIn.data);
+//		rowbuf[x] = toGr	ey(pIn.data);
 //	}
 
 //	// Make greyfilter
-	uint8_t grey = toGrey(pIn.data);
-	uint32_t goeiemorgen= grey | (grey << 8) | (grey << 16) | 0xFF000000;
-	pIn.data = goeiemorgen;
+//	uint8_t grey = toGrey(pIn.data);
+//	uint32_t goeiemorgen= grey | (grey << 8) | (grey << 16) | 0xFF000000;
+//	pIn.data = goeiemorgen;
 
 
 

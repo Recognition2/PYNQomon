@@ -1,15 +1,17 @@
 #ifndef VIVADO_RECONFIGURABLE_BUFFER_H
 #define VIVADO_RECONFIGURABLE_BUFFER_H
 
+#include "app_config.hpp"
 
 #include <stdint.h>
 #include "frame.hpp"
 
 class Buffer {
 public:
-	static const int full_frame_x = 1280;
-	static const int full_frame_y = 720;
-	static const int x = 64, y=32;
+	static const int full_frame_x = WIDTH;
+	static const int full_frame_y = HEIGHT;
+	static const int x = SMALL_WIDTH, y=SMALL_HEIGHT;
+
 	static const int FRAME_COUNT = 4;
 	
 	Buffer();
@@ -22,11 +24,9 @@ public:
 	Frame* const getHistoryFrame();
 
 private:
-	Frame frames[FRAME_COUNT];
+	Frame *frames[FRAME_COUNT];
 	uint8_t which;
 	uint8_t compressRGB(uint32_t p);
 };
-
-
 
 #endif
