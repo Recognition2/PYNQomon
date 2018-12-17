@@ -97,10 +97,11 @@ def main():
     prevSmall = np.ndarray(shape=h.imgsize, dtype=np.uint8)
     cv2.resize(tmp1, dsize=(h.imgsize[1], h.imgsize[0]), fx=0, fy=0,
                             interpolation=cv2.INTER_LINEAR, dst=smallImg)
+    indices = [width//2, height//2]
     while (True):
-        time.sleep(0.1)
         prevFrame = frame.copy()
         ret,frame = cap.read()
+
 
         # xhist = xbuff.copy();
         # yhist = ybuff.copy();
@@ -136,8 +137,8 @@ def main():
         smallImg = cv2.resize(tmp1, dsize=(h.imgsize[1], h.imgsize[0]), fx=0, fy=0,
                                 interpolation=cv2.INTER_LINEAR)
 
-        trials = 4
-        results = {}
+        # trials = 4
+        # results = {}
         # results = np.ndarray(shape=(trials*2-1, trials*2-1), dtype=np.uint32)
         # for i in range(-trials, trials):
         #     for j in range(-trials,trials):
@@ -153,9 +154,10 @@ def main():
                 # else:
                 #     results[(i,j)] = np.sum(abs(a[abs(j):-abs(j)][abs(i):-abs(i)] - b[abs(j):-abs(j)][abs(i):-abs(i)]), dtype=np.uint64)
 
-        results = signal.correlate2d(prevSmall, smallImg)
-        print(results)
-        print("Minimum sum is ", np.unravel_index(np.argmax(results), results.shape))
+        # results = signal.correlate2d(prevSmall, smallImg)
+        translation, response = cv2.phaseCorrelate(prevSmall.astype(np.float32), smallImg.astype(np.float32))
+        translation_x, translation_y = translation
+        # print("Minimum sum is ", np.unravel_index(np.argmax(results), results.shape))
         # convolved = signal.convolve2d(prevSmall, smallImg, mode='full')
         # (x,y) = np.unravel_index(np.argmax(convolved, axis=None), convolved.shape)
         # print("Largest indices are " + str(x) + " and " + str(y))
@@ -167,18 +169,40 @@ def main():
         # keypoints = cv2.drawKeypoints(smallImg, kp, smallImg, color=(0,255,0), flags=0)
 
         # hist[hIdx % HSIZE] = smallImg.copy()
-        h.append(smallImg)
+        # h.append(smallImg)
         # tmp2 = cv2.resize(smallImg, dsize=(640,480), fx=0, fy=0,
         #                         interpolation=cv2.INTER_NEAREST)
 
+        # Whats a pixel worth?
+        translation_x = translation_x * width / h.imgsize[0]
+        translation_y = translation_y * height / h.imgsize[1]
+        # indices = (indices[0] + translation_x*10, indices[1] + translation_y*10)
+        indices[1] += int(translation_x)
+        indices[0] += int(translation_y)
+        bloksize = (10, 50)
+
+        if (indices[1] > width - bloksize[1] + 1 or indices[1] < 0):
+            print("Help out of bounds")
+            indices[1] = width//2
+        if (indices[0] > height  - bloksize[0] + 1 or indices[0] < 0):
+            print("Hlp out of bounds")
+            indices[0] = height//2
+
+        for y in range(bloksize[0]):
+            for x in range(bloksize[1]):
+                tmp1[x + indices[1]][y + indices[0]] = 0x00
+
+        print("meuk is " + str(round(translation_x,2)) + "\t\t" + str(round(translation_y,2)))
+        print("indices is " + str(indices[0]) + "\t\t" + str(indices[1]))
+
         cv2.imshow('Image', cv2.resize(h.getCurrentFrame(), dsize=(640,640), fx=0, fy=0, interpolation=cv2.INTER_NEAREST))
-        cv2.imshow('Fapperoni', tmp1)
+        cv2.imshow('Real Image', tmp1)
         # print("Keypoints:" + str(des))
         key = cv2.waitKey(1) & 0xFF
         if key == ord('q') :
             break
-        elif key == ord('p'):
-            h.show()
+        # elif key == ord('p'):
+        #     h.show()
         # elif key == ord('d'):
         # h.diffdiff()
         # elif key == ord('o'):
