@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import time
 from scipy import signal
 
+
 def diff(prevFrame, curFrame):
     diffFrame = np.ndarray(shape=prevFrame.shape, dtype=np.int8)
     np.subtract(curFrame,prevFrame, out=diffFrame)
@@ -97,6 +98,7 @@ def main():
     cv2.resize(tmp1, dsize=(h.imgsize[1], h.imgsize[0]), fx=0, fy=0,
                             interpolation=cv2.INTER_LINEAR, dst=smallImg)
     while (True):
+        time.sleep(0.1)
         prevFrame = frame.copy()
         ret,frame = cap.read()
 
@@ -137,21 +139,23 @@ def main():
         trials = 4
         results = {}
         # results = np.ndarray(shape=(trials*2-1, trials*2-1), dtype=np.uint32)
-        for i in range(-trials, trials):
-            for j in range(-trials,trials):
-                a = smallImg.astype(np.int16)
-                b = np.roll(prevSmall, (i,j)).astype(np.int16)
-                if i is 0 and j is 0:
-                    results[(i,j)] = np.sum(abs(a[:][:] - b[:][:]), dtype=np.uint64)
-                elif i is 0:
-                    results[(i,j)] = np.sum(abs(a[abs(j):-abs(j)][:] - b[abs(j):-abs(j)][:]), dtype=np.uint64)
-                elif j is 0:
-                    results[(i,j)] = np.sum(abs(a[:][abs(i):-abs(i)] - b[:][abs(i):-abs(i)]), dtype=np.uint64)
-                else:
-                    results[(i,j)] = np.sum(abs(a[abs(j):-abs(j)][abs(i):-abs(i)] - b[abs(j):-abs(j)][abs(i):-abs(i)]), dtype=np.uint64)
+        # for i in range(-trials, trials):
+        #     for j in range(-trials,trials):
+                # a = smallImg.astype(np.int16)
+                # # b = np.roll(prevSmall, (i,j)).astype(np.int16)
+                # b = np.roll(smallImg, (i,j)).astype(np.int16)
+                # if i is 0 and j is 0:
+                #     results[(i,j)] = np.sum(abs(a[:][:] - b[:][:]), dtype=np.uint64)
+                # elif i is 0:
+                #     results[(i,j)] = np.sum(abs(a[abs(j):-abs(j)][:] - b[abs(j):-abs(j)][:]), dtype=np.uint64)
+                # elif j is 0:
+                #     results[(i,j)] = np.sum(abs(a[:][abs(i):-abs(i)] - b[:][abs(i):-abs(i)]), dtype=np.uint64)
+                # else:
+                #     results[(i,j)] = np.sum(abs(a[abs(j):-abs(j)][abs(i):-abs(i)] - b[abs(j):-abs(j)][abs(i):-abs(i)]), dtype=np.uint64)
 
+        results = signal.correlate2d(prevSmall, smallImg)
         print(results)
-        print("Minimum sum is ", min(results, key=results.get))
+        print("Minimum sum is ", np.unravel_index(np.argmax(results), results.shape))
         # convolved = signal.convolve2d(prevSmall, smallImg, mode='full')
         # (x,y) = np.unravel_index(np.argmax(convolved, axis=None), convolved.shape)
         # print("Largest indices are " + str(x) + " and " + str(y))
