@@ -9,7 +9,7 @@ from scipy import signal
 X = 1
 Y = 0
 
-imgsize = (16,32)
+imgsize = (128,128)
 
 def main():
     cap = cv2.VideoCapture(0)
@@ -39,16 +39,16 @@ def main():
         translation, response = cv2.phaseCorrelate(prevSmall.astype(np.float32), smallImg.astype(np.float32))
 
         # Whats a pixel worth?
-        indices[X] += int(translation[X] * x // imgsize[X])
-        indices[Y] += int(translation[Y] * y // imgsize[Y])
+        indices[X] += int(translation[X] * y // imgsize[X])
+        indices[Y] += int(translation[Y] * x // imgsize[Y])
         bloksize = (10, 50)
 
         if (indices[X] > y - bloksize[Y] -1 or indices[X] < 0):
             print("Help out of bounds")
-            indices[X] = x//2
+            indices[X] = y//2
         if (indices[Y] > x  - bloksize[X] - 1 or indices[Y] < 0):
             print("Hlp out of bounds")
-            indices[Y] = y//2
+            indices[Y] = x//2
 
         for yy in range(bloksize[Y]):
             for xx in range(bloksize[X]):
