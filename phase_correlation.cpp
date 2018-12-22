@@ -3,6 +3,12 @@
 #include "app_config.hpp"
 #include "frame.hpp"
 
+/**
+ * @param a the first frame to use in the correlation
+ * @param b the second frame to use in the correlation
+ * @param start whether this is the start of a new frame = new correlation calculation
+ * @param corrmax is used for calculating the max of the correlation.
+ */
 void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 	static const u16 centerX = SMALL_WIDTH / 2;
 	static const u16 centerY = SMALL_HEIGHT / 2;
@@ -12,7 +18,7 @@ void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 		return;
 	}
 
-	static u16 value;
+	static u64 value;
 
 	if (start) {
 		i = 0;
@@ -30,6 +36,7 @@ void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 			if (m == -1U) {
 				m = SMALL_WIDTH;
 				j++;
+				value = 0;
 				if (j == SMALL_HEIGHT) {
 					j = 0;
 					i++;
@@ -40,7 +47,6 @@ void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 						return;
 					}
 				}
-				value = 0;
 			}
 		}
 	}
@@ -61,6 +67,11 @@ void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 	}
 
 	// This takes SMALL_WIDTH^2 * SMALL_HEIGHT^2 iterations
+
+	// Do calculation
+	if (!(i < SMALL_WIDTH)) {
+
+	}
 
 //	for (u16 i = 0; i < SMALL_WIDTH; i++) {
 //		for (u16 j = 0; j < SMALL_HEIGHT; j++) {

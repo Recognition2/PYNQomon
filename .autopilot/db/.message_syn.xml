@@ -4,20 +4,20 @@
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;Reconfigurable/solution1/main.cpp&apos; ..."/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;Reconfigurable/solution1/frame.cpp&apos; ..."/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;Reconfigurable/solution1/buffer.cpp&apos; ..."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Linking Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 343.352 ; gain = 0.844 ; free physical = 2108 ; free virtual = 16142"/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Pragmas Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 343.352 ; gain = 0.844 ; free physical = 2108 ; free virtual = 16142"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Linking Time (s): cpu = 00:01:58 ; elapsed = 00:02:02 . Memory (MB): peak = 343.355 ; gain = 0.844 ; free physical = 2757 ; free virtual = 16759"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Pragmas Time (s): cpu = 00:01:58 ; elapsed = 00:02:02 . Memory (MB): peak = 343.355 ; gain = 0.844 ; free physical = 2757 ; free virtual = 16759"/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1467" tag="" content="Starting code transformations ..."/>
 	<Message severity="INFO" prefix="[XFORM 203-603]" key="XFORM_INLINE_STATUS_221" tag="" content="Inlining function &apos;getFutureFrame&apos; into &apos;fill&apos; (Reconfigurable/solution1/buffer.cpp:34)."/>
 	<Message severity="INFO" prefix="[XFORM 203-603]" key="XFORM_INLINE_STATUS_221" tag="" content="Inlining function &apos;getCurrentFrame&apos; into &apos;stream&apos; (Reconfigurable/solution1/main.cpp:71)."/>
 	<Message severity="INFO" prefix="[XFORM 203-603]" key="XFORM_INLINE_STATUS_221" tag="" content="Inlining function &apos;getHistoryFrame&apos; into &apos;stream&apos; (Reconfigurable/solution1/main.cpp:71)."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Standard Transforms Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 470.855 ; gain = 128.348 ; free physical = 2086 ; free virtual = 16127"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Standard Transforms Time (s): cpu = 00:01:59 ; elapsed = 00:02:03 . Memory (MB): peak = 473.031 ; gain = 130.520 ; free physical = 2680 ; free virtual = 16701"/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1472" tag="" content="Checking synthesizability ..."/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;compressRGB&apos; into &apos;fill&apos; (Reconfigurable/solution1/buffer.cpp:43) automatically."/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;frame_fill&apos; into &apos;fill&apos; (Reconfigurable/solution1/buffer.cpp:43) automatically."/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;frame_get&apos; into &apos;correlatiebeun&apos; (Reconfigurable/solution1/phase_correlation.cpp:56) automatically."/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;newFrame&apos; into &apos;stream&apos; (Reconfigurable/solution1/main.cpp:62) automatically."/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;fill&apos; into &apos;stream&apos; (Reconfigurable/solution1/main.cpp:63) automatically."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Synthesizability Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 471.355 ; gain = 128.848 ; free physical = 2075 ; free virtual = 16117"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Synthesizability Time (s): cpu = 00:02:00 ; elapsed = 00:02:04 . Memory (MB): peak = 536.609 ; gain = 194.098 ; free physical = 2633 ; free virtual = 16663"/>
 	<Message severity="INFO" prefix="[XFORM 203-502]" key="XFORM_AUTO_UNROLL_STATUS_250" tag="" content="Unrolling all loops for pipelining in function &apos;stream&apos; (Reconfigurable/solution1/main.cpp:32)."/>
 	<Message severity="INFO" prefix="[XFORM 203-501]" key="XFORM_UNROLL_STATUS_325" tag="" content="Unrolling loop &apos;Loop-1&apos; (Reconfigurable/solution1/main.cpp:70) in function &apos;stream&apos; completely."/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;compressRGB&apos; into &apos;fill&apos; (Reconfigurable/solution1/buffer.cpp:43) automatically."/>
@@ -29,8 +29,8 @@
 	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (Reconfigurable/solution1/phase_correlation.cpp:21:3) in function &apos;correlatiebeun&apos;... converting 3 basic blocks."/>
 	<Message severity="INFO" prefix="[XFORM 203-602]" key="XFORM_AUTO_INLINE_STATUS_223" tag="" content="Inlining function &apos;draw_pokemon&apos; into &apos;stream&apos; (Reconfigurable/solution1/main.cpp:79) automatically."/>
 	<Message severity="INFO" prefix="[XFORM 203-11]" key="XFORM_EXPR_BALANCE_STATUS_178" tag="" content="Balancing expressions in function &apos;stream&apos; (Reconfigurable/solution1/main.cpp:32)...5 expression(s) balanced."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Pre-synthesis Time (s): cpu = 00:00:36 ; elapsed = 00:00:38 . Memory (MB): peak = 471.355 ; gain = 128.848 ; free physical = 2042 ; free virtual = 16088"/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Architecture Synthesis Time (s): cpu = 00:00:36 ; elapsed = 00:00:38 . Memory (MB): peak = 471.355 ; gain = 128.848 ; free physical = 2032 ; free virtual = 16078"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Pre-synthesis Time (s): cpu = 00:02:00 ; elapsed = 00:02:04 . Memory (MB): peak = 536.609 ; gain = 194.098 ; free physical = 2557 ; free virtual = 16597"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Architecture Synthesis Time (s): cpu = 00:02:00 ; elapsed = 00:02:04 . Memory (MB): peak = 536.609 ; gain = 194.098 ; free physical = 2539 ; free virtual = 16581"/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1317" tag="" content="Starting hardware synthesis ..."/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1385" tag="" content="Synthesizing &apos;stream&apos; ..."/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1477" tag="" content="----------------------------------------------------------------"/>
@@ -39,7 +39,7 @@
 	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_597" tag="" content="Starting scheduling ..."/>
 	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_46" tag="" content="Pipelining function &apos;correlatiebeun&apos;."/>
 	<Message severity="WARNING" prefix="[SCHED 204-68]" key="SCHED_CARRIED_CONSTRAINT_NOT_MET_32" tag="SDX_LOOP,SCHEDULE" content="Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 1)
-   between &apos;store&apos; operation (Reconfigurable/solution1/phase_correlation.cpp:23) of variable &apos;corr_v_new_1&apos;, Reconfigurable/solution1/phase_correlation.cpp:50 on static variable &apos;corr_v&apos; and &apos;load&apos; operation (&apos;corr_v_load&apos;, Reconfigurable/solution1/phase_correlation.cpp:57) on static variable &apos;corr_v&apos;."/>
+   between &apos;store&apos; operation (Reconfigurable/solution1/phase_correlation.cpp:23) of variable &apos;corr_v_new_1&apos;, Reconfigurable/solution1/phase_correlation.cpp:50 on static variable &apos;corr_v&apos; and &apos;load&apos; operation (&apos;corr_v_load&apos;) on static variable &apos;corr_v&apos;."/>
 	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_44" tag="" content="Pipelining result : Target II = 1, Final II = 2, Depth = 3."/>
 	<Message severity="WARNING" prefix="[SCHED 204-70]" key="SCHED_FREQ_CONSTRAINT_NOT_MET_33_1" tag="SDX,SCHEDULE" content="Cannot meet target clock period from &apos;br&apos; operation to &apos;load&apos; operation (&apos;buf_data_load&apos;) on array &apos;buf_data&apos; (combination delay: 10.9738 ns) to honor II or Latency constraint in region &apos;correlatiebeun&apos;."/>
 	<Message severity="WARNING" prefix="[SCHED 204-21]" key="SCHED_DELAY_EXCEEDED_76" tag="SDX,TIMING,SCHEDULE" content="Estimated clock period (10.9738ns) exceeds the target (target clock period: 10ns, clock uncertainty: 1.25ns, effective delay budget: 8.75ns)."/>
@@ -53,13 +53,13 @@
 	&apos;getelementptr&apos; operation (&apos;buf_data_addr&apos;, Reconfigurable/solution1/frame.cpp:15-&gt;Reconfigurable/solution1/phase_correlation.cpp:56) (0 ns)
 	&apos;load&apos; operation (&apos;buf_data_load&apos;, Reconfigurable/solution1/frame.cpp:15-&gt;Reconfigurable/solution1/phase_correlation.cpp:56) on array &apos;buf_data&apos; (3.25 ns)"/>
 	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_596" tag="" content="Finished scheduling."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 37.89 seconds; current allocated memory: 109.576 MB."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 124.36 seconds; current allocated memory: 225.482 MB."/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_926" tag="" content="Starting micro-architecture generation ..."/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_698" tag="" content="Performing variable lifetime analysis."/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_697" tag="" content="Exploring resource sharing."/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_693" tag="" content="Binding ..."/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_925" tag="" content="Finished micro-architecture generation."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.02 seconds; current allocated memory: 109.805 MB."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.02 seconds; current allocated memory: 225.712 MB."/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1477" tag="" content="----------------------------------------------------------------"/>
 	<Message severity="INFO" prefix="[HLS 200-42]" key="HLS_42_1438" tag="" content="-- Implementing module &apos;stream&apos;"/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1478" tag="" content="----------------------------------------------------------------"/>
@@ -83,13 +83,13 @@
    between &apos;call&apos; operation (Reconfigurable/solution1/main.cpp:71) to &apos;correlatiebeun&apos; and &apos;store&apos; operation (Reconfigurable/solution1/frame.cpp:7-&gt;Reconfigurable/solution1/buffer.cpp:43-&gt;Reconfigurable/solution1/main.cpp:63) of constant 0 on array &apos;buf_data&apos;."/>
 	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_44" tag="" content="Pipelining result : Target II = 1, Final II = 58, Depth = 60."/>
 	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_596" tag="" content="Finished scheduling."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.14 seconds; current allocated memory: 110.791 MB."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.13 seconds; current allocated memory: 226.695 MB."/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_926" tag="" content="Starting micro-architecture generation ..."/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_698" tag="" content="Performing variable lifetime analysis."/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_697" tag="" content="Exploring resource sharing."/>
 	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_693" tag="" content="Binding ..."/>
 	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_925" tag="" content="Finished micro-architecture generation."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.16 seconds; current allocated memory: 111.562 MB."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.15 seconds; current allocated memory: 227.483 MB."/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1483" tag="" content="----------------------------------------------------------------"/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1484" tag="" content="-- Generating RTL for module &apos;correlatiebeun&apos;"/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1485" tag="" content="----------------------------------------------------------------"/>
@@ -98,7 +98,7 @@
 	<Message severity="WARNING" prefix="[RTGEN 206-101]" key="RTGEN_101_861" tag="" content="Register &apos;corr_v&apos; is power-on initialization."/>
 	<Message severity="WARNING" prefix="[RTGEN 206-101]" key="RTGEN_101_861" tag="" content="Register &apos;value_r&apos; is power-on initialization."/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_856" tag="" content="Finished creating RTL model for &apos;correlatiebeun&apos;."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.11 seconds; current allocated memory: 112.119 MB."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.1 seconds; current allocated memory: 228.072 MB."/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1483" tag="" content="----------------------------------------------------------------"/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1484" tag="" content="-- Generating RTL for module &apos;stream&apos;"/>
 	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1485" tag="" content="----------------------------------------------------------------"/>
@@ -132,11 +132,11 @@
 	<Message severity="WARNING" prefix="[RTGEN 206-101]" key="RTGEN_101_861" tag="" content="Register &apos;lastx&apos; is power-on initialization."/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_851" tag="" content="Bundling port &apos;mask&apos; to AXI-Lite port AXILiteS."/>
 	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_856" tag="" content="Finished creating RTL model for &apos;stream&apos;."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.23 seconds; current allocated memory: 116.787 MB."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 0.21 seconds; current allocated memory: 232.649 MB."/>
 	<Message severity="INFO" prefix="[RTMG 210-278]" key="RTMG_278_1792" tag="" content="Implementing memory &apos;stream_buf_data_ram (RAM)&apos; using block RAMs with power-on initialization."/>
-	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished generating all RTL models Time (s): cpu = 00:00:38 ; elapsed = 00:00:39 . Memory (MB): peak = 471.355 ; gain = 128.848 ; free physical = 2010 ; free virtual = 16064"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished generating all RTL models Time (s): cpu = 00:02:02 ; elapsed = 00:02:06 . Memory (MB): peak = 536.609 ; gain = 194.098 ; free physical = 2514 ; free virtual = 16566"/>
 	<Message severity="INFO" prefix="[SYSC 207-301]" key="SYSC_301_1065" tag="" content="Generating SystemC RTL for stream."/>
 	<Message severity="INFO" prefix="[VHDL 208-304]" key="VHDL_304_1066" tag="" content="Generating VHDL RTL for stream."/>
 	<Message severity="INFO" prefix="[VLOG 209-307]" key="VLOG_307_1067" tag="" content="Generating Verilog RTL for stream."/>
-	<Message severity="INFO" prefix="[HLS 200-112]" key="HLS_112_964" tag="" content="Total elapsed time: 39.47 seconds; peak allocated memory: 116.787 MB."/>
+	<Message severity="INFO" prefix="[HLS 200-112]" key="HLS_112_964" tag="" content="Total elapsed time: 125.84 seconds; peak allocated memory: 232.649 MB."/>
 </Messages>

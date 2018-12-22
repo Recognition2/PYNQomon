@@ -2,7 +2,9 @@
 #define APP_CONFIG_H
 
 #include <stdint.h>
-#include <hls_stream.h>
+#include <hls_video.h>
+//#include <hls_stream.h>
+//#include <hls_opencv.h>
 #include <ap_axi_sdata.h>
 
 typedef uint8_t u8;
@@ -14,9 +16,9 @@ typedef int32_t i32;
 typedef uint64_t u64;
 
 typedef struct {
+	u64 v;
 	u16 x;
 	u16 y;
-	u64 v;
 } argmax;
 
 typedef struct {
@@ -38,7 +40,5 @@ typedef hls::stream<pixel_data> pixel_stream;
 #define SMALL_HEIGHT 64
 
 #define FRAME_COUNT 3
-
-#define TRIAL_SIZE 2
 
 #endif
