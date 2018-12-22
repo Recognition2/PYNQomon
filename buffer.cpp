@@ -1,51 +1,39 @@
-
 #include "buffer.hpp"
+#include <stdint.h>
 
-Buffer::Buffer(): which(0) {
-	for (int i = 0; i < FRAME_COUNT; i++) {
-		frames[i] = new Frame();
-	}
+void newFrame(buffer *buf) {
+	buf->which = (buf->which + 1) % FRAME_COUNT;
 }
 
-uint8_t Buffer::compressRGB(uint32_t p) {
-	uint8_t R = (p & 0xFF);
-	uint8_t G = (p & 0xFF00) >> 8;
-	uint8_t B = (p & 0xFF0000) >> 16;
-	uint8_t A = (p & 0xFF000000) >> 24;
-
-	return R;
+frame getFutureFrame(buffer *buf) {
+	u8 which = (buf->which + 1) % FRAME_COUNT;
+	return &buf->data[which * SMALL_HEIGHT * SMALL_WIDTH];
 }
 
-void Buffer::fill(uint16_t x, uint16_t y, uint32_t p) {
-	const uint16_t new_x = x * this->x / full_frame_x;
-	const uint16_t new_y = y * this->y / full_frame_y;
-
-	static const uint16_t factor =
-			full_frame_x * full_frame_y
-			/ this->x / this->y;
-	// Amount of pixels that appear in 1 px in the smaller version
-
-	const uint8_t data = compressRGB(p);
-
-	const uint8_t new_data = data / factor;
-
-	Frame *future = getFutureFrame();
-	future->fill(new_x, new_y, new_data);
+frame getCurrentFrame(buffer *buf) {
+	return &buf->data[buf->which * SMALL_HEIGHT * SMALL_WIDTH];
 }
 
-void Buffer::newFrame() {
-	which = (which + 1) % FRAME_COUNT;
+frame getHistoryFrame(buffer *buf) {
+	u8 which = (buf->which + FRAME_COUNT - 1) % FRAME_COUNT;
+	return &buf->data[which * SMALL_HEIGHT * SMALL_WIDTH];
 }
 
-Frame* const Buffer::getFutureFrame() {
-	return frames[(which + 1) % FRAME_COUNT];
+u8 compressRGB(u32 p) {
+	u8 R = (p & 0xFF);
+	u8 G = (p & 0xFF00) >> 8;
+	u8 B = (p & 0xFF0000) >> 16;
+	u8 A = (p & 0xFF000000) >> 24;
+
+	return R >> 2 + R >> 5 	// 1/4 + 1/32
+	+ G >> 1 + R >> 4		// 1/2 + 1/16
+	+ B >> 3; // 1/8
 }
 
-Frame* const Buffer::getCurrentFrame() {
-	return frames[which];
-}
+void fill(buffer *buf, u16 x, u16 y, u32 p) {
+	frame f = getFutureFrame(buf);
 
-Frame* const Buffer::getHistoryFrame() {
-	return frames[(which+FRAME_COUNT-1) % FRAME_COUNT];
-}
+	// TODO: Translate x and y
 
+	frame_fill(f, x, y, compressRGB(p));
+}

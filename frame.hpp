@@ -4,20 +4,14 @@
 #include "app_config.hpp"
 #include <stdint.h>
 
-class Frame {
-	uint8_t buf[SMALL_HEIGHT*SMALL_WIDTH];
+typedef struct {
+	u16 x;
+	u16 y;
+} Roll;
 
-public:
-	static const uint16_t x = SMALL_WIDTH, y=SMALL_HEIGHT;
-	uint8_t rollx, rolly;
+typedef u8* frame;
 
-	Frame();
-	
-	void fill(uint16_t x, uint16_t y, uint8_t px);
-	uint8_t const get(uint16_t x, uint16_t y);
-	void setRoll(uint8_t x, uint8_t y);
-};
-
-
+void frame_fill(frame buf, u16 x, u16 y, u8 px);
+u8 frame_get(frame buf, u16 x, u16 y);
 
 #endif
