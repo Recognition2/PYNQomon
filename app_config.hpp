@@ -11,11 +11,12 @@ typedef uint16_t u16;
 typedef int16_t i16;
 typedef uint32_t u32;
 typedef int32_t i32;
+typedef uint64_t u64;
 
 typedef struct {
 	u16 x;
 	u16 y;
-	u16 v;
+	u64 v;
 } argmax;
 
 typedef struct {
@@ -39,8 +40,5 @@ typedef hls::stream<pixel_data> pixel_stream;
 #define FRAME_COUNT 3
 
 #define TRIAL_SIZE 2
-
-
-extern u16 correlated[SMALL_WIDTH][SMALL_HEIGHT];
 
 #endif
