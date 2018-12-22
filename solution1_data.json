@@ -17,8 +17,8 @@
     "ClockName": "ap_clk",
     "ClockPeriod": "10",
     "IsCombLogic": "0",
-    "II": "7",
-    "Latency": "8",
+    "II": "58",
+    "Latency": "59",
     "Uncertainty": "1.25"
   },
   "Xdc": {"OocClocks": ["create_clock -name ap_clk -period 10.000 [get_ports ap_clk]"]},
@@ -41,15 +41,12 @@
     ],
     "Vhdl": [
       "impl\/vhdl\/correlatiebeun.vhd",
-      "impl\/vhdl\/correlatiebeun_cobkb.vhd",
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
       "impl\/vhdl\/stream_buf_data.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
       "impl\/verilog\/correlatiebeun.v",
-      "impl\/verilog\/correlatiebeun_cobkb.v",
-      "impl\/verilog\/correlatiebeun_cobkb_ram.dat",
       "impl\/verilog\/stream_AXILiteS_s_axi.v",
       "impl\/verilog\/stream_buf_data.v",
       "impl\/verilog\/stream_buf_data_ram.dat",
@@ -487,7 +484,7 @@
       "ModuleName": "stream",
       "Instances": [{
           "ModuleName": "correlatiebeun",
-          "InstanceName": "grp_correlatiebeun_fu_290"
+          "InstanceName": "grp_correlatiebeun_fu_318"
         }]
     },
     "Metrics": {
@@ -503,33 +500,33 @@
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "8.690"
+          "Estimate": "10.974"
         },
         "Area": {
-          "BRAM_18K": "4",
-          "FF": "67",
-          "LUT": "230",
+          "FF": "132",
+          "LUT": "316",
+          "BRAM_18K": "0",
           "DSP48E": "0"
         }
       },
       "stream": {
         "Latency": {
-          "LatencyBest": "8",
-          "LatencyAvg": "8",
-          "LatencyWorst": "8",
-          "PipelineII": "7",
-          "PipelineDepth": "9",
+          "LatencyBest": "59",
+          "LatencyAvg": "59",
+          "LatencyWorst": "59",
+          "PipelineII": "58",
+          "PipelineDepth": "60",
           "PipelineType": "function"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "8.690"
+          "Estimate": "10.974"
         },
         "Area": {
-          "BRAM_18K": "5",
-          "FF": "540",
-          "LUT": "1216",
+          "BRAM_18K": "1",
+          "FF": "699",
+          "LUT": "1712",
           "DSP48E": "0"
         }
       }
@@ -542,7 +539,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2018-12-22 01:09:31 CET",
+    "Time": "2018-12-22 02:12:10 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

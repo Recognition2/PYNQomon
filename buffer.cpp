@@ -5,21 +5,21 @@ void newFrame(buffer *buf) {
 	buf->which = (buf->which + 1) % FRAME_COUNT;
 }
 
-frame getFutureFrame(buffer *buf) {
+px_t* getFutureFrame(buffer *buf) {
 	u8 which = (buf->which + 1) % FRAME_COUNT;
 	return &buf->data[which * SMALL_HEIGHT * SMALL_WIDTH];
 }
 
-frame getCurrentFrame(buffer *buf) {
+px_t* getCurrentFrame(buffer *buf) {
 	return &buf->data[buf->which * SMALL_HEIGHT * SMALL_WIDTH];
 }
 
-frame getHistoryFrame(buffer *buf) {
+px_t* getHistoryFrame(buffer *buf) {
 	u8 which = (buf->which + FRAME_COUNT - 1) % FRAME_COUNT;
 	return &buf->data[which * SMALL_HEIGHT * SMALL_WIDTH];
 }
 
-u8 compressRGB(u32 p) {
+px_t compressRGB(u32 p) {
 	u8 R = (p & 0xFF);
 	u8 G = (p & 0xFF00) >> 8;
 	u8 B = (p & 0xFF0000) >> 16;
@@ -31,9 +31,14 @@ u8 compressRGB(u32 p) {
 }
 
 void fill(buffer *buf, u16 x, u16 y, u32 p) {
-	frame f = getFutureFrame(buf);
+	px_t* f = getFutureFrame(buf);
+
+	const u16 newx = (x * SMALL_WIDTH) / WIDTH;
+	const u16 newy = (y * SMALL_HEIGHT) / HEIGHT;
 
 	// TODO: Translate x and y
+	// And apply Hamming
 
-	frame_fill(f, x, y, compressRGB(p));
+
+	frame_fill(f, newx, newy, compressRGB(p));
 }

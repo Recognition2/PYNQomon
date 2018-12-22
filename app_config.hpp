@@ -23,6 +23,10 @@ typedef struct {
 	u16 y;
 } p16;
 
+typedef u16 px_t;
+
+// What's the type of a saved pixel?
+
 typedef ap_axiu<32, 1, 1, 1> pixel_data;
 typedef hls::stream<pixel_data> pixel_stream;
 
@@ -35,6 +39,7 @@ typedef hls::stream<pixel_data> pixel_stream;
 #define FRAME_COUNT 3
 
 #define TRIAL_SIZE 2
+
 
 extern u16 correlated[SMALL_WIDTH][SMALL_HEIGHT];
 

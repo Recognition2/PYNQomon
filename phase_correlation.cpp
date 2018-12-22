@@ -3,7 +3,7 @@
 #include "app_config.hpp"
 #include "frame.hpp"
 
-void correlatiebeun(frame a, frame b, bool start, argmax* corrmax) {
+void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 	static const u16 centerX = SMALL_WIDTH / 2;
 	static const u16 centerY = SMALL_HEIGHT / 2;
 	static u16 i, j, m, n;
@@ -20,8 +20,7 @@ void correlatiebeun(frame a, frame b, bool start, argmax* corrmax) {
 		m = SMALL_WIDTH;
 		n = SMALL_WIDTH;
 		done = false;
-		argmax[0] = 0;
-		argmax[1] = 0;
+		corrmax->v = 0;
 		value = 0;
 	} else {
 		n--;

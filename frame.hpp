@@ -4,14 +4,7 @@
 #include "app_config.hpp"
 #include <stdint.h>
 
-typedef struct {
-	u16 x;
-	u16 y;
-} Roll;
-
-typedef u8* frame;
-
-void frame_fill(frame buf, u16 x, u16 y, u8 px);
-u8 frame_get(frame buf, u16 x, u16 y);
+void frame_fill(px_t* buf, u16 x, u16 y, px_t px);
+px_t frame_get(px_t* buf, u16 x, u16 y);
 
 #endif

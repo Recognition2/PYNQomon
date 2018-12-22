@@ -1,9 +1,16 @@
 #include "frame.hpp"
 
-void frame_fill(frame buf, u16 x, u16 y, u8 px) {
-	buf[x + y * SMALL_WIDTH] = px;
+static u8 lastx = 1;
+
+void frame_fill(px_t* buf, u16 x, u16 y, px_t px) {
+	if (lastx != x) {
+		buf[x + y * SMALL_WIDTH] = px;
+	} else {
+		buf[x + y * SMALL_WIDTH] += px;
+	}
+	lastx = x;
 }
 
-u8 frame_get(frame buf, u16 x, u16 y) {
+px_t frame_get(px_t* buf, u16 x, u16 y) {
 	return buf[x + y * SMALL_WIDTH];
 }

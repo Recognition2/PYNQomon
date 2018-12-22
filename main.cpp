@@ -5,6 +5,30 @@
 
 //u16 correlated[SMALL_WIDTH][SMALL_HEIGHT];
 
+u32 draw_pokemon(p16 *moved, u16 x, u16 y, u32 p) {
+	const p16 pokesize = { 64, 64 };
+
+	if (moved->x + pokesize.x > WIDTH) {
+		moved->x = WIDTH / 2;
+	}
+	if (moved->y + pokesize.y > HEIGHT) {
+		moved->y = HEIGHT / 2;
+	}
+
+	if ((x >= moved->x && x < moved->x + 50)
+		&& (y >= moved->y && y < moved->y + 50)) {
+		if ((x >= moved->x + 10 && x < moved->x + 40)
+				&& (y >= moved->y + 10 && y < moved->y + 40)) {
+			return (p & 0xFF000000) | 0x000000; // Black filling
+		} else {
+			return (p & 0xFF000000) | 0xFFFFFF; // With white border
+		}
+	} else {
+		return p;
+	}
+}
+
+
 void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 #pragma HLS INTERFACE ap_ctrl_none port=return
 #pragma HLS INTERFACE axis port=&src
@@ -43,10 +67,16 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	}
 
 	// Every iteration:
-	correlatiebeun(getCurrentFrame(&buf), getHistoryFrame(&buf), pIn.user,
-			&corr);
-	correlatiebeun(getCurrentFrame(&buf), getHistoryFrame(&buf), pIn.user,
-			&corr);
+	for (u8 i = 0; i < 19; i++) {
+		correlatiebeun(getCurrentFrame(&buf), getHistoryFrame(&buf), pIn.user,
+				&corr);
+	}
+
+	// needs to happen 19 times because 19 is the first number for which
+	// 1280 * 720 * N > SMALL_WIDTH^2 * SMALL_HEIGHT^2
+
+
+	pIn.data = draw_pokemon(&moved, x, y, pIn.data);
 
 	////////////////////////////////
 	///// END LOGIC
