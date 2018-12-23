@@ -1,0 +1,11 @@
+INFO: [SIM 2] *************** CSIM start ***************
+INFO: [SIM 4] CSIM will launch GCC as the compiler.
+   Compiling ../../streamulator.cpp in debug mode
+   Compiling ../../buffer.cpp in debug mode
+   Compiling ../../convolution.cpp in debug mode
+   Compiling ../../frame.cpp in debug mode
+   Compiling ../../main.cpp in debug mode
+   Compiling ../../phase_correlation.cpp in debug mode
+   Generating csim.exe
+INFO: [SIM 1] CSim file generation done with 0 errors.
+INFO: [SIM 3] *************** CSIM finish ***************

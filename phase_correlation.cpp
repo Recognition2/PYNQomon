@@ -73,6 +73,9 @@ void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 
 	}
 
+
+
+
 //	for (u16 i = 0; i < SMALL_WIDTH; i++) {
 //		for (u16 j = 0; j < SMALL_HEIGHT; j++) {
 //			for (u16 m = SMALL_WIDTH - 1; m >= 0; m--) { // Flipped

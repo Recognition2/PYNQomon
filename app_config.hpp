@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <hls_video.h>
-//#include <hls_stream.h>
+#include <hls_stream.h>
 //#include <hls_opencv.h>
 #include <ap_axi_sdata.h>
 
@@ -36,8 +36,8 @@ typedef hls::stream<pixel_data> pixel_stream;
 #define WIDTH 1280
 #define HEIGHT 720
 
-#define SMALL_WIDTH 64
-#define SMALL_HEIGHT 64
+#define SMALL_WIDTH 80
+#define SMALL_HEIGHT 45
 
 #define FRAME_COUNT 3
 

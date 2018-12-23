@@ -75,7 +75,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 
 
 	pIn.data = draw_pokemon(&moved, x, y, pIn.data);
-	printf("%u %u %lu\n", corr.x, corr.y, corr.v);
+	///////printf("%u %u %lu\n", corr.x, corr.y, corr.v);
 	////////////////////////////////
 	///// END LOGIC
 

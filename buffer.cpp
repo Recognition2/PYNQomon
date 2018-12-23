@@ -33,12 +33,11 @@ px_t compressRGB(u32 p) {
 void fill(buffer *buf, u16 x, u16 y, u32 p) {
 	px_t* f = getFutureFrame(buf);
 
-	const u16 newx = (x * SMALL_WIDTH) / WIDTH;
-	const u16 newy = (y * SMALL_HEIGHT) / HEIGHT;
+
 
 	// TODO: Translate x and y
 	// And apply Hamming
 
 
-	frame_fill(f, newx, newy, compressRGB(p));
+	frame_fill(f, x, y, compressRGB(p));
 }
