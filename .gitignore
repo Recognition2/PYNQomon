@@ -1,4 +1,9 @@
-.autopilot
+.autopilot/
 syn/
 impl/
 .tcls/
+csim/
+
+
+solution1.log
+
