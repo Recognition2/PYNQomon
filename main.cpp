@@ -2,15 +2,7 @@
 #include "buffer.hpp"
 #include "convolution.hpp"
 #include "phase_correlation.hpp"
-#define SIM
-#ifdef SIM
 #include "stdio.h"
-#endif
-
-//u16 correlated[SMALL_WIDTH][SMALL_HEIGHT];
-bool is_within(x_u16 x_now, p16 target, u16 n) {
-return (current.x >= target.x && current.x < target.x + 50) &&;
-}
 
 u32 draw_pokemon(p16 *moved, u16 x, u16 y, u32 p) {
 	const p16 pokesize = { 64, 64 };
@@ -62,17 +54,18 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	// Reset X and Y counters on user signal
 	if (pIn.user) {
 		// The only time that `corr` is actually valid
-		moved.x += corr.x - SMALL_WIDTH / 2;
-		moved.y += corr.y - SMALL_HEIGHT / 2;
+		// Translate movement in small frame to movement in real frame
+		moved.x += ((corr.x - (SMALL_WIDTH / 2)) * WIDTH) / SMALL_WIDTH;
+		moved.y += ((corr.y - (SMALL_HEIGHT / 2)) * HEIGHT) / SMALL_HEIGHT;
 
 		x = y = 0;
 		newFrame(&buf);
-		fill(&buf, x, y, pIn.data);
-
 	}
+	fill(&buf, x, y, pIn.data);
 
 	// Every iteration:
 	for (u8 i = 0; i < 19; i++) {
+//		printf("Beuning a correlatie\n");
 		correlatiebeun(getCurrentFrame(&buf), getHistoryFrame(&buf), pIn.user,
 				&corr);
 	}
@@ -82,9 +75,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 
 
 	pIn.data = draw_pokemon(&moved, x, y, pIn.data);
-#ifdef SIM
-	printf("%u %u %ul\n", corr.x, corr.y, corr.v);
-#endif
+	printf("%u %u %lu\n", corr.x, corr.y, corr.v);
 	////////////////////////////////
 	///// END LOGIC
 

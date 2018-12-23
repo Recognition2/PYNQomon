@@ -24,7 +24,7 @@ void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 		i = 0;
 		j = 0;
 		m = SMALL_WIDTH;
-		n = SMALL_WIDTH;
+		n = SMALL_HEIGHT;
 		done = false;
 		corrmax->v = 0;
 		value = 0;
@@ -51,9 +51,9 @@ void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 		}
 	}
 
-	const u16 jj = j + centerX - n;
-	const u16 ii = i + centerY - m;
-	if (ii < 0 || jj >= SMALL_WIDTH || jj < 0 || jj >= SMALL_HEIGHT) {
+	const u16 ii = i + centerX - m;
+	const u16 jj = j + centerY - n;
+	if (ii < 0 || ii >= SMALL_WIDTH || jj < 0 || jj >= SMALL_HEIGHT) {
 		return;
 	}
 
