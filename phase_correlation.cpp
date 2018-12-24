@@ -9,10 +9,7 @@
  * @param start whether this is the start of a new frame = new correlation calculation
  * @param corrmax is used for calculating the max of the correlation.
  */
-void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
-	static const u16 centerX = SMALL_WIDTH / 2;
-	static const u16 centerY = SMALL_HEIGHT / 2;
-	static u16 i, j, m, n;
+void iterativeCorrelation(px_t* a, px_t* b, bool start, argmax* corrmax) {
 	static bool done;
 	if (done) {
 		return;
@@ -21,71 +18,52 @@ void correlatiebeun(px_t* a, px_t* b, bool start, argmax* corrmax) {
 	static u64 value;
 
 	if (start) {
-		i = 0;
-		j = 0;
-		m = SMALL_WIDTH;
-		n = SMALL_HEIGHT;
 		done = false;
 		corrmax->v = 0;
 		value = 0;
-	} else {
-		n--;
-		if (n == -1U) {
-			n = SMALL_HEIGHT;
-			m--;
-			if (m == -1U) {
-				m = SMALL_WIDTH;
-				j++;
-				value = 0;
-				if (j == SMALL_HEIGHT) {
-					j = 0;
-					i++;
-					if (i == SMALL_WIDTH) {
-						i = 0;
-						// Done.
-						done = true;
-						return;
-					}
-				}
-			}
-		}
 	}
 
-	const u16 ii = i + centerX - m;
-	const u16 jj = j + centerY - n;
-	if (ii < 0 || ii >= SMALL_WIDTH || jj < 0 || jj >= SMALL_HEIGHT) {
+	static const u64 X = SMALL_WIDTH;
+	static const u64 Y = SMALL_HEIGHT;
+
+	static u8 i = 0;
+	while (i < X + Y - 1) { // x
+		static u8 j = 0;
+		while (j < X + Y - 1) { // y
+			value = 0;
+			static i16 s = 0;
+			while (s < 2 * X) {
+				static i16 t = 0;
+				while (t < 2 * Y) {
+					i16 idx_a_x = s - X + i - 1;
+					i16 idx_a_y = t - Y + j - 1;
+					i16 idx_b_x = s;
+					i16 idx_b_y = t;
+
+					if (idx_a_x >= 0 && idx_a_x < X && idx_a_y >= 0
+							&& idx_a_y < Y && idx_b_x >= 0 && idx_b_x < X
+							&& idx_b_y >= 0 && idx_b_y < Y) {
+
+						value += frame_get(a, idx_a_x, idx_a_y)
+								* frame_get(b, idx_b_x, idx_b_y);
+
+					}
+					t++;
+				}
+				s++;
+				return;
+			}
+			if (value > corrmax->v) {
+				corrmax->v = value;
+				corrmax->x = i;
+				corrmax->y = j;
+				}
+			j++;
+			return;
+		}
+		i++;
 		return;
 	}
-
-	// r(i,j) = sum{m=1; M} sum{n=1; N} a(m,n)*b(m-i,n-j)
-//	correlated[i][j] += frame_get(a, ii, jj) * frame_get(b, m, n);
-	value += frame_get(a, ii, jj) * frame_get(b, m, n);
-	if (value > corrmax->v) {
-		corrmax->v = value;
-		corrmax->x = i;
-		corrmax->y = j;
-	}
-
-	// This takes SMALL_WIDTH^2 * SMALL_HEIGHT^2 iterations
-
-	// Do calculation
-	if (!(i < SMALL_WIDTH)) {
-
-	}
-
-
-
-
-//	for (u16 i = 0; i < SMALL_WIDTH; i++) {
-//		for (u16 j = 0; j < SMALL_HEIGHT; j++) {
-//			for (u16 m = SMALL_WIDTH - 1; m >= 0; m--) { // Flipped
-//				for (u16 n = SMALL_HEIGHT; n >= 0; n--) { // FLipped
-//					// Indices of input signal, check boundary pls
-//
-//
-//					result[i][j] += frame_get(a, ii, jj) * frame_get(b, m, n);
-//				}
-//			}
-//		}
-//	}
+	done = true;
 }
+	

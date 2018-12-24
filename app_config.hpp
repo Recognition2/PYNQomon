@@ -17,8 +17,8 @@ typedef uint64_t u64;
 
 typedef struct {
 	u64 v;
-	u16 x;
-	u16 y;
+	i16 x;
+	i16 y;
 } argmax;
 
 typedef struct {

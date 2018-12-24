@@ -61,18 +61,12 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 		x = y = 0;
 		newFrame(&buf);
 	}
+
 	fill(&buf, x, y, pIn.data);
 
-	// Every iteration:
-	for (u8 i = 0; i < 19; i++) {
-//		printf("Beuning a correlatie\n");
-		correlatiebeun(getCurrentFrame(&buf), getHistoryFrame(&buf), pIn.user,
+	iterativeCorrelation(getCurrentFrame(&buf), getHistoryFrame(&buf),
+				pIn.user,
 				&corr);
-	}
-
-	// needs to happen 19 times because 19 is the first number for which
-	// 1280 * 720 * N > SMALL_WIDTH^2 * SMALL_HEIGHT^2
-
 
 	pIn.data = draw_pokemon(&moved, x, y, pIn.data);
 	///////printf("%u %u %lu\n", corr.x, corr.y, corr.v);
