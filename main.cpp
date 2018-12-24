@@ -47,7 +47,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	pixel_data pIn;
 	src >> pIn;
 	static pixel_data pOut = pIn;
-	static argmax corr;
+	static argmax corr = { 0, 0, 0 };
 
 	// Load pixel data from source
 
@@ -55,20 +55,38 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	if (pIn.user) {
 		// The only time that `corr` is actually valid
 		// Translate movement in small frame to movement in real frame
-		moved.x += ((corr.x - (SMALL_WIDTH / 2)) * WIDTH) / SMALL_WIDTH;
-		moved.y += ((corr.y - (SMALL_HEIGHT / 2)) * HEIGHT) / SMALL_HEIGHT;
+		if (corr.v != 0) {
+			moved.x += (corr.x - (SMALL_WIDTH / 2));
+			//* WIDTH) / SMALL_WIDTH;
+			moved.y += (corr.y - (SMALL_HEIGHT / 2));
+			//* HEIGHT) / SMALL_HEIGHT;
+		}
+
+		printf("moved is now {x: %d, y: %d}; corr is {%d %d, v: %llu}\n",
+				moved.x,
+				moved.y, corr.x, corr.y, corr.v);
 
 		x = y = 0;
+//		for (int i = 0; i < SMALL_HEIGHT; i++) {
+//			for (int j = 0; j < SMALL_WIDTH; j++) {
+//				printf("%03d ", frame_get(getFutureFrame(&buf), j, i));
+//			}
+//			printf("\n");
+//		}
 		newFrame(&buf);
 	}
-
+	// add current pixel to the relevant pixel buffer
 	fill(&buf, x, y, pIn.data);
 
+	// Perform one part of the correlation
 	iterativeCorrelation(getCurrentFrame(&buf), getHistoryFrame(&buf),
 				pIn.user,
 				&corr);
 
-	pIn.data = draw_pokemon(&moved, x, y, pIn.data);
+	if (mask & 0) {
+		// If coordinates are correct, draw a figure on the screen
+		pIn.data = draw_pokemon(&moved, x, y, pIn.data);
+	}
 	///////printf("%u %u %lu\n", corr.x, corr.y, corr.v);
 	////////////////////////////////
 	///// END LOGIC

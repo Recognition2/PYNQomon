@@ -1,6 +1,6 @@
 #ifndef APP_CONFIG_H
 #define APP_CONFIG_H
-
+#include <stdio.h>
 #include <stdint.h>
 #include <hls_video.h>
 #include <hls_stream.h>

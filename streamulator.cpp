@@ -21,7 +21,7 @@ int main() {
 	pixel_data streamIn;
 	pixel_data streamOut;
 
-	for (int i = 0; i < 40; i++) {
+	for (int i = 0; i < 200; i++) {
 		char buf[100];
 		sprintf(buf, "/tmp/src/afbeelding%d.jpg\0", i);
 
@@ -43,7 +43,7 @@ int main() {
 
 		// Call stream processing function
 		while (!inputStream.empty())
-			stream(inputStream, outputStream, 0); // Add extra arguments here
+			stream(inputStream, outputStream, 1); // Add extra arguments here
 
 		// Read output data
 		for (int rows = 0; rows < HEIGHT; rows++)

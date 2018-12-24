@@ -25,9 +25,10 @@ px_t compressRGB(u32 p) {
 	u8 B = (p & 0xFF0000) >> 16;
 	u8 A = (p & 0xFF000000) >> 24;
 
-	return R >> 2 + R >> 5 	// 1/4 + 1/32
-	+ G >> 1 + R >> 4		// 1/2 + 1/16
-	+ B >> 3; // 1/8
+	return (px_t) G;
+//	return R >> 2 + R >> 5 	// 1/4 + 1/32
+//	+ G >> 1 + R >> 4		// 1/2 + 1/16
+//	+ B >> 3; // 1/8
 }
 
 void fill(buffer *buf, u16 x, u16 y, u32 p) {
