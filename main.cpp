@@ -2,7 +2,9 @@
 #include "buffer.hpp"
 #include "convolution.hpp"
 #include "phase_correlation.hpp"
+#ifdef __SYNTHESIS__
 #include "stdio.h"
+#endif
 
 u32 draw_pokemon(p16 *moved, u16 x, u16 y, u32 p) {
 	const p16 pokesize = { 64, 64 };
@@ -61,10 +63,12 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 			moved.y += (corr.y - (SMALL_HEIGHT / 2));
 			//* HEIGHT) / SMALL_HEIGHT;
 		}
-
+#ifdef __SYNTHESIS__
 		printf("moved is now {x: %d, y: %d}; corr is {%d %d, v: %llu}\n",
 				moved.x,
 				moved.y, corr.x, corr.y, corr.v);
+#endif
+
 
 		x = y = 0;
 //		for (int i = 0; i < SMALL_HEIGHT; i++) {
@@ -83,11 +87,11 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 				pIn.user,
 				&corr);
 
-	if (mask & 0) {
+	if (mask & 0x1) {
 		// If coordinates are correct, draw a figure on the screen
 		pIn.data = draw_pokemon(&moved, x, y, pIn.data);
 	}
-	///////printf("%u %u %lu\n", corr.x, corr.y, corr.v);
+	//printf("%u %u %lu\n", corr.x, corr.y, corr.v);
 	////////////////////////////////
 	///// END LOGIC
 
