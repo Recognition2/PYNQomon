@@ -25,3 +25,4 @@ void frame_fill(px_t* buf, u16 x, u16 y, px_t px) {
 px_t frame_get(px_t* buf, u16 x, u16 y) {
 	return buf[x + y * SMALL_WIDTH];
 }
+

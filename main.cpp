@@ -63,6 +63,8 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 			moved.y += (corr.y - (SMALL_HEIGHT / 2));
 			//* HEIGHT) / SMALL_HEIGHT;
 		}
+		//moved.x += 1;
+		//moved.y += 0;
 #ifdef __SYNTHESIS__
 		printf("moved is now {x: %d, y: %d}; corr is {%d %d, v: %llu}\n",
 				moved.x,
@@ -77,20 +79,31 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 //			}
 //			printf("\n");
 //		}
+
 		newFrame(&buf);
+
 	}
 	// add current pixel to the relevant pixel buffer
 	fill(&buf, x, y, pIn.data);
 
 	// Perform one part of the correlation
-	iterativeCorrelation(getCurrentFrame(&buf), getHistoryFrame(&buf),
-				pIn.user,
-				&corr);
+//			iterativeCorrelation(getCurrentFrame(&buf), getHistoryFrame(&buf),
+//							pIn.user,
+//							&corr);
+//
 
-	if (mask & 0x1) {
-		// If coordinates are correct, draw a figure on the screen
-		pIn.data = draw_pokemon(&moved, x, y, pIn.data);
-	}
+//	if (mask & 0x1) {
+//		// If coordinates are correct, draw a figure on the screen
+//		pIn.data = draw_pokemon(&moved, x, y, pIn.data);
+//	}
+
+
+
+	//pIn.data = draw_pokemon(&moved, x, y, pIn.data);
+	u32 durr = (shitpixel(&buf , x, y))|0xFF000000;
+	//printf("%03d ", durr);
+
+	pIn.data = durr;
 	//printf("%u %u %lu\n", corr.x, corr.y, corr.v);
 	////////////////////////////////
 	///// END LOGIC
