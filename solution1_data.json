@@ -17,8 +17,8 @@
     "ClockName": "ap_clk",
     "ClockPeriod": "10",
     "IsCombLogic": "0",
-    "II": "77",
-    "Latency": "82",
+    "II": "x",
+    "Latency": "10",
     "Uncertainty": "1.25"
   },
   "Xdc": {"OocClocks": ["create_clock -name ap_clk -period 10.000 [get_ports ap_clk]"]},
@@ -37,22 +37,21 @@
       "phase_correlation.cpp",
       "main.cpp",
       "frame.cpp",
-      "convolution.cpp",
       "buffer.cpp"
     ],
     "Vhdl": [
-      "impl\/vhdl\/correlatiebeun.vhd",
+      "impl\/vhdl\/iterativeCorrelation.vhd",
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
       "impl\/vhdl\/stream_buf_data.vhd",
-      "impl\/vhdl\/stream_mul_mul_7nbkb.vhd",
+      "impl\/vhdl\/stream_mul_mul_8nbkb.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
-      "impl\/verilog\/correlatiebeun.v",
+      "impl\/verilog\/iterativeCorrelation.v",
       "impl\/verilog\/stream_AXILiteS_s_axi.v",
       "impl\/verilog\/stream_buf_data.v",
       "impl\/verilog\/stream_buf_data_ram.dat",
-      "impl\/verilog\/stream_mul_mul_7nbkb.v",
+      "impl\/verilog\/stream_mul_mul_8nbkb.v",
       "impl\/verilog\/stream.v"
     ],
     "SwDriver": [
@@ -449,88 +448,99 @@
     "dst_V_data_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "5"
+      "firstOutLatency": "8"
     },
     "dst_V_dest_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "5"
+      "firstOutLatency": "8"
     },
     "dst_V_keep_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "5"
+      "firstOutLatency": "8"
     },
     "dst_V_strb_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "5"
+      "firstOutLatency": "8"
     },
     "dst_V_user_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "5"
+      "firstOutLatency": "8"
     },
     "dst_V_last_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "5"
+      "firstOutLatency": "8"
     },
     "dst_V_id_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "5"
+      "firstOutLatency": "8"
     }
   },
   "ModuleInfo": {
     "Hierarchy": {
       "ModuleName": "stream",
       "Instances": [{
-          "ModuleName": "correlatiebeun",
-          "InstanceName": "grp_correlatiebeun_fu_388"
+          "ModuleName": "iterativeCorrelation",
+          "InstanceName": "grp_iterativeCorrelation_fu_408"
         }]
     },
     "Metrics": {
-      "correlatiebeun": {
+      "iterativeCorrelation": {
         "Latency": {
-          "LatencyBest": "3",
-          "LatencyAvg": "3",
-          "LatencyWorst": "3",
-          "PipelineII": "2",
-          "PipelineDepth": "4",
-          "PipelineType": "function"
+          "LatencyBest": "1",
+          "LatencyAvg": "109",
+          "LatencyWorst": "542",
+          "PipelineIIMin": "1",
+          "PipelineIIMax": "542",
+          "PipelineII": "1 ~ 542",
+          "PipelineDepth": "",
+          "PipelineType": "none"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "12.918"
+          "Estimate": "8.255"
         },
+        "Loops": [{
+            "Name": "Loop 1",
+            "TripCount": "180",
+            "Latency": "540",
+            "PipelineII": "",
+            "PipelineDepth": "3"
+          }],
         "Area": {
-          "FF": "378",
-          "LUT": "572",
+          "FF": "681",
+          "LUT": "1044",
           "BRAM_18K": "0",
           "DSP48E": "0"
         }
       },
       "stream": {
         "Latency": {
-          "LatencyBest": "82",
-          "LatencyAvg": "82",
-          "LatencyWorst": "82",
-          "PipelineII": "77",
-          "PipelineDepth": "83",
-          "PipelineType": "function"
+          "LatencyBest": "10",
+          "LatencyAvg": "118",
+          "LatencyWorst": "551",
+          "PipelineIIMin": "11",
+          "PipelineIIMax": "552",
+          "PipelineII": "11 ~ 552",
+          "PipelineDepth": "",
+          "PipelineType": "none"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "12.918"
+          "Estimate": "8.707"
         },
         "Area": {
-          "BRAM_18K": "1",
-          "DSP48E": "42",
-          "FF": "1668",
-          "LUT": "3715"
+          "BRAM_18K": "4",
+          "DSP48E": "6",
+          "FF": "1667",
+          "LUT": "2874"
         }
       }
     }
@@ -542,7 +552,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2018-12-23 17:59:14 CET",
+    "Time": "2018-12-24 23:17:50 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

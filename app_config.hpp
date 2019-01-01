@@ -36,8 +36,8 @@ typedef hls::stream<pixel_data> pixel_stream;
 #define WIDTH 1280
 #define HEIGHT 720
 
-#define SMALL_WIDTH 80
-#define SMALL_HEIGHT 45
+#define SMALL_WIDTH 128
+#define SMALL_HEIGHT 72
 
 #define FRAME_COUNT 3
 

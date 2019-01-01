@@ -12,14 +12,20 @@
 void iterativeCorrelation(px_t* a, px_t* b, bool start, argmax* corrmax) {
 	static bool done = false;
 	static u64 value;
+
 	static i16 i, j;
 	static i16 s, t;
+
+#define X SMALL_WIDTH
+#define Y SMALL_HEIGHT
+#define CONV_LEN (X + Y - 1)
+
 	if (start) {
 		done = false;
 		corrmax->v = 0;
 		value = 0;
-		i = 0;
-		j = 0;
+		i = CONV_LEN / 4;
+		j = CONV_LEN / 4;
 		s = 0;
 		t = 0;
 	}
@@ -27,14 +33,12 @@ void iterativeCorrelation(px_t* a, px_t* b, bool start, argmax* corrmax) {
 		return;
 	}
 
-	static const u64 X = SMALL_WIDTH;
-	static const u64 Y = SMALL_HEIGHT;
+
 //	printf("Trying to perform calculations\n");
-	if (i < X + Y - 1) { // x
-		if (j < X + Y - 1) { // y
-			s = 0;
-			value = 0;
-			while (s < 2 * X) {
+	if (i < 3 * CONV_LEN / 4) { // x
+		if (j < 3 * CONV_LEN / 4) { // y
+			u8 it = 0; // Perform 4 iterations every time
+			while (s < 2 * X && it < 4) {
 				t = 0;
 				while (t < 2 * Y) {
 					i16 idx_a_x = s - X + i - 1;
@@ -53,12 +57,16 @@ void iterativeCorrelation(px_t* a, px_t* b, bool start, argmax* corrmax) {
 					t++;
 				}
 				s++;
+//				return;
+				it++;
 			}
+			s = 0;
 			if (value > corrmax->v) {
 				corrmax->v = value;
 				corrmax->x = i;
 				corrmax->y = j;
 				}
+			value = 0;
 			j++;
 //			printf("s,t zero\n");
 			return;

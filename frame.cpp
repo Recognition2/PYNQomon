@@ -2,7 +2,7 @@
 
 #include "hammingcoefficients.h"
 px_t applyHamming(u16 newx, u16 newy, px_t px) {
-	u32 res = hamming[newx][newy] * px;
+	u32 res = (u32) hamming[newx][newy] * (u32) px;
 	return res >> 16;
 }
 
