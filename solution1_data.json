@@ -17,7 +17,7 @@
     "ClockName": "ap_clk",
     "ClockPeriod": "10",
     "IsCombLogic": "0",
-    "II": "2",
+    "II": "4",
     "Latency": "8",
     "Uncertainty": "1.25"
   },
@@ -34,27 +34,28 @@
   },
   "Files": {
     "CSource": [
-      "phase_correlation.cpp",
-      "main.cpp",
+      "buffer.cpp",
       "frame.cpp",
-      "convolution.cpp",
-      "buffer.cpp"
+      "main.cpp",
+      "phase_correlation.cpp"
     ],
     "Vhdl": [
+      "impl\/vhdl\/iterativeCorrelation.vhd",
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
       "impl\/vhdl\/stream_buf_data.vhd",
-      "impl\/vhdl\/stream_mac_muladdcud.vhd",
       "impl\/vhdl\/stream_mac_muladddEe.vhd",
-      "impl\/vhdl\/stream_mul_mul_7nbkb.vhd",
+      "impl\/vhdl\/stream_mul_mul_7ncud.vhd",
+      "impl\/vhdl\/stream_mul_mul_16bkb.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
+      "impl\/verilog\/iterativeCorrelation.v",
       "impl\/verilog\/stream_AXILiteS_s_axi.v",
       "impl\/verilog\/stream_buf_data.v",
       "impl\/verilog\/stream_buf_data_ram.dat",
-      "impl\/verilog\/stream_mac_muladdcud.v",
       "impl\/verilog\/stream_mac_muladddEe.v",
-      "impl\/verilog\/stream_mul_mul_7nbkb.v",
+      "impl\/verilog\/stream_mul_mul_7ncud.v",
+      "impl\/verilog\/stream_mul_mul_16bkb.v",
       "impl\/verilog\/stream.v"
     ],
     "SwDriver": [
@@ -451,62 +452,91 @@
     "dst_V_data_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "7"
+      "firstOutLatency": "4"
     },
     "dst_V_dest_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "7"
+      "firstOutLatency": "4"
     },
     "dst_V_keep_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "7"
+      "firstOutLatency": "4"
     },
     "dst_V_strb_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "7"
+      "firstOutLatency": "4"
     },
     "dst_V_user_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "7"
+      "firstOutLatency": "4"
     },
     "dst_V_last_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "7"
+      "firstOutLatency": "4"
     },
     "dst_V_id_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "7"
+      "firstOutLatency": "4"
     }
   },
   "ModuleInfo": {
-    "Hierarchy": {"ModuleName": "stream"},
-    "Metrics": {"stream": {
+    "Hierarchy": {
+      "ModuleName": "stream",
+      "Instances": [{
+          "ModuleName": "iterativeCorrelation",
+          "InstanceName": "grp_iterativeCorrelation_fu_404"
+        }]
+    },
+    "Metrics": {
+      "iterativeCorrelation": {
+        "Latency": {
+          "LatencyBest": "1",
+          "LatencyAvg": "1",
+          "LatencyWorst": "1",
+          "PipelineII": "2",
+          "PipelineDepth": "2",
+          "PipelineType": "function"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "1.25",
+          "Estimate": "15.563"
+        },
+        "Area": {
+          "DSP48E": "1",
+          "FF": "514",
+          "LUT": "1240",
+          "BRAM_18K": "0"
+        }
+      },
+      "stream": {
         "Latency": {
           "LatencyBest": "8",
           "LatencyAvg": "8",
           "LatencyWorst": "8",
-          "PipelineII": "2",
+          "PipelineII": "4",
           "PipelineDepth": "9",
           "PipelineType": "function"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "10.354"
+          "Estimate": "15.563"
         },
         "Area": {
           "BRAM_18K": "16",
-          "DSP48E": "5",
-          "FF": "1264",
-          "LUT": "1457"
+          "DSP48E": "7",
+          "FF": "1393",
+          "LUT": "3102"
         }
-      }}
+      }
+    }
   },
   "Sdx": {
     "Target": "none",
@@ -515,7 +545,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2018-12-28 00:36:52 CET",
+    "Time": "2019-01-03 10:08:22 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

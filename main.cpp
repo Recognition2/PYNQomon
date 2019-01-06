@@ -2,7 +2,7 @@
 #include "buffer.hpp"
 #include "convolution.hpp"
 #include "phase_correlation.hpp"
-#ifdef __SYNTHESIS__
+#ifndef __SYNTHESIS__
 #include "stdio.h"
 #endif
 
@@ -16,8 +16,8 @@ u32 draw_pokemon(p16 *moved, u16 x, u16 y, u32 p) {
 		moved->y = HEIGHT / 2;
 	}
 
-	if ((x >= moved->x && x < moved->x + 50)
-		&& (y >= moved->y && y < moved->y + 50)) {
+	if ((x >= moved->x && x < moved->x + pokesize.x)
+			&& (y >= moved->y && y < moved->y + pokesize.y)) {
 		if ((x >= moved->x + 10 && x < moved->x + 40)
 				&& (y >= moved->y + 10 && y < moved->y + 40)) {
 			return (p & 0xFF000000) | 0x000000; // Black filling
@@ -51,7 +51,8 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	static pixel_data pOut = pIn;
 	static argmax corr = { 0, 0, 0 };
 
-	// Load pixel data from source
+	// Draw block
+	pIn.data = draw_pokemon(&moved, x, y, pIn.data);
 
 	// Reset X and Y counters on user signal
 	if (pIn.user) {
@@ -65,7 +66,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 		}
 		//moved.x += 1;
 		//moved.y += 0;
-#ifdef __SYNTHESIS__
+#ifndef __SYNTHESIS__
 		printf("moved is now {x: %d, y: %d}; corr is {%d %d, v: %llu}\n",
 				moved.x,
 				moved.y, corr.x, corr.y, corr.v);
@@ -81,29 +82,23 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 //		}
 
 		newFrame(&buf);
-
 	}
-	// add current pixel to the relevant pixel buffer
-	fill(&buf, x, y, pIn.data);
 
 	// Perform one part of the correlation
-//			iterativeCorrelation(getCurrentFrame(&buf), getHistoryFrame(&buf),
-//							pIn.user,
-//							&corr);
+	iterativeCorrelation(getCurrentFrame(&buf), getHistoryFrame(&buf), pIn.user,
+			&corr);
+
+	// add current pixel to the relevant pixel buffer
+	frame_fill(getFutureFrame(&buf), x, y, pIn.data);
+
+
+
+
+//	//pIn.data = draw_pokemon(&moved, x, y, pIn.data);
+//	u32 durr = (shitpixel(&buf , x, y))|0xFF000000;
+//	//printf("%03d ", durr);
 //
-
-//	if (mask & 0x1) {
-//		// If coordinates are correct, draw a figure on the screen
-//		pIn.data = draw_pokemon(&moved, x, y, pIn.data);
-//	}
-
-
-
-	//pIn.data = draw_pokemon(&moved, x, y, pIn.data);
-	u32 durr = (shitpixel(&buf , x, y))|0xFF000000;
-	//printf("%03d ", durr);
-
-	pIn.data = durr;
+//	pIn.data = durr;
 	//printf("%u %u %lu\n", corr.x, corr.y, corr.v);
 	////////////////////////////////
 	///// END LOGIC

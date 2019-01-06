@@ -24,16 +24,19 @@ int main ()
 	pixel_data streamOut;
 
 
-    VideoCapture cap(0);
-    if (!cap.isOpened()){
-        return -1;
-    }
+////    VideoCapture cap(0);
+//
+//    //if (!cap.isOpened()){
+//    //    return -1;
+//    }
 
 	for (int i = 0; i < 100; i++) {
-        Mat frame, sourceImg;
-        cap >> frame;
+//        cap >> frame;
 	    // Read input image
-		//cv::Mat sourceImg = cv::imread(INPUT	_IMG);
+		char buffer[100];
+		sprintf(buffer, "/home/gregory/src/afbeelding%d.jpg\0", i);
+		cv::Mat frame = cv::imread(buffer);
+		Mat sourceImg;
 
 	    // A necessary conversion to obtain the right format...
 	    cv::cvtColor(frame, frame, CV_BGR2BGRA);
@@ -69,7 +72,6 @@ int main ()
 	    cv::Mat imgCvOut(cv::Size(WIDTH, HEIGHT), CV_8UC4, pixeldata);
 //	    cv::imshow("Ik ben een afbeelding", imgCvOut);
 //		imshow("Ik ben een afbeelding", imgCvOut);
-		char buffer[100];
 		sprintf(buffer, "/tmp/resultaten/afbeelding_%03d.png\0", i);
 		imwrite(buffer, imgCvOut);
 		printf("Afbeelding %d gehandeld\n", i);
