@@ -41,4 +41,4 @@ const u32 pokemon[32][32] = {
 };
 
 
-#endif;
+#endif
