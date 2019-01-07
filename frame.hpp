@@ -4,7 +4,11 @@
 #include "app_config.hpp"
 #include <stdint.h>
 
-void frame_fill(px_t* buf, u16 x, u16 y, px_t px);
-px_t frame_get(px_t* buf, u16 x, u16 y);
+px_t compressRGB(u32 p);
+void newFrame();
+
+
+void frame_fill(u16 x, u16 y, px_t px);
+//px_t frame_get(px_t* buf, u16 x, u16 y);
 
 #endif

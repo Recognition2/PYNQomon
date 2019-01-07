@@ -41,4 +41,8 @@ typedef hls::stream<pixel_data> pixel_stream;
 
 #define FRAME_COUNT 3
 
+extern u16 buf_which;
+extern px_t buf_data[FRAME_COUNT * SMALL_HEIGHT * SMALL_WIDTH];
+extern argmax corrmax;
+
 #endif

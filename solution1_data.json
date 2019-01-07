@@ -17,8 +17,8 @@
     "ClockName": "ap_clk",
     "ClockPeriod": "10",
     "IsCombLogic": "0",
-    "II": "4",
-    "Latency": "8",
+    "II": "2",
+    "Latency": "54",
     "Uncertainty": "1.25"
   },
   "Xdc": {"OocClocks": ["create_clock -name ap_clk -period 10.000 [get_ports ap_clk]"]},
@@ -34,28 +34,37 @@
   },
   "Files": {
     "CSource": [
-      "buffer.cpp",
-      "frame.cpp",
+      "phase_correlation.cpp",
       "main.cpp",
-      "phase_correlation.cpp"
+      "frame.cpp"
     ],
     "Vhdl": [
-      "impl\/vhdl\/iterativeCorrelation.vhd",
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
-      "impl\/vhdl\/stream_buf_data.vhd",
-      "impl\/vhdl\/stream_mac_muladddEe.vhd",
-      "impl\/vhdl\/stream_mul_mul_7ncud.vhd",
-      "impl\/vhdl\/stream_mul_mul_16bkb.vhd",
+      "impl\/vhdl\/stream_buf_data_0.vhd",
+      "impl\/vhdl\/stream_mac_muladdg8j.vhd",
+      "impl\/vhdl\/stream_mul_mul_7nhbi.vhd",
+      "impl\/vhdl\/stream_mul_mul_13ibs.vhd",
+      "impl\/vhdl\/stream_mul_mul_16jbC.vhd",
+      "impl\/vhdl\/stream_mux_332_16fYi.vhd",
+      "impl\/vhdl\/stream_urem_17ns_cud.vhd",
+      "impl\/vhdl\/stream_urem_19ns_bkb.vhd",
+      "impl\/vhdl\/stream_urem_25ns_eOg.vhd",
+      "impl\/vhdl\/stream_urem_31s_1dEe.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
-      "impl\/verilog\/iterativeCorrelation.v",
       "impl\/verilog\/stream_AXILiteS_s_axi.v",
-      "impl\/verilog\/stream_buf_data.v",
-      "impl\/verilog\/stream_buf_data_ram.dat",
-      "impl\/verilog\/stream_mac_muladddEe.v",
-      "impl\/verilog\/stream_mul_mul_7ncud.v",
-      "impl\/verilog\/stream_mul_mul_16bkb.v",
+      "impl\/verilog\/stream_buf_data_0.v",
+      "impl\/verilog\/stream_buf_data_0_ram.dat",
+      "impl\/verilog\/stream_mac_muladdg8j.v",
+      "impl\/verilog\/stream_mul_mul_7nhbi.v",
+      "impl\/verilog\/stream_mul_mul_13ibs.v",
+      "impl\/verilog\/stream_mul_mul_16jbC.v",
+      "impl\/verilog\/stream_mux_332_16fYi.v",
+      "impl\/verilog\/stream_urem_17ns_cud.v",
+      "impl\/verilog\/stream_urem_19ns_bkb.v",
+      "impl\/verilog\/stream_urem_25ns_eOg.v",
+      "impl\/verilog\/stream_urem_31s_1dEe.v",
       "impl\/verilog\/stream.v"
     ],
     "SwDriver": [
@@ -452,91 +461,62 @@
     "dst_V_data_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "4"
+      "firstOutLatency": "52"
     },
     "dst_V_dest_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "4"
+      "firstOutLatency": "52"
     },
     "dst_V_keep_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "4"
+      "firstOutLatency": "52"
     },
     "dst_V_strb_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "4"
+      "firstOutLatency": "52"
     },
     "dst_V_user_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "4"
+      "firstOutLatency": "52"
     },
     "dst_V_last_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "4"
+      "firstOutLatency": "52"
     },
     "dst_V_id_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "4"
+      "firstOutLatency": "52"
     }
   },
   "ModuleInfo": {
-    "Hierarchy": {
-      "ModuleName": "stream",
-      "Instances": [{
-          "ModuleName": "iterativeCorrelation",
-          "InstanceName": "grp_iterativeCorrelation_fu_404"
-        }]
-    },
-    "Metrics": {
-      "iterativeCorrelation": {
+    "Hierarchy": {"ModuleName": "stream"},
+    "Metrics": {"stream": {
         "Latency": {
-          "LatencyBest": "1",
-          "LatencyAvg": "1",
-          "LatencyWorst": "1",
+          "LatencyBest": "54",
+          "LatencyAvg": "54",
+          "LatencyWorst": "54",
           "PipelineII": "2",
-          "PipelineDepth": "2",
+          "PipelineDepth": "55",
           "PipelineType": "function"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "15.563"
+          "Estimate": "10.687"
         },
         "Area": {
-          "DSP48E": "1",
-          "FF": "514",
-          "LUT": "1240",
-          "BRAM_18K": "0"
+          "BRAM_18K": "12",
+          "DSP48E": "14",
+          "FF": "10985",
+          "LUT": "8604"
         }
-      },
-      "stream": {
-        "Latency": {
-          "LatencyBest": "8",
-          "LatencyAvg": "8",
-          "LatencyWorst": "8",
-          "PipelineII": "4",
-          "PipelineDepth": "9",
-          "PipelineType": "function"
-        },
-        "Timing": {
-          "Target": "10.00",
-          "Uncertainty": "1.25",
-          "Estimate": "15.563"
-        },
-        "Area": {
-          "BRAM_18K": "16",
-          "DSP48E": "7",
-          "FF": "1393",
-          "LUT": "3102"
-        }
-      }
-    }
+      }}
   },
   "Sdx": {
     "Target": "none",
@@ -545,7 +525,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-03 10:08:22 CET",
+    "Time": "2019-01-07 01:44:58 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }
