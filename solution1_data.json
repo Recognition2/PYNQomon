@@ -36,7 +36,9 @@
     "CSource": [
       "phase_correlation.cpp",
       "main.cpp",
-      "frame.cpp"
+      "frame.cpp",
+      "convolution.cpp",
+      "buffer.cpp"
     ],
     "Vhdl": [
       "impl\/vhdl\/frame_get.vhd",
@@ -497,15 +499,15 @@
       "Instances": [
         {
           "ModuleName": "frame_get",
-          "InstanceName": "grp_frame_get_fu_417"
+          "InstanceName": "grp_frame_get_fu_415"
         },
         {
           "ModuleName": "frame_get",
-          "InstanceName": "grp_frame_get_fu_427"
+          "InstanceName": "grp_frame_get_fu_425"
         },
         {
           "ModuleName": "frame_get",
-          "InstanceName": "grp_frame_get_fu_438"
+          "InstanceName": "grp_frame_get_fu_436"
         }
       ]
     },
@@ -549,7 +551,7 @@
           "BRAM_18K": "17",
           "DSP48E": "7",
           "FF": "3491",
-          "LUT": "4058"
+          "LUT": "4044"
         }
       }
     }
@@ -561,7 +563,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-07 14:06:51 CET",
+    "Time": "2019-01-07 15:58:25 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

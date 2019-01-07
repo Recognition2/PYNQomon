@@ -24,18 +24,19 @@ int main ()
 	pixel_data streamOut;
 
 
-////    VideoCapture cap(0);
-//
-//    //if (!cap.isOpened()){
-//    //    return -1;
-//    }
+    VideoCapture cap(0);
+
+    if (!cap.isOpened()){
+        return -1;
+    }
 
 	for (int i = 0; i < 100; i++) {
-//        cap >> frame;
+        Mat frame;
+		cap >> frame;
 	    // Read input image
 		char buffer[100];
-		sprintf(buffer, "/home/gregory/src/afbeelding%d.jpg\0", i);
-		cv::Mat frame = cv::imread(buffer);
+		sprintf(buffer, "/home/admin/temp/src/afbeelding%d.jpg\0", i);
+//		cv::Mat frame = cv::imread(buffer);
 		Mat sourceImg;
 
 	    // A necessary conversion to obtain the right format...

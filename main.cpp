@@ -59,9 +59,9 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 		// The only time that `corr` is actually valid
 		// Translate movement in small frame to movement in real frame
 		if (corrmax.v != 0) {
-			const u16 xdiff = (corrmax.x - (SMALL_WIDTH / 2));
+			const i16 xdiff = (corrmax.x - (SMALL_WIDTH / 2));
 			//* WIDTH) / SMALL_WIDTH;
-			const u16 ydiff = (corrmax.y - (SMALL_HEIGHT / 2));
+			const i16 ydiff = (corrmax.y - (SMALL_HEIGHT / 2));
 			//* HEIGHT) / SMALL_HEIGHT;
 
 			if (moved.x + xdiff + pokesize.x > WIDTH) {

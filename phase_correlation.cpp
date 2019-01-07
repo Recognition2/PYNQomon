@@ -9,10 +9,10 @@
 
 #define X SMALL_WIDTH
 #define Y SMALL_HEIGHT
-#define i_start_value (((X + X - 1) * 7) / 8)
-#define i_end_value   (((X + X - 1) * 9) / 8)
-#define j_start_value (((Y + Y - 1) * 7) / 8)
-#define j_end_value   (((Y + Y - 1) * 9) / 8)
+#define i_start_value ((X * 7) / 8)
+#define i_end_value   ((X * 9) / 8)
+#define j_start_value ((Y * 7) / 8)
+#define j_end_value   ((Y * 9) / 8)
 
 static bool done = false;
 static u64 value;
