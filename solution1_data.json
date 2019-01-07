@@ -43,12 +43,11 @@
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
       "impl\/vhdl\/stream_buf_data.vhd",
       "impl\/vhdl\/stream_buffertje.vhd",
+      "impl\/vhdl\/stream_mac_muladddEe.vhd",
       "impl\/vhdl\/stream_mac_muladdeOg.vhd",
-      "impl\/vhdl\/stream_mac_muladdfYi.vhd",
-      "impl\/vhdl\/stream_mul_mul_7ndEe.vhd",
-      "impl\/vhdl\/stream_mul_mul_16g8j.vhd",
+      "impl\/vhdl\/stream_mul_mul_7ncud.vhd",
+      "impl\/vhdl\/stream_mul_mul_16fYi.vhd",
       "impl\/vhdl\/stream_urem_17ns_bkb.vhd",
-      "impl\/vhdl\/stream_urem_17ns_cud.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
@@ -58,12 +57,11 @@
       "impl\/verilog\/stream_buf_data_ram.dat",
       "impl\/verilog\/stream_buffertje.v",
       "impl\/verilog\/stream_buffertje_ram.dat",
+      "impl\/verilog\/stream_mac_muladddEe.v",
       "impl\/verilog\/stream_mac_muladdeOg.v",
-      "impl\/verilog\/stream_mac_muladdfYi.v",
-      "impl\/verilog\/stream_mul_mul_7ndEe.v",
-      "impl\/verilog\/stream_mul_mul_16g8j.v",
+      "impl\/verilog\/stream_mul_mul_7ncud.v",
+      "impl\/verilog\/stream_mul_mul_16fYi.v",
       "impl\/verilog\/stream_urem_17ns_bkb.v",
-      "impl\/verilog\/stream_urem_17ns_cud.v",
       "impl\/verilog\/stream.v"
     ],
     "SwDriver": [
@@ -499,15 +497,15 @@
       "Instances": [
         {
           "ModuleName": "frame_get",
-          "InstanceName": "grp_frame_get_fu_421"
+          "InstanceName": "grp_frame_get_fu_417"
         },
         {
           "ModuleName": "frame_get",
-          "InstanceName": "grp_frame_get_fu_432"
+          "InstanceName": "grp_frame_get_fu_427"
         },
         {
           "ModuleName": "frame_get",
-          "InstanceName": "grp_frame_get_fu_443"
+          "InstanceName": "grp_frame_get_fu_438"
         }
       ]
     },
@@ -545,13 +543,13 @@
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "10.283"
+          "Estimate": "8.617"
         },
         "Area": {
           "BRAM_18K": "17",
           "DSP48E": "7",
-          "FF": "4442",
-          "LUT": "4694"
+          "FF": "3491",
+          "LUT": "4058"
         }
       }
     }
@@ -563,7 +561,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-07 13:32:41 CET",
+    "Time": "2019-01-07 14:06:51 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

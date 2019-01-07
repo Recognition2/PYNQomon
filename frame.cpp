@@ -17,7 +17,8 @@ void frame_fill(u16 x, u16 y, px_t px) {
 	const u16 newy = (y * SMALL_HEIGHT) / HEIGHT;
 
 	px_t newpx = applyHamming(newx, newy, px);
-	const u16 idx = ((buf_which + 1) % 3) * SMALL_WIDTH * SMALL_HEIGHT + newx
+	const u16 buf_which_new = (buf_which + 1) == 3 ? 0 : buf_which + 1;
+	const u16 idx = buf_which_new * SMALL_WIDTH * SMALL_HEIGHT + newx
 			+ newy * SMALL_WIDTH;
 	const u16 beest = buffertje[newx] + px;
 
