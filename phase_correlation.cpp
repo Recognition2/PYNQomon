@@ -22,6 +22,8 @@ static i16 i = 0, j = 0;
 static i16 s = 0, t = 0;
 void resetCorrelationData() {
 	done = false;
+	corrmax.x = 0;
+	corrmax.y = 0;
 	corrmax.v = 0;
 	value = 0;
 	i = i_start_value;
@@ -54,7 +56,7 @@ void iterativeCorrelation(u16 x, u16 y) {
 	const u16 bb = frame_get(
 			buf_which_minus_one * SMALL_WIDTH * SMALL_HEIGHT + idx_a_x
 					+ idx_a_y * SMALL_WIDTH, 0, false);
-	const u32 added = (u32) aa * (u32) bb;
+	const u16 added = (aa * bb) >> 16;
 
 //	printf("Trying to perform calculations\n");
 	if (i < i_end_value) { // x

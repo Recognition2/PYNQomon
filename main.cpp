@@ -10,7 +10,8 @@
 u32 draw_pokemon(p16 *moved, u16 x, u16 y, u32 p) {
 	if ((x >= moved->x && x < moved->x + pokesize.x)
 			&& (y >= moved->y && y < moved->y + pokesize.y)) {
-		return pokemon[x - moved->x][y - moved->y];
+		return (pokemon[x - moved->x][y - moved->y] != 0xFF000000 ?
+				pokemon[x - moved->x][y - moved->y] : p);
 	} else {
 		return p;
 	}
@@ -58,12 +59,12 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 			const i16 ydiff = (corrmax.y - SMALL_HEIGHT);
 			//* HEIGHT) / SMALL_HEIGHT;
 
-			if (moved.x + xdiff + pokesize.x > WIDTH) {
+			if (moved.x + xdiff + pokesize.x > WIDTH || moved.x + xdiff < 0) {
 				moved.x = WIDTH / 2;
 			} else {
 				moved.x = xdiff + moved.x;
 			}
-			if (moved.y + ydiff + pokesize.y > HEIGHT) {
+			if (moved.y + ydiff + pokesize.y > HEIGHT || moved.y + ydiff < 0) {
 				moved.y = HEIGHT / 2;
 			} else {
 				moved.y = ydiff + moved.y;
