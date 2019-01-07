@@ -7,7 +7,6 @@
 #include <hls_opencv.h>
 #include <stdio.h>
 #include "opencv2/opencv.hpp"
-#define SIM
 
 
 using namespace cv;

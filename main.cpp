@@ -1,22 +1,16 @@
 #include "app_config.hpp"
 #include "buffer.hpp"
-#include "convolution.hpp"
 #include "phase_correlation.hpp"
 #ifndef __SYNTHESIS__
 #include "stdio.h"
 #endif
 
-const p16 pokesize = { 64, 64 };
+#include "pokemon.h"
 
 u32 draw_pokemon(p16 *moved, u16 x, u16 y, u32 p) {
 	if ((x >= moved->x && x < moved->x + pokesize.x)
 			&& (y >= moved->y && y < moved->y + pokesize.y)) {
-		if ((x >= moved->x + 10 && x < moved->x + 40)
-				&& (y >= moved->y + 10 && y < moved->y + 40)) {
-			return (p & 0xFF000000) | 0x000000; // Black filling
-		} else {
-			return (p & 0xFF000000) | 0xFFFFFF; // With white border
-		}
+		return pokemon[x - moved->x][y - moved->y];
 	} else {
 		return p;
 	}
@@ -105,7 +99,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	// Perform one part of the correlation
 	// Potentially draw figure at location `moved`
 	pIn.data = draw_pokemon(&moved, x, y, pIn.data);
-
+//	printf("hoi x %d y %d\n", x, y);
 
 //	//pIn.data = draw_pokemon(&moved, x, y, pIn.data);
 //	u32 durr = (shitpixel(&buf , x, y))|0xFF000000;

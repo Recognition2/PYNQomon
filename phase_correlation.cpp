@@ -48,9 +48,10 @@ void iterativeCorrelation(u16 x, u16 y) {
 //	const u16 bb = frame_get(getHistoryFrame(), idx_b_x, idx_b_y);
 	const u16 aa = frame_get(buf_which * SMALL_WIDTH * SMALL_HEIGHT + idx_a_x
 					+ idx_a_y * SMALL_WIDTH, 0, false);
+	const u16 buf_which_minus_one = (buf_which == 0 ? 2 : buf_which - 1);
 	const u16 bb = frame_get(
-			((buf_which + FRAME_COUNT - 1) % FRAME_COUNT) * SMALL_WIDTH
-					* SMALL_HEIGHT + idx_a_x + idx_a_y * SMALL_WIDTH, 0, false);
+			buf_which_minus_one * SMALL_WIDTH * SMALL_HEIGHT + idx_a_x
+					+ idx_a_y * SMALL_WIDTH, 0, false);
 	const u32 added = (u32) aa * (u32) bb;
 
 //	printf("Trying to perform calculations\n");
@@ -69,6 +70,7 @@ void iterativeCorrelation(u16 x, u16 y) {
 					return;
 				}
 				t = max(0, Y - j);
+//				printf("t zero\n");
 				s++;
 				return;
 			}
@@ -81,7 +83,7 @@ void iterativeCorrelation(u16 x, u16 y) {
 			value = 0;
 
 			j++;
-//			printf("s,t zero\n");
+//			printf("s zero\n");
 			return;
 		}
 //		printf("j = 0\n");

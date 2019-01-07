@@ -45,10 +45,11 @@
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
       "impl\/vhdl\/stream_buf_data.vhd",
       "impl\/vhdl\/stream_buffertje.vhd",
+      "impl\/vhdl\/stream_mac_muladdcud.vhd",
       "impl\/vhdl\/stream_mac_muladddEe.vhd",
-      "impl\/vhdl\/stream_mac_muladdeOg.vhd",
-      "impl\/vhdl\/stream_mul_mul_7ncud.vhd",
-      "impl\/vhdl\/stream_mul_mul_16fYi.vhd",
+      "impl\/vhdl\/stream_mac_muladdfYi.vhd",
+      "impl\/vhdl\/stream_mul_mul_7neOg.vhd",
+      "impl\/vhdl\/stream_mul_mul_16g8j.vhd",
       "impl\/vhdl\/stream_urem_17ns_bkb.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
@@ -59,10 +60,11 @@
       "impl\/verilog\/stream_buf_data_ram.dat",
       "impl\/verilog\/stream_buffertje.v",
       "impl\/verilog\/stream_buffertje_ram.dat",
+      "impl\/verilog\/stream_mac_muladdcud.v",
       "impl\/verilog\/stream_mac_muladddEe.v",
-      "impl\/verilog\/stream_mac_muladdeOg.v",
-      "impl\/verilog\/stream_mul_mul_7ncud.v",
-      "impl\/verilog\/stream_mul_mul_16fYi.v",
+      "impl\/verilog\/stream_mac_muladdfYi.v",
+      "impl\/verilog\/stream_mul_mul_7neOg.v",
+      "impl\/verilog\/stream_mul_mul_16g8j.v",
       "impl\/verilog\/stream_urem_17ns_bkb.v",
       "impl\/verilog\/stream.v"
     ],
@@ -499,6 +501,7 @@
       "Instances": [
         {
           "ModuleName": "frame_get",
+<<<<<<< Updated upstream
           "InstanceName": "grp_frame_get_fu_415"
         },
         {
@@ -508,6 +511,17 @@
         {
           "ModuleName": "frame_get",
           "InstanceName": "grp_frame_get_fu_436"
+=======
+          "InstanceName": "grp_frame_get_fu_451"
+        },
+        {
+          "ModuleName": "frame_get",
+          "InstanceName": "grp_frame_get_fu_461"
+        },
+        {
+          "ModuleName": "frame_get",
+          "InstanceName": "grp_frame_get_fu_472"
+>>>>>>> Stashed changes
         }
       ]
     },
@@ -549,9 +563,15 @@
         },
         "Area": {
           "BRAM_18K": "17",
+<<<<<<< Updated upstream
           "DSP48E": "7",
           "FF": "3491",
           "LUT": "4044"
+=======
+          "DSP48E": "14",
+          "FF": "4363",
+          "LUT": "4650"
+>>>>>>> Stashed changes
         }
       }
     }
@@ -563,7 +583,11 @@
   },
   "GenData": {
     "DataVersion": "0.1",
+<<<<<<< Updated upstream
     "Time": "2019-01-07 15:58:25 CET",
+=======
+    "Time": "2019-01-07 15:01:39 CET",
+>>>>>>> Stashed changes
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }
