@@ -13,6 +13,8 @@
 #define i_end_value   ((X * 9) / 8)
 #define j_start_value ((Y * 7) / 8)
 #define j_end_value   ((Y * 9) / 8)
+#define s_start_value (max(0,X-i_start_value))
+#define t_start_value (max(0,Y-j_start_value))
 
 static bool done = false;
 static u64 value;
@@ -24,8 +26,8 @@ void resetCorrelationData() {
 	value = 0;
 	i = i_start_value;
 	j = j_start_value;
-	s = 0;
-	t = 0;
+	s = s_start_value;
+	t = t_start_value;
 	return;
 }
 /**
@@ -57,8 +59,8 @@ void iterativeCorrelation(u16 x, u16 y) {
 //	printf("Trying to perform calculations\n");
 	if (i < i_end_value) { // x
 		if (j < j_end_value) { // y
-			if (s < min(X, 2 * X - i)) {
-				if (t < min(Y, 2 * Y - j)) {
+			if (s < min(X-1, 2 * X - i-1)) {
+				if (t < min(Y-1, 2 * Y - j-1)) {
 //					if (idx_a_x >= 0 && idx_a_x < X && idx_a_y >= 0
 //							&& idx_a_y < Y && idx_b_x >= 0 && idx_b_x < X
 //							&& idx_b_y >= 0 && idx_b_y < Y) {
@@ -69,12 +71,12 @@ void iterativeCorrelation(u16 x, u16 y) {
 					t++;
 					return;
 				}
-				t = max(0, Y - j);
+				t = t_start_value;
 //				printf("t zero\n");
 				s++;
 				return;
 			}
-			s = max(0, X - i);
+			s = s_start_value;
 			if (value > corrmax.v) {
 				corrmax.v = value;
 				corrmax.x = i;
@@ -92,7 +94,7 @@ void iterativeCorrelation(u16 x, u16 y) {
 		return;
 	}
 //	printf("i = 0\n");
-	i = 0;
+	printf("HBAHBHJCBXHCKJXBCJHX\n");
 	done = true;
 }
 	
