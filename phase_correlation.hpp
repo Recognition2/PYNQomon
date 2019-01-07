@@ -3,5 +3,5 @@
 
 #include "frame.hpp"
 void resetCorrelationData();
-void iterativeCorrelation();
+void iterativeCorrelation(u16 x, u16 y);
 #endif

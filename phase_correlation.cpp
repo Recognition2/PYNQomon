@@ -34,7 +34,7 @@ void resetCorrelationData() {
  * @param start whether this is the start of a new frame = new correlation calculation
  * @param corrmax is used for calculating the max of the correlation.
  */
-void iterativeCorrelation() {
+void iterativeCorrelation(u16 x, u16 y) {
 #pragma HLS inline
 	if (done) {
 		return;
@@ -46,10 +46,11 @@ void iterativeCorrelation() {
 	const i16 idx_b_y = t;
 //	const u16 aa = frame_get(getCurrentFrame(), idx_a_x, idx_a_y);
 //	const u16 bb = frame_get(getHistoryFrame(), idx_b_x, idx_b_y);
-	const u16 aa = buf_data[buf_which * SMALL_WIDTH * SMALL_HEIGHT + idx_a_x
-			+ idx_a_y * SMALL_WIDTH];
-	const u16 bb = buf_data[((buf_which + FRAME_COUNT - 1) % FRAME_COUNT)
-			* SMALL_WIDTH * SMALL_HEIGHT + idx_a_x + idx_a_y * SMALL_WIDTH];
+	const u16 aa = frame_get(buf_which * SMALL_WIDTH * SMALL_HEIGHT + idx_a_x
+					+ idx_a_y * SMALL_WIDTH, 0, false);
+	const u16 bb = frame_get(
+			((buf_which + FRAME_COUNT - 1) % FRAME_COUNT) * SMALL_WIDTH
+					* SMALL_HEIGHT + idx_a_x + idx_a_y * SMALL_WIDTH, 0, false);
 	const u32 added = (u32) aa * (u32) bb;
 
 //	printf("Trying to perform calculations\n");

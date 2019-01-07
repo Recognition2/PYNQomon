@@ -17,8 +17,8 @@
     "ClockName": "ap_clk",
     "ClockPeriod": "10",
     "IsCombLogic": "0",
-    "II": "2",
-    "Latency": "54",
+    "II": "1",
+    "Latency": "26",
     "Uncertainty": "1.25"
   },
   "Xdc": {"OocClocks": ["create_clock -name ap_clk -period 10.000 [get_ports ap_clk]"]},
@@ -39,32 +39,31 @@
       "frame.cpp"
     ],
     "Vhdl": [
+      "impl\/vhdl\/frame_get.vhd",
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
-      "impl\/vhdl\/stream_buf_data_0.vhd",
-      "impl\/vhdl\/stream_mac_muladdg8j.vhd",
-      "impl\/vhdl\/stream_mul_mul_7nhbi.vhd",
-      "impl\/vhdl\/stream_mul_mul_13ibs.vhd",
-      "impl\/vhdl\/stream_mul_mul_16jbC.vhd",
-      "impl\/vhdl\/stream_mux_332_16fYi.vhd",
+      "impl\/vhdl\/stream_buf_data.vhd",
+      "impl\/vhdl\/stream_buffertje.vhd",
+      "impl\/vhdl\/stream_mac_muladdeOg.vhd",
+      "impl\/vhdl\/stream_mac_muladdfYi.vhd",
+      "impl\/vhdl\/stream_mul_mul_7ndEe.vhd",
+      "impl\/vhdl\/stream_mul_mul_16g8j.vhd",
+      "impl\/vhdl\/stream_urem_17ns_bkb.vhd",
       "impl\/vhdl\/stream_urem_17ns_cud.vhd",
-      "impl\/vhdl\/stream_urem_19ns_bkb.vhd",
-      "impl\/vhdl\/stream_urem_25ns_eOg.vhd",
-      "impl\/vhdl\/stream_urem_31s_1dEe.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
+      "impl\/verilog\/frame_get.v",
       "impl\/verilog\/stream_AXILiteS_s_axi.v",
-      "impl\/verilog\/stream_buf_data_0.v",
-      "impl\/verilog\/stream_buf_data_0_ram.dat",
-      "impl\/verilog\/stream_mac_muladdg8j.v",
-      "impl\/verilog\/stream_mul_mul_7nhbi.v",
-      "impl\/verilog\/stream_mul_mul_13ibs.v",
-      "impl\/verilog\/stream_mul_mul_16jbC.v",
-      "impl\/verilog\/stream_mux_332_16fYi.v",
+      "impl\/verilog\/stream_buf_data.v",
+      "impl\/verilog\/stream_buf_data_ram.dat",
+      "impl\/verilog\/stream_buffertje.v",
+      "impl\/verilog\/stream_buffertje_ram.dat",
+      "impl\/verilog\/stream_mac_muladdeOg.v",
+      "impl\/verilog\/stream_mac_muladdfYi.v",
+      "impl\/verilog\/stream_mul_mul_7ndEe.v",
+      "impl\/verilog\/stream_mul_mul_16g8j.v",
+      "impl\/verilog\/stream_urem_17ns_bkb.v",
       "impl\/verilog\/stream_urem_17ns_cud.v",
-      "impl\/verilog\/stream_urem_19ns_bkb.v",
-      "impl\/verilog\/stream_urem_25ns_eOg.v",
-      "impl\/verilog\/stream_urem_31s_1dEe.v",
       "impl\/verilog\/stream.v"
     ],
     "SwDriver": [
@@ -461,62 +460,101 @@
     "dst_V_data_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "52"
+      "firstOutLatency": "25"
     },
     "dst_V_dest_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "52"
+      "firstOutLatency": "25"
     },
     "dst_V_keep_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "52"
+      "firstOutLatency": "25"
     },
     "dst_V_strb_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "52"
+      "firstOutLatency": "25"
     },
     "dst_V_user_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "52"
+      "firstOutLatency": "25"
     },
     "dst_V_last_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "52"
+      "firstOutLatency": "25"
     },
     "dst_V_id_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "52"
+      "firstOutLatency": "25"
     }
   },
   "ModuleInfo": {
-    "Hierarchy": {"ModuleName": "stream"},
-    "Metrics": {"stream": {
+    "Hierarchy": {
+      "ModuleName": "stream",
+      "Instances": [
+        {
+          "ModuleName": "frame_get",
+          "InstanceName": "grp_frame_get_fu_421"
+        },
+        {
+          "ModuleName": "frame_get",
+          "InstanceName": "grp_frame_get_fu_432"
+        },
+        {
+          "ModuleName": "frame_get",
+          "InstanceName": "grp_frame_get_fu_443"
+        }
+      ]
+    },
+    "Metrics": {
+      "frame_get": {
         "Latency": {
-          "LatencyBest": "54",
-          "LatencyAvg": "54",
-          "LatencyWorst": "54",
-          "PipelineII": "2",
-          "PipelineDepth": "55",
+          "LatencyBest": "1",
+          "LatencyAvg": "1",
+          "LatencyWorst": "1",
+          "PipelineII": "1",
+          "PipelineDepth": "2",
           "PipelineType": "function"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "10.687"
+          "Estimate": "5.023"
         },
         "Area": {
-          "BRAM_18K": "12",
-          "DSP48E": "14",
-          "FF": "10985",
-          "LUT": "8604"
+          "FF": "19",
+          "LUT": "26",
+          "BRAM_18K": "0",
+          "DSP48E": "0"
         }
-      }}
+      },
+      "stream": {
+        "Latency": {
+          "LatencyBest": "26",
+          "LatencyAvg": "26",
+          "LatencyWorst": "26",
+          "PipelineII": "1",
+          "PipelineDepth": "27",
+          "PipelineType": "function"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "1.25",
+          "Estimate": "10.283"
+        },
+        "Area": {
+          "BRAM_18K": "17",
+          "DSP48E": "7",
+          "FF": "4442",
+          "LUT": "4694"
+        }
+      }
+    }
   },
   "Sdx": {
     "Target": "none",
@@ -525,7 +563,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-07 01:44:58 CET",
+    "Time": "2019-01-07 13:32:41 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

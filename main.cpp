@@ -35,11 +35,11 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 #pragma HLS INTERFACE s_axilite port=mask
 #pragma HLS PIPELINE II=1
 
-#pragma HLS array_partition variable=buf_data block factor=3
+//#pragma HLS array_partition variable=buf_data block factor=300
 	// Data to be stored across 'function calls'
 	static u16 x = 0;
 	static u16 y = 0;
-	static u32 d;
+//	static u32 d;
 
 	static p16 moved = { WIDTH / 2, HEIGHT / 2 };
 
@@ -90,11 +90,16 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 		newFrame();
 		resetCorrelationData();
 
-	} else {
-		iterativeCorrelation();
 	}
-	// add current pixel to the buffer
 
+	if (!pIn.user
+			&& !((x + 1) % (WIDTH / SMALL_WIDTH) == 0
+					&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0))
+	{
+		iterativeCorrelation(x, y);
+	}
+
+	// add current pixel to the buffer
 	frame_fill(x, y, pIn.data);
 
 	// Perform one part of the correlation
