@@ -1,6 +1,8 @@
 #ifndef APP_CONFIG_H
 #define APP_CONFIG_H
-//#include <stdio.h>
+#ifndef __SYNTHESIS
+#include <stdio.h>
+#endif
 #include <stdint.h>
 #include <hls_video.h>
 #include <hls_stream.h>

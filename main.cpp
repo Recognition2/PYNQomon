@@ -2,7 +2,10 @@
 #include "buffer.hpp"
 #include "phase_correlation.hpp"
 #ifndef __SYNTHESIS__
-#include "stdio.h"
+#include <hls_stream.h>
+#include <hls_opencv.h>
+#include <stdio.h>
+#include "opencv2/opencv.hpp"
 #endif
 
 #include "pokemon.h"
@@ -54,10 +57,8 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 		// The only time that `corr` is actually valid
 		// Translate movement in small frame to movement in real frame
 		if (corrmax.v != 0) {
-			const i16 xdiff = (corrmax.x - SMALL_WIDTH);
-			//* WIDTH) / SMALL_WIDTH;
-			const i16 ydiff = (corrmax.y - SMALL_HEIGHT);
-			//* HEIGHT) / SMALL_HEIGHT;
+			const i16 xdiff = ((corrmax.x - SMALL_WIDTH)); //* WIDTH) / SMALL_WIDTH;
+			const i16 ydiff = ((corrmax.y - SMALL_HEIGHT));// * HEIGHT)	/ SMALL_HEIGHT;
 
 			if (moved.x + xdiff + pokesize.x > WIDTH || moved.x + xdiff < 0) {
 				moved.x = WIDTH / 2;
@@ -75,9 +76,22 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 		//moved.x += 1;
 		//moved.y += 0;
 #ifndef __SYNTHESIS__
-		printf("moved is now {x: %d, y: %d}; corr is {%d %d, v: %llu}\n",
-				moved.x,
-				moved.y, corrmax.x, corrmax.y, corrmax.v);
+		{
+			cv::Mat intermediate;
+			static int COUNTER = 0;
+			printf("moved is now {x: %d, y: %d}; corr is {%d %d, v: %llu}\n",
+					moved.x,
+					moved.y, corrmax.x, corrmax.y, corrmax.v);
+			char buffer[100];
+			sprintf(buffer, "/tmp/resultaten/intermediate_afbeelding_hist_%d.jpg\0",COUNTER);
+//			cv::resize(buf_data[buf_which * SMALL_WIDTH * SMALL_HEIGHT], intermediate, cv::Size(0,0), 16, 16, cv::INTER_NEAREST);
+//			cv::cvtColor(intermediate, intermediate, CV_GRAY2RGBA);
+//		    cv::Mat imgCvOut(cv::Size(WIDTH, HEIGHT), CV_8UC4, buf_data[buf_which * SMALL_WIDTH * SMALL_HEIGHT]);
+//			cv::imwrite(buffer, intermediate);
+			for (int i = 0; i < SMALL_HEIGHT * SMALL_WIDTH; i++) {
+				sprintf(buffer, "%d ", buf_data[buf_which * SMALL_HEIGHT * SMALL_WIDTH + i]);
+			}
+		}
 #endif
 
 		x = y = 0;

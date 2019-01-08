@@ -3,18 +3,17 @@
 #include "app_config.hpp"
 #include "frame.hpp"
 #include "buffer.hpp"
-
 #define max(a,b) (a > b ? a : b)
 #define min(a,b) (a < b ? a : b)
 
 #define X SMALL_WIDTH
 #define Y SMALL_HEIGHT
-#define i_start_value ((X * 7) / 8)
-#define i_end_value   ((X * 9) / 8)
-#define j_start_value ((Y * 7) / 8)
-#define j_end_value   ((Y * 9) / 8)
-#define s_start_value (max(0,X-i_start_value))
-#define t_start_value (max(0,Y-j_start_value))
+#define I_START_VALUE  ((X * 7) / 8)
+#define I_END_VALUE    ((X * 9) / 8)
+#define J_START_VALUE  ((Y * 7) / 8)
+#define J_END_VALUE    ((Y * 9) / 8)
+#define S_START_VALUE  (max(0, X-I_START_VALUE))
+#define T_START_VALUE  (max(0, Y-J_START_VALUE))
 
 static bool done = false;
 static u64 value;
@@ -26,10 +25,10 @@ void resetCorrelationData() {
 	corrmax.y = 0;
 	corrmax.v = 0;
 	value = 0;
-	i = i_start_value;
-	j = j_start_value;
-	s = s_start_value;
-	t = t_start_value;
+	i = I_START_VALUE;
+	j = J_START_VALUE;
+	s = S_START_VALUE;
+	t = T_START_VALUE;
 	return;
 }
 /**
@@ -44,8 +43,8 @@ void iterativeCorrelation(u16 x, u16 y) {
 		return;
 	}
 
-	const i16 idx_a_x = s - X + i - 1;
-	const i16 idx_a_y = t - Y + j - 1;
+	const i16 idx_a_x = s - X + i;
+	const i16 idx_a_y = t - Y + j;
 	const i16 idx_b_x = s;
 	const i16 idx_b_y = t;
 //	const u16 aa = frame_get(getCurrentFrame(), idx_a_x, idx_a_y);
@@ -56,34 +55,43 @@ void iterativeCorrelation(u16 x, u16 y) {
 	const u16 bb = frame_get(
 			buf_which_minus_one * SMALL_WIDTH * SMALL_HEIGHT + idx_a_x
 					+ idx_a_y * SMALL_WIDTH, 0, false);
-	const u16 added = (aa * bb) >> 16;
+	const u32 added = (aa * bb) >> 16;
 
 //	printf("Trying to perform calculations\n");
-	if (i < i_end_value) { // x
-		if (j < j_end_value) { // y
+	if (i < I_END_VALUE) { // x
+		if (j < J_END_VALUE) { // y
 			if (s < min(X-1, 2 * X - i-1)) {
 				if (t < min(Y-1, 2 * Y - j-1)) {
-//					if (idx_a_x >= 0 && idx_a_x < X && idx_a_y >= 0
-//							&& idx_a_y < Y && idx_b_x >= 0 && idx_b_x < X
-//							&& idx_b_y >= 0 && idx_b_y < Y) {
+#ifndef __SYNTHESIS__
 
-					value += (u64) added;
-
-//					}
+					if (idx_a_x >= 0 && idx_a_x < X && idx_a_y >= 0
+							&& idx_a_y < Y && idx_b_x >= 0 && idx_b_x < X
+							&& idx_b_y >= 0 && idx_b_y < Y) {
+#endif
+						value += (u64) added;
+#ifndef __SYNTHESIS__
+					} else {
+						printf("ILLEGAL memory access at i: %d, j: %d, s: %d, t: %d\n",i,j,s,t);
+						printf("Indices: a {%d,%d} b {%d,%d}\n", idx_a_x,idx_a_y,idx_b_x,idx_b_y);
+					}
+#endif
 					t++;
 					return;
 				}
-				t = t_start_value;
+				t = T_START_VALUE;
 //				printf("t zero\n");
 				s++;
 				return;
 			}
-			s = s_start_value;
+			s = S_START_VALUE;
 			if (value > corrmax.v) {
 				corrmax.v = value;
 				corrmax.x = i;
 				corrmax.y = j;
 			}
+#ifndef __SYNTHESIS__
+			printf("At point {%d, %d} the correlation is %d\n",i,j,value);
+#endif
 			value = 0;
 
 			j++;
@@ -91,12 +99,11 @@ void iterativeCorrelation(u16 x, u16 y) {
 			return;
 		}
 //		printf("j = 0\n");
-		j = j_start_value;
+		j = J_START_VALUE;
 		i++;
 		return;
 	}
 //	printf("i = 0\n");
-	printf("HBAHBHJCBXHCKJXBCJHX\n");
 	done = true;
 }
 	

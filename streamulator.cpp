@@ -24,13 +24,13 @@ int main ()
 
 
     VideoCapture cap(0);
-
     if (!cap.isOpened()){
         return -1;
     }
+	Mat frame;
+
 
 	for (int i = 0; i < 100; i++) {
-        Mat frame;
 		cap >> frame;
 	    // Read input image
 		char buffer[100];
@@ -39,8 +39,8 @@ int main ()
 		Mat sourceImg;
 
 	    // A necessary conversion to obtain the right format...
-	    cv::cvtColor(frame, frame, CV_BGR2BGRA);
-		resize(frame, sourceImg, Size(WIDTH, HEIGHT));
+		cv::cvtColor(frame, sourceImg, CV_BGR2BGRA);
+		resize(sourceImg, sourceImg, Size(WIDTH, HEIGHT));
 
 	    // Write input data
 	    for (int rows=0; rows < HEIGHT; rows++)

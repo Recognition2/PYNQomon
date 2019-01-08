@@ -59,14 +59,13 @@ px_t compressRGB(u32 p) {
 	u8 B = (p & 0xFF0000) >> 16;
 	u8 A = (p & 0xFF000000) >> 24;
 
-	return (px_t) G;
-//	return R >> 2 + R >> 5 	// 1/4 + 1/32
-//	+ G >> 1 + R >> 4		// 1/2 + 1/16
-//	+ B >> 3; // 1/8
+	return (px_t) (R>>2) + (R>>5) 	// 1/4 + 1/32
+				+ (G>>1) + (G>>4)		// 1/2 + 1/16
+				+ (B>>3); // 1/8
 }
 
 px_t frame_get(u16 idx, u16 px, bool doWrite) {
-//#pragma HLS inline off
+//#pragma HLS function_instantiate variable=doWrite
 	if (doWrite) {
 		buf_data[idx] = px;
 		return 0;
