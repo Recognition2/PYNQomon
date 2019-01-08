@@ -2,7 +2,7 @@ clear variables;
 close all;
 
 pokefilename = '/home/gregory/Downloads/pokemon.png';
-poke_c_file = 'pokemon.h';
+poke_c_file = '../pokemon.h';
 pokeID = fopen(poke_c_file, 'w+');
 
 fprintf(pokeID,...

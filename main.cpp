@@ -10,11 +10,12 @@
 
 #include "pokemon.h"
 
-u32 draw_pokemon(p16 *moved, u16 x, u16 y, u32 p) {
-	if ((x >= moved->x && x < moved->x + pokesize.x)
-			&& (y >= moved->y && y < moved->y + pokesize.y)) {
-		return (pokemon[x - moved->x][y - moved->y] != 0xFF000000 ?
-				pokemon[x - moved->x][y - moved->y] : p);
+u32 draw_pokemon(p16 moved, u16 x, u16 y, u32 p) {
+	const u32 magic_number = 0xFF2357cd;
+	if ((x >= moved.x && x < moved.x + pokesize.x)
+			&& (y >= moved.y && y < moved.y + pokesize.y)) {
+		return (pokemon[x - moved.x][y - moved.y] != magic_number ?
+				pokemon[x - moved.x][y - moved.y] : p);
 	} else {
 		return p;
 	}
@@ -45,6 +46,9 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	src >> pIn;
 	static pixel_data pOut = pIn;
 
+	const u32 pokedata = draw_pokemon(moved, x, y, pIn.data);
+
+
 	// Draw block
 #pragma HLS dependence variable=corrmax intra false
 #pragma HLS dependence variable=corrmax inter false
@@ -53,12 +57,14 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 #pragma HLS dependence variable=buf_data intra false
 #pragma HLS dependence variable=buf_which intra false
 #pragma HLS dependence variable=buf_which inter false
+#pragma HLS dependence variable=moved inter false
+#pragma HLS dependence variable=moved intra false
 	if (pIn.user) {
 		// The only time that `corr` is actually valid
 		// Translate movement in small frame to movement in real frame
 		if (corrmax.v != 0) {
-			const i16 xdiff = ((corrmax.x - SMALL_WIDTH)); //* WIDTH) / SMALL_WIDTH;
-			const i16 ydiff = ((corrmax.y - SMALL_HEIGHT));// * HEIGHT)	/ SMALL_HEIGHT;
+			const i16 xdiff = ((corrmax.x - SMALL_WIDTH + 1)); //* WIDTH) / SMALL_WIDTH;
+			const i16 ydiff = ((corrmax.y - SMALL_HEIGHT + 1));// * HEIGHT)	/ SMALL_HEIGHT;
 
 			if (moved.x + xdiff + pokesize.x > WIDTH || moved.x + xdiff < 0) {
 				moved.x = WIDTH / 2;
@@ -71,28 +77,28 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 				moved.y = ydiff + moved.y;
 			}
 
-		}
 
 		//moved.x += 1;
 		//moved.y += 0;
 #ifndef __SYNTHESIS__
-		{
-			cv::Mat intermediate;
-			static int COUNTER = 0;
-			printf("moved is now {x: %d, y: %d}; corr is {%d %d, v: %llu}\n",
-					moved.x,
-					moved.y, corrmax.x, corrmax.y, corrmax.v);
-			char buffer[100];
-			sprintf(buffer, "/tmp/resultaten/intermediate_afbeelding_hist_%d.jpg\0",COUNTER);
-//			cv::resize(buf_data[buf_which * SMALL_WIDTH * SMALL_HEIGHT], intermediate, cv::Size(0,0), 16, 16, cv::INTER_NEAREST);
-//			cv::cvtColor(intermediate, intermediate, CV_GRAY2RGBA);
-//		    cv::Mat imgCvOut(cv::Size(WIDTH, HEIGHT), CV_8UC4, buf_data[buf_which * SMALL_WIDTH * SMALL_HEIGHT]);
-//			cv::imwrite(buffer, intermediate);
-			for (int i = 0; i < SMALL_HEIGHT * SMALL_WIDTH; i++) {
-				sprintf(buffer, "%d ", buf_data[buf_which * SMALL_HEIGHT * SMALL_WIDTH + i]);
+			{
+				cv::Mat intermediate;
+				static int COUNTER = 0;
+				printf("moved is now {x: %d, y: %d}; diff is {%d %d, v: %llu}\n",
+						moved.x,
+						moved.y, xdiff, ydiff, corrmax.v);
+				char buffer[100];
+				sprintf(buffer, "/tmp/resultaten/intermediate_afbeelding_hist_%d.jpg\0",COUNTER);
+	//			cv::resize(buf_data[buf_which * SMALL_WIDTH * SMALL_HEIGHT], intermediate, cv::Size(0,0), 16, 16, cv::INTER_NEAREST);
+	//			cv::cvtColor(intermediate, intermediate, CV_GRAY2RGBA);
+	//		    cv::Mat imgCvOut(cv::Size(WIDTH, HEIGHT), CV_8UC4, buf_data[buf_which * SMALL_WIDTH * SMALL_HEIGHT]);
+	//			cv::imwrite(buffer, intermediate);
+	//			for (int i = 0; i < SMALL_HEIGHT * SMALL_WIDTH; i++) {
+	//				sprintf(buffer, "%d ", buf_data[buf_which * SMALL_HEIGHT * SMALL_WIDTH + i]);
+	//			}
 			}
-		}
 #endif
+		}
 
 		x = y = 0;
 
@@ -113,18 +119,18 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 
 	// Perform one part of the correlation
 	// Potentially draw figure at location `moved`
-	pIn.data = draw_pokemon(&moved, x, y, pIn.data);
 //	printf("hoi x %d y %d\n", x, y);
 
 //	//pIn.data = draw_pokemon(&moved, x, y, pIn.data);
-//	u32 durr = (shitpixel(&buf , x, y))|0xFF000000;
-//	//printf("%03d ", durr);
+	u32 durr = (shitpixel(x, y))|0xFF000000;
+	//printf("%03d ", durr);
 //
-//	pIn.data = durr;
+	pIn.data = durr;
 	//printf("%u %u %lu\n", corr.x, corr.y, corr.v);
 	////////////////////////////////
 	///// END LOGIC
 
+//	pIn.data = pokedata;
 
 	// Write pixel to destination
 	dst << pOut;

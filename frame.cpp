@@ -1,5 +1,5 @@
 #include "frame.hpp"
-
+#include "app_config.hpp"
 #include "hammingcoefficients.h"
 px_t applyHamming(u16 newx, u16 newy, px_t px) {
 	u32 res = hamming[newx][newy] * px;
@@ -7,7 +7,7 @@ px_t applyHamming(u16 newx, u16 newy, px_t px) {
 }
 
 
-void frame_fill(u16 x, u16 y, px_t px) {
+void frame_fill(u16 x, u16 y, u32 px) {
 #pragma HLS inline
 	static px_t buffertje[SMALL_WIDTH];
 #pragma HLS dependence variable=buffertje intra false
@@ -16,19 +16,30 @@ void frame_fill(u16 x, u16 y, px_t px) {
 	const u16 newx = (x * SMALL_WIDTH) / WIDTH;
 	const u16 newy = (y * SMALL_HEIGHT) / HEIGHT;
 
-	px_t newpx = applyHamming(newx, newy, px);
+//	px_t newpx = applyHamming(newx, newy, px);
+	const px_t newpx = compressRGB(px);
+//	const px_t newpx = applyHamming(newx,newy,compressRGB(px));
 	const u16 buf_which_new = (buf_which + 1) == 3 ? 0 : buf_which + 1;
 	const u16 idx = buf_which_new * SMALL_WIDTH * SMALL_HEIGHT + newx
 			+ newy * SMALL_WIDTH;
-	const u16 beest = buffertje[newx] + px;
+	const u32 beest = buffertje[newx] + newpx;
 
 	if( x % (WIDTH / SMALL_WIDTH) == 0 && y % (HEIGHT / SMALL_HEIGHT) == 0){
-		buffertje[newx] = px;
+		buffertje[newx] = newpx;
+//#ifndef __SYNTHESIS__
+//		printf("Reset buffertjes\n");
+//#endif
 	} else if ((x + 1) % (WIDTH / SMALL_WIDTH) == 0
 			&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0) {
 		frame_get(idx, beest, true);
+//#ifndef __SYNTHESIS__
+//		printf("Assign buffertjes\n");
+//#endif
 	} else {
 		buffertje[newx] = beest;
+//#ifndef __SYNTHESIS__
+//		printf("Iter\n");
+//#endif
 	}
 
 //	if( x % (WIDTH / SMALL_WIDTH) == 0 && y % (HEIGHT / SMALL_HEIGHT) == 0){
@@ -73,4 +84,9 @@ px_t frame_get(u16 idx, u16 px, bool doWrite) {
 		return buf_data[idx];
 	}
 }
-
+u32 shitpixel(u16 x, u16 y){
+  const u32 newx = (x * SMALL_WIDTH) / WIDTH;
+  const u32 newy = (y * SMALL_HEIGHT) / HEIGHT;
+  px_t out = frame_get(buf_which * SMALL_WIDTH * SMALL_HEIGHT + newx + newy * SMALL_WIDTH, 0, false);
+  return (u32) (out >> 8) * 0x010101;
+}

@@ -90,7 +90,7 @@ void iterativeCorrelation(u16 x, u16 y) {
 				corrmax.y = j;
 			}
 #ifndef __SYNTHESIS__
-			printf("At point {%d, %d} the correlation is %d\n",i,j,value);
+//			printf("At point {%d, %d} the correlation is %d\n",i,j,value);
 #endif
 			value = 0;
 
