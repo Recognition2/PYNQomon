@@ -1,28 +1,37 @@
 #include "frame.hpp"
 #include "app_config.hpp"
 #include "hammingcoefficients.h"
-px_t applyHamming(u16 newx, u16 newy, px_t px) {
-	u32 res = hamming[newx][newy] * px;
-	return res >> 16;
+
+
+u16 applyHamming(u16 newx, u16 newy, u8 px) {
+	// 24 bits result, only allowed to return the last byte
+	u32 res = (u32) (hamming[newx][newy]) * (u32) (px);
+	if (res > (0xFF0000)) {
+		printf("Number returned by `applyHamming` is too large to fit in the allocated space (0xFF0000) \n");
+	}
+	return (res >>16) & 0xFFFF;
 }
 
-
 void frame_fill(u16 x, u16 y, u32 px) {
-#pragma HLS inline
-	static px_t buffertje[SMALL_WIDTH];
+#pragma HLS inline off
+	static u32 buffertje[SMALL_WIDTH];
 #pragma HLS dependence variable=buffertje intra false
 //#pragma HLS array_partition variable=buffertje complete
 
 	const u16 newx = (x * SMALL_WIDTH) / WIDTH;
 	const u16 newy = (y * SMALL_HEIGHT) / HEIGHT;
 
-//	px_t newpx = applyHamming(newx, newy, px);
-	const px_t newpx = compressRGB(px);
-//	const px_t newpx = applyHamming(newx,newy,compressRGB(px));
+//	const px_t newpx = compressRGB(px);
+	const px_t newpx = (px_t) applyHamming(newx,newy,compressRGB(px));
 	const u16 buf_which_new = (buf_which + 1) == 3 ? 0 : buf_which + 1;
 	const u16 idx = buf_which_new * SMALL_WIDTH * SMALL_HEIGHT + newx
 			+ newy * SMALL_WIDTH;
-	const u32 beest = buffertje[newx] + newpx;
+	const px_t beest = buffertje[newx] + newpx;
+#ifndef __SYNTHESIS__
+	if (beest < buffertje[newx]) {
+		printf("number added by `frame_fill` is overflowing!\n");
+	}
+#endif
 
 	if( x % (WIDTH / SMALL_WIDTH) == 0 && y % (HEIGHT / SMALL_HEIGHT) == 0){
 		buffertje[newx] = newpx;
@@ -64,15 +73,22 @@ void newFrame() {
 	}
 	buf_which = a;
 }
-px_t compressRGB(u32 p) {
-	u8 R = (p & 0xFF);
+u8 compressRGB(u32 p) {
+	u8 B = (p & 0xFF);
 	u8 G = (p & 0xFF00) >> 8;
-	u8 B = (p & 0xFF0000) >> 16;
-	u8 A = (p & 0xFF000000) >> 24;
+	u8 R = (p & 0xFF0000) >> 16;// Red, certain
+	u8 A = (p & 0xFF000000) >> 24; // ALpha channel, certain
+	u32 res = (R>>2) + (R>>5) 	// 1/4 + 1/32
+			+ (G>>1) + (G>>4)		// 1/2 + 1/16
+			+ (B>>3); // 1/8
 
-	return (px_t) (R>>2) + (R>>5) 	// 1/4 + 1/32
-				+ (G>>1) + (G>>4)		// 1/2 + 1/16
-				+ (B>>3); // 1/8
+#ifndef __SYNTHESIS__
+	if (res > 0xFF) {
+		printf("Number returned by `compressRGB` is too large to fit\n");
+	}
+
+#endif
+	return (u8) (res & 0xFF);
 }
 
 px_t frame_get(u16 idx, u16 px, bool doWrite) {

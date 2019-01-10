@@ -1,6 +1,9 @@
 blah = [80 45];
-A = uint32(100*rand(blah));
-B = uint32(100*rand(blah));
+ham = uint64(pow2(16)*hamming(108/2) * hamming(192/2)');
+A = ham .* uint64(rgb2gray(imresize(imread('/home/gregory/src/afbeelding0.jpg'),0.05)));
+B = ham .* uint64(rgb2gray(imresize(imread('/home/gregory/src/afbeelding1.jpg'),0.05)));
+
+
 
 [M,N] = size(A);
 %m = 1:M;
@@ -17,9 +20,10 @@ C = zeros([2*M-1 2*N-1]);
 itcnt = 0;
 usefulcnt = 0;
 maxdlt = 0;
-bounds = [7/8 9/8];
-i = 1;
-j = 1;
+%bounds = [7/8 9/8];
+bounds = [1/X 2-1/X];
+i = floor(X*bounds(1));
+j = floor(Y*bounds(1));
 s = max(1,X-i+1);
 t = max(1,Y-j+1);
 value = 0;
@@ -27,10 +31,12 @@ value = 0;
 %    itcnt = itcnt + 1;
 %    for j = round(Y*bounds(1)) : round(Y*bounds(2))
  %for i = 1:X+X-1
+ tic
+ 
  for aardbei______a = 1:1000*1000*1000*1000*1000
-     if i <= X+X-1
+     if i <= floor(X*bounds(2))
          %for j = 1:Y+Y-1
-         if j <= Y+Y-1
+         if j <= floor(Y*bounds(2))
             dlt = 0;
             %value = 0;
             itcnt = itcnt + 1;
@@ -70,7 +76,7 @@ value = 0;
             t = max(1,Y-j+1);
             continue;
          end
-         j = 1;
+         j = floor(Y*bounds(1));
          i=i+1;
          t = max(1,Y-j+1);
          s = max(1,X-i+1);
@@ -78,10 +84,14 @@ value = 0;
      end
      break;
  end
+toc
 H = xcorr2(A,B);
-disp('Functioneel correct: ' + upper(string(all(all(C == H)))))
+disp('Functioneel correct: ' + upper(string(all(all(C(find(C~=0))== H(find(C~=0)))))))
 disp('Aantal verkrachtte iteraties: ' + string(itcnt - usefulcnt))
 disp('Percentage nuttigheid: ' + string(100 * usefulcnt / itcnt) + '%')
 disp('Hoeveelheid iteraties per invocation gegeven 1280x720: ' + string(itcnt / 1280 / 720));
 %disp('C = ');
 %disp(C)
+
+imagesc(C)
+colorbar;

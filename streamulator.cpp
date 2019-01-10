@@ -4,10 +4,8 @@
 
 #include "app_config.hpp"
 #include <hls_stream.h>
-#include <hls_opencv.h>
 #include <stdio.h>
-#include "opencv2/opencv.hpp"
-
+#include <hls_opencv.h>
 
 using namespace cv;
 
@@ -27,14 +25,13 @@ int main ()
     if (!cap.isOpened()){
         return -1;
     }
-	Mat frame;
 
-
+    Mat frame;
 	for (int i = 0; i < 100; i++) {
-		cap >> frame;
 	    // Read input image
+		cap >> frame;
 		char buffer[100];
-		sprintf(buffer, "/home/admin/temp/src/afbeelding%d.jpg\0", i);
+		sprintf(buffer, "/home/gregory/src/afbeelding%d.jpg\0", i);
 //		cv::Mat frame = cv::imread(buffer);
 		Mat sourceImg;
 

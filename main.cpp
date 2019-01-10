@@ -1,11 +1,11 @@
-#include "app_config.hpp"
+	#include "app_config.hpp"
 #include "buffer.hpp"
 #include "phase_correlation.hpp"
 #ifndef __SYNTHESIS__
 #include <hls_stream.h>
 #include <hls_opencv.h>
 #include <stdio.h>
-#include "opencv2/opencv.hpp"
+//#include "opencv2/opencv.hpp"
 #endif
 
 #include "pokemon.h"
@@ -50,21 +50,21 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 
 
 	// Draw block
-#pragma HLS dependence variable=corrmax intra false
-#pragma HLS dependence variable=corrmax inter false
+//#pragma HLS dependence variable=corrmax intra false
+//#pragma HLS dependence variable=corrmax inter false
 	// Reset X and Y counters on user signal
-#pragma HLS dependence variable=buf_data inter false
-#pragma HLS dependence variable=buf_data intra false
-#pragma HLS dependence variable=buf_which intra false
-#pragma HLS dependence variable=buf_which inter false
-#pragma HLS dependence variable=moved inter false
-#pragma HLS dependence variable=moved intra false
+//#pragma HLS dependence variable=buf_data inter false
+//#pragma HLS dependence variable=buf_data intra false
+//#pragma HLS dependence variable=buf_which intra false
+//#pragma HLS dependence variable=buf_which inter false
+//#pragma HLS dependence variable=moved inter false
+//#pragma HLS dependence variable=moved intra false
 	if (pIn.user) {
 		// The only time that `corr` is actually valid
 		// Translate movement in small frame to movement in real frame
 		if (corrmax.v != 0) {
-			const i16 xdiff = ((corrmax.x - SMALL_WIDTH + 1)); //* WIDTH) / SMALL_WIDTH;
-			const i16 ydiff = ((corrmax.y - SMALL_HEIGHT + 1));// * HEIGHT)	/ SMALL_HEIGHT;
+			const i16 xdiff = ((corrmax.x - SMALL_WIDTH )); //* WIDTH) / SMALL_WIDTH;
+			const i16 ydiff = ((corrmax.y - SMALL_HEIGHT));// * HEIGHT)	/ SMALL_HEIGHT;
 
 			if (moved.x + xdiff + pokesize.x > WIDTH || moved.x + xdiff < 0) {
 				moved.x = WIDTH / 2;
@@ -111,7 +111,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 			&& !((x + 1) % (WIDTH / SMALL_WIDTH) == 0
 					&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0))
 	{
-		iterativeCorrelation(x, y);
+		correlationStep(x, y);
 	}
 
 	// add current pixel to the buffer
@@ -121,16 +121,13 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	// Potentially draw figure at location `moved`
 //	printf("hoi x %d y %d\n", x, y);
 
-//	//pIn.data = draw_pokemon(&moved, x, y, pIn.data);
-	u32 durr = (shitpixel(x, y))|0xFF000000;
-	//printf("%03d ", durr);
-//
-	pIn.data = durr;
-	//printf("%u %u %lu\n", corr.x, corr.y, corr.v);
+//	u32 durr = (shitpixel(x, y))|0xFF000000;
+//	pIn.data = durr;
+
 	////////////////////////////////
 	///// END LOGIC
 
-//	pIn.data = pokedata;
+	pIn.data = pokedata;
 
 	// Write pixel to destination
 	dst << pOut;

@@ -1,9 +1,12 @@
 #ifndef APP_CONFIG_H
 #define APP_CONFIG_H
-#ifndef __SYNTHESIS
+#ifndef __SYNTHESIS__
 #include <stdio.h>
+#include <hls_opencv.h>
+//#include "opencv2/opencv.hpp"
 #endif
 #include <stdint.h>
+
 #include <hls_video.h>
 #include <hls_stream.h>
 //#include <hls_opencv.h>

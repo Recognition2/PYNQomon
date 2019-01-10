@@ -1,17 +1,16 @@
 blah = [80 45];
-A = uint32(100*rand(blah));
-%B = uint32(100*rand(blah));
+ham = hamming(80) * hamming(45)';
+A = uint32(pow2(8)*rand(blah) .* ham);
+B = uint32(pow2(8)*rand(blah) .* ham);
 B = A;
 [X,Y] = size(A);
-%B = A(:,2:end);
-%B = [B, A(:,1)];
 
 
 
 x_start_value = floor((X * 7) / 8);
-x_end_value = floor((X * 9) / 8);
+x_end_value =   floor ((X * 9) / 8);
 y_start_value = floor((Y * 7) / 8);
-y_end_value = floor((Y * 9) / 8);
+y_end_value =   floor((Y * 9) / 8);
 a_start_value = (max(0,X-x_start_value));
 b_start_value = (max(0,Y-y_start_value));
 
@@ -21,11 +20,11 @@ a = a_start_value;
 b = b_start_value;
 add=0;
 value=0;
-valuemax=0;
+valuemax=double(0);
 xmax=0;
 ymax=0;
-C = zeros(1,1);
 
+C = zeros(1,1);
 for i=1:9999999
     ida_x = floor(a-X+x+1);
     ida_y = floor(b-Y+y+1);
@@ -51,7 +50,7 @@ for i=1:9999999
                 xmax=x;
                 ymax=y;
             end
-            C(x,y) = value;
+            C(x-x_start_value+1,y-y_start_value+1) = value;
             value=0;
             y=y+1;
             continue
@@ -60,10 +59,11 @@ for i=1:9999999
         x=x+1;
         continue  
     end
+    
 end
 
 disp('max val: ' + string(valuemax))
 disp('x: ' + string(xmax))
 disp('y: ' + string(ymax))
-imagesc(C(70:end,39:end))
+imagesc(C)
 colorbar
