@@ -23,7 +23,7 @@ u32 draw_pokemon(p16 moved, u16 x, u16 y, u32 p) {
 
 argmax corrmax;
 
-u16 buf_which;
+u16 buf_which, buf_which_plus_one, buf_which_minus_one;
 px_t buf_data[FRAME_COUNT * SMALL_HEIGHT * SMALL_WIDTH];
 
 
@@ -34,7 +34,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 #pragma HLS INTERFACE s_axilite port=mask
 #pragma HLS PIPELINE II=1
 
-//#pragma HLS array_partition variable=buf_data block factor=300
+#pragma HLS array_partition variable=buf_data block factor=3
 	// Data to be stored across 'function calls'
 	static u16 x = 0;
 	static u16 y = 0;
@@ -47,22 +47,24 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	static pixel_data pOut = pIn;
 
 	const u32 pokedata = draw_pokemon(moved, x, y, pIn.data);
-
+	const u16 buf_which_old = buf_which;
 
 	// Draw block
-//#pragma HLS dependence variable=corrmax intra false
-//#pragma HLS dependence variable=corrmax inter false
+#pragma HLS dependence variable=corrmax intra false
+#pragma HLS dependence variable=corrmax inter false
 	// Reset X and Y counters on user signal
-//#pragma HLS dependence variable=buf_data inter false
-//#pragma HLS dependence variable=buf_data intra false
-//#pragma HLS dependence variable=buf_which intra false
-//#pragma HLS dependence variable=buf_which inter false
-//#pragma HLS dependence variable=moved inter false
-//#pragma HLS dependence variable=moved intra false
+#pragma HLS dependence variable=buf_data inter false
+#pragma HLS dependence variable=buf_data intra false
+#pragma HLS dependence variable=moved inter false
+#pragma HLS dependence variable=moved intra false
+#pragma HLS dependence variable=buf_which intra false
+#pragma HLS dependence variable=buf_which inter false
+#pragma HLS dependence variable=buf_which_minus_one intra false
+#pragma HLS dependence variable=buf_which_minus_one inter false
 	if (pIn.user) {
 		// The only time that `corr` is actually valid
 		// Translate movement in small frame to movement in real frame
-		if (corrmax.v != 0) {
+//		if (corrmax.v != 0) {
 			const i16 xdiff = ((corrmax.x - SMALL_WIDTH )* WIDTH) / SMALL_WIDTH;
 			const i16 ydiff = ((corrmax.y - SMALL_HEIGHT) * HEIGHT)	/ SMALL_HEIGHT;
 
@@ -77,9 +79,6 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 				moved.y = ydiff + moved.y;
 			}
 
-
-		//moved.x += 1;
-		//moved.y += 0;
 #ifndef __SYNTHESIS__
 			{
 				cv::Mat intermediate;
@@ -98,24 +97,27 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	//			}
 			}
 #endif
-		}
+//		}
 
 		x = y = 0;
 
 		newFrame();
 		resetCorrelationData();
 
+	} else if ((x + 1) % (WIDTH / SMALL_WIDTH) == 0
+			&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0) {
+		correlationStep(buf_which_old);
+
 	}
 
-	if (!pIn.user
-			&& !((x + 1) % (WIDTH / SMALL_WIDTH) == 0
-					&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0))
-	{
-		correlationStep(x, y);
-	}
+	frame_fill(x, y, pIn.data);
+//
+//	if (!(pIn.user || ((x + 1) % (WIDTH / SMALL_WIDTH) == 0
+//					&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0)))
+//	{
+//	}
 
 	// add current pixel to the buffer
-	frame_fill(x, y, pIn.data);
 
 	// Perform one part of the correlation
 	// Potentially draw figure at location `moved`

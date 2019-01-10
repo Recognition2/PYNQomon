@@ -51,17 +51,25 @@ void resetCorrelationData() {
 	s = get_s_start_value();
 	t = get_t_start_value();
 	return;
-}
 
+}
 /**
  * @param a the first frame to use in the correlation
  * @param b the second frame to use in the correlation
  * @param start whether this is the start of a new frame = new correlation calculation
  * @param corrmax is used for calculating the max of the correlation.
  */
-void correlationStep(u16 /*unused*/, u16 /*unused*/) {
+void correlationStep(u16 buf_which) {
 //#pragma HLS inline
-#pragma HLS inline off
+#pragma HLS inline
+#pragma HLS dependence variable=corrmax intra false
+#pragma HLS dependence variable=corrmax inter false
+#pragma HLS dependence variable=buf_data inter false
+#pragma HLS dependence variable=buf_data intra false
+#pragma HLS dependence variable=buf_which intra false
+#pragma HLS dependence variable=buf_which inter false
+#pragma HLS dependence variable=buf_which_minus_one intra false
+#pragma HLS dependence variable=buf_which_minus_one inter false
 	if (done) {
 		return;
 	}
@@ -71,7 +79,6 @@ void correlationStep(u16 /*unused*/, u16 /*unused*/) {
 	const i16 idx_a_x = s - X + i;
 	const i16 idx_a_y = t - Y + j;
 	const i32 frame_idx_a = (buf_which * SMALL_WIDTH * SMALL_HEIGHT) + idx_a_x + (idx_a_y * SMALL_WIDTH);
-	const i16 buf_which_minus_one = (buf_which == 0 ? 2 : buf_which - 1);
 
 	const i32 frame_idx_b = (buf_which_minus_one * SMALL_WIDTH * SMALL_HEIGHT) + idx_b_x + (idx_b_y * SMALL_WIDTH);
 //	const u32 aa = frame_get(frame_idx_a, 0, false);

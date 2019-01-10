@@ -3,5 +3,5 @@
 
 #include "frame.hpp"
 void resetCorrelationData();
-void correlationStep(u16 x, u16 y);
+void correlationStep(u16 buf_which);
 #endif
