@@ -26,6 +26,12 @@ void frame_fill(u16 x, u16 y, u32 px) {
 	const u16 buf_which_new = (buf_which + 1) == 3 ? 0 : buf_which + 1;
 	const u16 idx = buf_which_new * SMALL_WIDTH * SMALL_HEIGHT + newx
 			+ newy * SMALL_WIDTH;
+#ifndef __SYNTHESIS__
+	if (idx > ((buf_which_new+1) * SMALL_WIDTH * SMALL_HEIGHT)) {
+		printf("De index van het getal wat we gaan fillen is onmogelijk groot\n");
+	}
+
+#endif
 	const px_t beest = buffertje[newx] + newpx;
 #ifndef __SYNTHESIS__
 	if (beest < buffertje[newx]) {

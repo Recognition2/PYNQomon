@@ -66,14 +66,14 @@ void correlationStep(u16 /*unused*/, u16 /*unused*/) {
 		return;
 	}
 
-	const i16 idx_a_x = s;
-	const i16 idx_a_y = t;
-	const i16 idx_b_x = s - X + i;
-	const i16 idx_b_y = t - Y + j;
-	const i32 frame_idx_a = buf_which * SMALL_WIDTH * SMALL_HEIGHT + idx_a_x + idx_a_y * SMALL_WIDTH;
+	const i16 idx_b_x = s;
+	const i16 idx_b_y = t;
+	const i16 idx_a_x = s - X + i;
+	const i16 idx_a_y = t - Y + j;
+	const i32 frame_idx_a = (buf_which * SMALL_WIDTH * SMALL_HEIGHT) + idx_a_x + (idx_a_y * SMALL_WIDTH);
 	const i16 buf_which_minus_one = (buf_which == 0 ? 2 : buf_which - 1);
 
-	const i32 frame_idx_b = buf_which_minus_one * SMALL_WIDTH * SMALL_HEIGHT + idx_b_x + idx_b_y * SMALL_WIDTH;
+	const i32 frame_idx_b = (buf_which_minus_one * SMALL_WIDTH * SMALL_HEIGHT) + idx_b_x + (idx_b_y * SMALL_WIDTH);
 //	const u32 aa = frame_get(frame_idx_a, 0, false);
 //	const u32 bb = frame_get(frame_idx_b, 0, false);
 	const u32 aa = buf_data[frame_idx_a];
@@ -124,7 +124,7 @@ void correlationStep(u16 /*unused*/, u16 /*unused*/) {
 				corrmax.y = j;
 			}
 #ifndef __SYNTHESIS__
-			const int shft_amt = 34;
+			const int shft_amt = 32;
 			if ((value>>shft_amt) > 0xFF) {
 				printf("De correlatie is wel heel erg groot, wel groter dan FF\n");
 			}
@@ -158,6 +158,16 @@ void correlationStep(u16 /*unused*/, u16 /*unused*/) {
 	cv::resize(m, m, cv::Size(480,640));
 	sprintf(buf,"/tmp/resultaten/correlatiefoto_%d.jpg",counter);
 	cv::imwrite(buf, m);
+
+	u8 buff[SMALL_WIDTH * SMALL_HEIGHT];
+	for (int i = 0; i < SMALL_WIDTH * SMALL_HEIGHT; i++) {
+		buff[i] = buf_data[i + SMALL_WIDTH * SMALL_HEIGHT * buf_which]>>8;
+	}
+
+	m = cv::Mat(cv::Size(SMALL_WIDTH,SMALL_HEIGHT),CV_8UC1, buff);
+	cv::resize(m,m,cv::Size(480,640));
+	sprintf(buf,"/tmp/resultaten/downscaledfoto_%d.jpg",counter);
+	cv::imwrite(buf,m);
 
 #endif
 	done = true;
