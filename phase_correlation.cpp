@@ -63,7 +63,7 @@ void resetCorrelationData(argmax *corrmax) {
  * @param corrmax is used for calculating the max of the correlation.
  */
 argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
-//#pragma HLS inline off
+#pragma HLS inline
 //#pragma HLS dependence variable=corrmax intra false
 //#pragma HLS dependence variable=corrmax inter false
 //#pragma HLS dependence variable=buf_data inter false
@@ -92,12 +92,17 @@ argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
 	static u32 bb = 0;
 //	static u32 aa = buf_data[frame_idx_a] & 0xFFFF;
 //	static u32 bb = buf_data[frame_idx_b] & 0xFFFF;4482300247842
-	const u64 added = (aa * bb);
+	static u64 added = 0;
 #ifndef __SYNTHESIS__
 	static u8 correlatieVisualisatie[I_END_VALUE - I_START_VALUE + 1][J_END_VALUE - J_START_VALUE +1] {};
 #endif
 //	printf("Trying to perform calculations\n");
-
+	if (value > corrmax.v) {
+//				printf("i is %d, j is %d\n",i,j);
+		corrmax.v = value;
+		corrmax.x = i;
+		corrmax.y = j;
+	}
 #ifndef __SYNTHESIS__
 	if (value + added < value) {
 		printf("Value plus the new sum gives a smaller result than expected., went wrong in the correlation\n");
@@ -106,7 +111,11 @@ argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
 			&& idx_a_y < Y && idx_b_x >= 0 && idx_b_x < X
 			&& idx_b_y >= 0 && idx_b_y < Y) {
 #endif
-		value += (u64) added;
+		if (s == get_s_start_value()) {
+			value = (u64) added;
+		} else {
+			value += (u64) added;
+		}
 #ifndef __SYNTHESIS__
 	} else {
 		printf("ILLEGAL memory access at i: %d, j: %d, s: %d, t: %d\n",i,j,s,t);
@@ -115,12 +124,6 @@ argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
 #endif
 	if (t >= custom_min(Y-1, 2 * Y - j-1)) {
 		if (s >= custom_min(X-1, 2 * X - i-1)) {
-			if (value > corrmax.v) {
-//				printf("i is %d, j is %d\n",i,j);
-				corrmax.v = value;
-				corrmax.x = i;
-				corrmax.y = j;
-			}
 #ifndef __SYNTHESIS__
 			const int shft_amt = 35;
 			if ((value>>shft_amt) > 0xFF) {
@@ -147,7 +150,7 @@ argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
 				j++;
 			}
 			s = get_s_start_value();
-			value = 0;
+//			value = 0;
 		} else {
 			s++;
 		}
@@ -173,6 +176,7 @@ argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
 #pragma HLS dependence variable=bb inter RAW false
 	aa = buf_data[frame_idx_a] & 0xFFFF;
 	bb = buf_data[frame_idx_b] & 0xFFFF;
+	added = aa*bb;
 #ifndef __SYNTHESIS__
 	} else {
 		printf("ILLEGAL memory access at i: %d, j: %d, s: %d, t: %d\n",i,j,s,t);

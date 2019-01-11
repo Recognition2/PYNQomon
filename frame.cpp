@@ -11,38 +11,38 @@ u16 applyHamming(u16 newx, u16 newy, u8 px) {
 	}
 	return (res >>16) & 0xFFFF;
 }
-void setBuffer(px_t *buffer, u16 idx, px_t px) {
-#pragma HLS inline off
-	buffer[idx] = px;
-}
 
 void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which) {
-//#pragma HLS inline
+#pragma HLS inline
 	static px_t px_store_buf[SMALL_WIDTH];
-//#pragma HLS dependence variable=px_store_buf WAR true
+#pragma HLS array_partition variable=px_store_buf complete
 
 	static u16 newx = 0;
 	static u16 newy = 0;
 
 //	const px_t newpx = compressRGB(px);
 	const px_t newpx = (px_t) applyHamming(newx,newy,compressRGB(px));
-
-	const px_t apparaat = px_store_buf[newx] + newpx;
+	const u16 bufRead = px_store_buf[newx];
+	const px_t apparaat = bufRead + newpx;
 #ifndef __SYNTHESIS__
-	if (apparaat < px_store_buf[newx]) {
+	if (apparaat < bufRead) {
 		printf("number added by `frame_fill` is overflowing!\n");
 	}
 #endif
+	static u16 idx = 0;
+	const bool is_start_frame = x % (WIDTH / SMALL_WIDTH) == 0 && y % (HEIGHT / SMALL_HEIGHT) == 0;
+	const bool is_end_frame = (x + 1) % (WIDTH / SMALL_WIDTH) == 0
+			&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0;
 
-	if( x % (WIDTH / SMALL_WIDTH) == 0 && y % (HEIGHT / SMALL_HEIGHT) == 0){
+	px_store_buf[newx] = (is_end_frame) ? 0 : apparaat;
+	if( is_start_frame){
 //		buffertje[newx] = newpx;
-		setBuffer(px_store_buf, newx, newpx);
+//		px_store_buf[newx] = newpx;
 //#ifndef __SYNTHESIS__
 //		printf("Reset buffertjes\n");
 //#endif
 	} else if ((x + 1) % (WIDTH / SMALL_WIDTH) == 0
 			&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0) {
-		const u16 idx = *buf_which_plus_one * SMALL_WIDTH * SMALL_HEIGHT + newx	+ newy * SMALL_WIDTH;
 #ifndef __SYNTHESIS__
 		if (idx > ((*buf_which_plus_one+1) * SMALL_WIDTH * SMALL_HEIGHT)) {
 			printf("De index van het getal wat we gaan fillen is onmogelijk groot\n");
@@ -50,12 +50,12 @@ void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which) {
 		}
 #endif
 		frame_get(idx, apparaat, true);
+//		px_store_buf[newx] = 0;
 //#ifndef __SYNTHESIS__
 //		printf("Assign buffertjes\n");
 //#endif
 	} else {
-//		buffertje[newx] = beest;
-		setBuffer(px_store_buf, newx, apparaat);
+//		px_store_buf[newx] = apparaat;
 //#ifndef __SYNTHESIS__
 //		printf("Iter\n");
 //#endif
@@ -67,6 +67,7 @@ void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which) {
 //	} else {
 //		buf_data[idx] += px;
 //	}
+	idx = *buf_which_plus_one * SMALL_WIDTH * SMALL_HEIGHT + newx	+ newy * SMALL_WIDTH;
 
 	newx = (((x == WIDTH-1) ? 0 : x+1)* SMALL_WIDTH) / WIDTH;
 	if (x == WIDTH-1) {
