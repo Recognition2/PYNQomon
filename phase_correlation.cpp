@@ -76,7 +76,7 @@ argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
 	if (done) {
 		return corrmax;
 	}
-
+	static i16 i_copy,j_copy,s_copy,t_copy;
 	static i16 idx_b_x = s;
 	static i16 idx_b_y = t;
 	static i16 idx_a_x = s - X + i;
@@ -113,7 +113,7 @@ argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
 			&& idx_a_y < Y && idx_b_x >= 0 && idx_b_x < X
 			&& idx_b_y >= 0 && idx_b_y < Y) {
 #endif
-		if (s == get_s_start_value()) {
+		if (s== get_s_start_value()) {
 			value = (u64) added;
 		} else {
 			value += (u64) added;
@@ -124,41 +124,41 @@ argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
 		printf("Indices: a {%d,%d} b {%d,%d}\n", idx_a_x,idx_a_y,idx_b_x,idx_b_y);
 	}
 #endif
-	if (t == custom_min(Y-1, 2 * Y - j-1)) {
-		if (s == custom_min(X-1, 2 * X - i-1)) {
+	if (t_copy == custom_min(Y-1, 2 * Y - j-1)) {
+		if (s_copy == custom_min(X-1, 2 * X - i-1)) {
 #ifndef __SYNTHESIS__
 			const int shft_amt = 35;
 			if ((value>>shft_amt) > 0xFF) {
 				printf("De correlatie is wel heel erg groot, wel groter dan FF: %llu\n", (value>>shft_amt));
 			}
 			correlatieVisualisatie[i - I_START_VALUE][j-J_START_VALUE] = (value>>shft_amt) & 0xFF;
-			if (i == SMALL_WIDTH - 1 && j == SMALL_HEIGHT - 1) {
+			if (i_copy == SMALL_WIDTH - 1 && j_copy == SMALL_HEIGHT - 1) {
 				printf("De midden is de beste beest %lld\n", value);
 			}
 //			printf("At point {%d, %d} the correlation is %d\n",i,j,value);
 #endif
-			if (j == J_END_VALUE) {
-				if (i == I_END_VALUE) {
+			if (j_copy == J_END_VALUE) {
+				if (i_copy == I_END_VALUE) {
 					done = true;
 #ifndef __SYNTHESIS__
 					printf("De correlatie is klaar!\n");
 					goto PRINTFREEM;
 #endif
 				} else {
-					i++;
+					i=i_copy+1;
 				}
 				j=J_START_VALUE;
 			} else {
-				j++;
+				j=j_copy+1;
 			}
 			s = get_s_start_value();
 //			value = 0;
 		} else {
-			s++;
+			s=s_copy+1;
 		}
 		t = get_t_start_value();
 	} else {
-		t++;
+		t=t_copy+1;
 	}
 
 	idx_b_x = s;
@@ -184,7 +184,7 @@ argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
 		printf("Indices: a {%d,%d} b {%d,%d}\n", idx_a_x,idx_a_y,idx_b_x,idx_b_y);
 	}
 #endif
-
+	i_copy = i; j_copy = j; s_copy = s; t_copy = t;
 	return corrmax;
 
 #ifndef __SYNTHESIS__
