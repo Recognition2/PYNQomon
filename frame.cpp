@@ -11,50 +11,56 @@ u16 applyHamming(u16 newx, u16 newy, u8 px) {
 	}
 	return (res >>16) & 0xFFFF;
 }
+void setBuffer(px_t *buffer, u16 idx, px_t px) {
+#pragma HLS inline off
+	buffer[idx] = px;
+}
 
-void frame_fill(u16 x, u16 y, u32 px) {
-#pragma HLS inline
-	static u32 buffertje[SMALL_WIDTH];
-#pragma HLS dependence variable=buffertje intra false
-//#pragma HLS array_partition variable=buffertje complete
+void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which) {
+//#pragma HLS inline
+	static px_t px_store_buf[SMALL_WIDTH];
+//#pragma HLS dependence variable=px_store_buf WAR true
 
-	const u16 newx = (x * SMALL_WIDTH) / WIDTH;
-	const u16 newy = (y * SMALL_HEIGHT) / HEIGHT;
+	static u16 newx = 0;
+	static u16 newy = 0;
 
-	const px_t newpx = compressRGB(px);
-//	const px_t newpx = (px_t) applyHamming(newx,newy,compressRGB(px));
+//	const px_t newpx = compressRGB(px);
+	const px_t newpx = (px_t) applyHamming(newx,newy,compressRGB(px));
 
-	const px_t beest = buffertje[newx] + newpx;
+	const px_t apparaat = px_store_buf[newx] + newpx;
 #ifndef __SYNTHESIS__
-	if (beest < buffertje[newx]) {
+	if (apparaat < px_store_buf[newx]) {
 		printf("number added by `frame_fill` is overflowing!\n");
 	}
 #endif
 
 	if( x % (WIDTH / SMALL_WIDTH) == 0 && y % (HEIGHT / SMALL_HEIGHT) == 0){
-		buffertje[newx] = newpx;
+//		buffertje[newx] = newpx;
+		setBuffer(px_store_buf, newx, newpx);
 //#ifndef __SYNTHESIS__
 //		printf("Reset buffertjes\n");
 //#endif
 	} else if ((x + 1) % (WIDTH / SMALL_WIDTH) == 0
 			&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0) {
-		const u16 idx = buf_which_plus_one * SMALL_WIDTH * SMALL_HEIGHT + newx	+ newy * SMALL_WIDTH;
+		const u16 idx = *buf_which_plus_one * SMALL_WIDTH * SMALL_HEIGHT + newx	+ newy * SMALL_WIDTH;
 #ifndef __SYNTHESIS__
-		if (idx > ((buf_which_plus_one+1) * SMALL_WIDTH * SMALL_HEIGHT)) {
+		if (idx > ((*buf_which_plus_one+1) * SMALL_WIDTH * SMALL_HEIGHT)) {
 			printf("De index van het getal wat we gaan fillen is onmogelijk groot\n");
+			printf("buf_which+1 = %d, idx=%d\n", *buf_which_plus_one,idx);
 		}
 #endif
-		frame_get(idx, beest, true);
+		frame_get(idx, apparaat, true);
 //#ifndef __SYNTHESIS__
 //		printf("Assign buffertjes\n");
 //#endif
 	} else {
-		buffertje[newx] = beest;
+//		buffertje[newx] = beest;
+		setBuffer(px_store_buf, newx, apparaat);
 //#ifndef __SYNTHESIS__
 //		printf("Iter\n");
 //#endif
 	}
-	buf_which_plus_one = (buf_which == 2 ? 0 : buf_which + 1);
+	*buf_which_plus_one = (buf_which >= 2 ? 0 : buf_which + 1);
 
 //	if( x % (WIDTH / SMALL_WIDTH) == 0 && y % (HEIGHT / SMALL_HEIGHT) == 0){
 //		buf_data[idx] = px;
@@ -62,17 +68,21 @@ void frame_fill(u16 x, u16 y, u32 px) {
 //		buf_data[idx] += px;
 //	}
 
+	newx = (((x == WIDTH-1) ? 0 : x+1)* SMALL_WIDTH) / WIDTH;
+	if (x == WIDTH-1) {
+		newy = ((y == HEIGHT-1) ? 0 : y+1) * SMALL_HEIGHT / HEIGHT;
+	}
 }
 
-void newFrame() {
+void newFrame(u16 *buf_which, u16 *buf_which_minus_one) {
 
-#pragma HLS dependence variable=buf_which inter false
-#pragma HLS dependence variable=buf_which intra false
+//#pragma HLS dependence variable=buf_which inter false
+//#pragma HLS dependence variable=buf_which intra false
 
 	u16 a;
-#pragma HLS dependence variable=a inter false
-#pragma HLS dependence variable=a intra false
-	switch (buf_which) {
+//#pragma HLS dependence variable=a inter false
+//#pragma HLS dependence variable=a intra false
+	switch (*buf_which) {
 	case 0:
 		a = 1;
 		break;
@@ -82,8 +92,8 @@ void newFrame() {
 	case 2:
 		a = 0;
 	}
-	buf_which_minus_one = (buf_which == 0 ? 2 : buf_which - 1);
-	buf_which = a;
+	*buf_which_minus_one = *buf_which;
+	*buf_which = a;
 }
 u8 compressRGB(u32 p) {
 	u8 B = (p & 0xFF);
@@ -104,7 +114,7 @@ u8 compressRGB(u32 p) {
 }
 
 px_t frame_get(u16 idx, u16 px, bool doWrite) {
-#pragma HLS inline off
+//#pragma HLS inline off
 //#pragma HLS function_instantiate variable=doWrite
 	if (doWrite) {
 		buf_data[idx] = px;
@@ -113,9 +123,9 @@ px_t frame_get(u16 idx, u16 px, bool doWrite) {
 		return buf_data[idx];
 	}
 }
-u32 shitpixel(u16 x, u16 y){
-  const u32 newx = (x * SMALL_WIDTH) / WIDTH;
-  const u32 newy = (y * SMALL_HEIGHT) / HEIGHT;
-  px_t out = frame_get(buf_which * SMALL_WIDTH * SMALL_HEIGHT + newx + newy * SMALL_WIDTH, 0, false);
-  return (u32) (out >> 8) * 0x010101;
-}
+//u32 shitpixel(u16 x, u16 y){
+//  const u32 newx = (x * SMALL_WIDTH) / WIDTH;
+//  const u32 newy = (y * SMALL_HEIGHT) / HEIGHT;
+//  px_t out = frame_get(buf_which * SMALL_WIDTH * SMALL_HEIGHT + newx + newy * SMALL_WIDTH, 0, false);
+//  return (u32) (out >> 8) * 0x010101;
+//}

@@ -17,8 +17,8 @@
     "ClockName": "ap_clk",
     "ClockPeriod": "10",
     "IsCombLogic": "0",
-    "II": "1",
-    "Latency": "38",
+    "II": "8",
+    "Latency": "9",
     "Uncertainty": "1.25"
   },
   "Xdc": {"OocClocks": ["create_clock -name ap_clk -period 10.000 [get_ports ap_clk]"]},
@@ -34,45 +34,50 @@
   },
   "Files": {
     "CSource": [
-      "frame.cpp",
+      "phase_correlation.cpp",
       "main.cpp",
-      "phase_correlation.cpp"
+      "frame.cpp"
     ],
     "Vhdl": [
-      "impl\/vhdl\/frame_get.vhd",
+      "impl\/vhdl\/correlationStep.vhd",
+      "impl\/vhdl\/frame_fill.vhd",
+      "impl\/vhdl\/frame_fill_hamming.vhd",
+      "impl\/vhdl\/frame_fill_px_stoeOg.vhd",
+      "impl\/vhdl\/setBuffer.vhd",
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
-      "impl\/vhdl\/stream_buf_data_0.vhd",
-      "impl\/vhdl\/stream_buffertje.vhd",
+      "impl\/vhdl\/stream_buf_data.vhd",
+      "impl\/vhdl\/stream_mac_muladdcud.vhd",
+      "impl\/vhdl\/stream_mac_muladddEe.vhd",
       "impl\/vhdl\/stream_mac_muladdfYi.vhd",
       "impl\/vhdl\/stream_mac_muladdg8j.vhd",
-      "impl\/vhdl\/stream_mac_muladdibs.vhd",
-      "impl\/vhdl\/stream_mul_mul_7nhbi.vhd",
-      "impl\/vhdl\/stream_mul_mul_16cud.vhd",
-      "impl\/vhdl\/stream_mul_mul_16jbC.vhd",
-      "impl\/vhdl\/stream_mux_332_16eOg.vhd",
+      "impl\/vhdl\/stream_mac_muladdhbi.vhd",
+      "impl\/vhdl\/stream_mac_muladdjbC.vhd",
+      "impl\/vhdl\/stream_mul_mul_8nibs.vhd",
+      "impl\/vhdl\/stream_mul_mul_16bkb.vhd",
       "impl\/vhdl\/stream_pokemon.vhd",
-      "impl\/vhdl\/stream_urem_16ns_bkb.vhd",
-      "impl\/vhdl\/stream_urem_30ns_dEe.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
-      "impl\/verilog\/frame_get.v",
+      "impl\/verilog\/correlationStep.v",
+      "impl\/verilog\/frame_fill.v",
+      "impl\/verilog\/frame_fill_hamming.v",
+      "impl\/verilog\/frame_fill_hamming_rom.dat",
+      "impl\/verilog\/frame_fill_px_stoeOg.v",
+      "impl\/verilog\/frame_fill_px_stoeOg_ram.dat",
+      "impl\/verilog\/setBuffer.v",
       "impl\/verilog\/stream_AXILiteS_s_axi.v",
-      "impl\/verilog\/stream_buf_data_0.v",
-      "impl\/verilog\/stream_buf_data_0_ram.dat",
-      "impl\/verilog\/stream_buffertje.v",
-      "impl\/verilog\/stream_buffertje_ram.dat",
+      "impl\/verilog\/stream_buf_data.v",
+      "impl\/verilog\/stream_buf_data_ram.dat",
+      "impl\/verilog\/stream_mac_muladdcud.v",
+      "impl\/verilog\/stream_mac_muladddEe.v",
       "impl\/verilog\/stream_mac_muladdfYi.v",
       "impl\/verilog\/stream_mac_muladdg8j.v",
-      "impl\/verilog\/stream_mac_muladdibs.v",
-      "impl\/verilog\/stream_mul_mul_7nhbi.v",
-      "impl\/verilog\/stream_mul_mul_16cud.v",
-      "impl\/verilog\/stream_mul_mul_16jbC.v",
-      "impl\/verilog\/stream_mux_332_16eOg.v",
+      "impl\/verilog\/stream_mac_muladdhbi.v",
+      "impl\/verilog\/stream_mac_muladdjbC.v",
+      "impl\/verilog\/stream_mul_mul_8nibs.v",
+      "impl\/verilog\/stream_mul_mul_16bkb.v",
       "impl\/verilog\/stream_pokemon.v",
       "impl\/verilog\/stream_pokemon_rom.dat",
-      "impl\/verilog\/stream_urem_16ns_bkb.v",
-      "impl\/verilog\/stream_urem_30ns_dEe.v",
       "impl\/verilog\/stream.v"
     ],
     "SwDriver": [
@@ -469,88 +474,140 @@
     "dst_V_data_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "37"
+      "firstOutLatency": "2"
     },
     "dst_V_dest_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "37"
+      "firstOutLatency": "2"
     },
     "dst_V_keep_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "37"
+      "firstOutLatency": "2"
     },
     "dst_V_strb_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "37"
+      "firstOutLatency": "2"
     },
     "dst_V_user_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "37"
+      "firstOutLatency": "2"
     },
     "dst_V_last_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "37"
+      "firstOutLatency": "2"
     },
     "dst_V_id_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "37"
+      "firstOutLatency": "2"
     }
   },
   "ModuleInfo": {
     "Hierarchy": {
       "ModuleName": "stream",
-      "Instances": [{
-          "ModuleName": "frame_get",
-          "InstanceName": "grp_frame_get_fu_616"
-        }]
+      "Instances": [
+        {
+          "ModuleName": "correlationStep",
+          "InstanceName": "grp_correlationStep_fu_443"
+        },
+        {
+          "ModuleName": "frame_fill",
+          "InstanceName": "grp_frame_fill_fu_470",
+          "Instances": [{
+              "ModuleName": "setBuffer",
+              "InstanceName": "grp_setBuffer_fu_186"
+            }]
+        }
+      ]
     },
     "Metrics": {
-      "frame_get": {
+      "correlationStep": {
         "Latency": {
-          "LatencyBest": "19",
-          "LatencyAvg": "19",
-          "LatencyWorst": "19",
-          "PipelineII": "1",
-          "PipelineDepth": "20",
+          "LatencyBest": "3",
+          "LatencyAvg": "3",
+          "LatencyWorst": "3",
+          "PipelineII": "2",
+          "PipelineDepth": "4",
           "PipelineType": "function"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "7.122"
+          "Estimate": "34.862"
+        },
+        "Area": {
+          "DSP48E": "3",
+          "FF": "681",
+          "LUT": "1248",
+          "BRAM_18K": "0"
+        }
+      },
+      "setBuffer": {
+        "Latency": {
+          "LatencyBest": "0",
+          "LatencyAvg": "0",
+          "LatencyWorst": "0",
+          "PipelineII": "1",
+          "PipelineDepth": "1",
+          "PipelineType": "function"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "1.25",
+          "Estimate": "3.254"
         },
         "Area": {
           "BRAM_18K": "0",
-          "DSP48E": "1",
-          "FF": "821",
-          "LUT": "557"
+          "DSP48E": "0",
+          "FF": "0",
+          "LUT": "0"
+        }
+      },
+      "frame_fill": {
+        "Latency": {
+          "LatencyBest": "3",
+          "LatencyAvg": "3",
+          "LatencyWorst": "3",
+          "PipelineII": "3",
+          "PipelineDepth": "4",
+          "PipelineType": "function"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "1.25",
+          "Estimate": "10.283"
+        },
+        "Area": {
+          "BRAM_18K": "5",
+          "DSP48E": "6",
+          "FF": "238",
+          "LUT": "497"
         }
       },
       "stream": {
         "Latency": {
-          "LatencyBest": "38",
-          "LatencyAvg": "38",
-          "LatencyWorst": "38",
-          "PipelineII": "1",
-          "PipelineDepth": "39",
+          "LatencyBest": "9",
+          "LatencyAvg": "9",
+          "LatencyWorst": "9",
+          "PipelineII": "8",
+          "PipelineDepth": "10",
           "PipelineType": "function"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "10.968"
+          "Estimate": "34.862"
         },
         "Area": {
-          "BRAM_18K": "19",
-          "DSP48E": "21",
-          "FF": "9994",
-          "LUT": "8426"
+          "BRAM_18K": "27",
+          "DSP48E": "16",
+          "FF": "2202",
+          "LUT": "3833"
         }
       }
     }
@@ -562,7 +619,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-10 16:46:30 CET",
+    "Time": "2019-01-11 14:56:09 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

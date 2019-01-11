@@ -5,10 +5,10 @@
 #include <stdint.h>
 
 u8 compressRGB(u32 p);
-void newFrame();
+void newFrame(u16 *bufwhich, u16*buf_which_minus_one);
 
 
-void frame_fill(u16 x, u16 y, u32 px);
+void frame_fill(u16 x, u16 y,u32 px,u16* bufwhichplusone, u16 bufwhich);
 //px_t frame_get(px_t* buf, u16 x, u16 y);
 px_t frame_get(u16 idx, u16 px, bool doWrite);
 u32 shitpixel(u16 x, u16 y);

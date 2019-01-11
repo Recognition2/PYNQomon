@@ -48,6 +48,6 @@ typedef hls::stream<pixel_data> pixel_stream;
 
 extern u16 buf_which, buf_which_minus_one, buf_which_plus_one;
 extern px_t buf_data[FRAME_COUNT * SMALL_HEIGHT * SMALL_WIDTH];
-extern argmax corrmax;
+//extern argmax corrmax;
 
 #endif

@@ -29,7 +29,7 @@ for i = 1:pokesize(1)
  %           b = 0;
  %       end
         
-        fprintf(pokeID, '0xFF%02X%02X%02X, ', r, g, b);
+        fprintf(pokeID, '0xFF%02X%02X%02X, ', b, g, r);
     end
     fprintf(pokeID, '\n'); 
 end
