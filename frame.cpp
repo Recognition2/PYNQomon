@@ -12,7 +12,7 @@ u16 applyHamming(u16 newx, u16 newy, u8 px) {
 	return (res >>16) & 0xFFFF;
 }
 
-void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which) {
+void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which, bool storeAllowed) {
 #pragma HLS inline
 	static px_t px_store_buf[SMALL_WIDTH];
 #pragma HLS array_partition variable=px_store_buf complete
@@ -49,7 +49,9 @@ void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which) {
 			printf("buf_which+1 = %d, idx=%d\n", *buf_which_plus_one,idx);
 		}
 #endif
-		frame_get(idx, apparaat, true);
+		if (storeAllowed) {
+			frame_get(idx, apparaat, true);
+		}
 //		px_store_buf[newx] = 0;
 //#ifndef __SYNTHESIS__
 //		printf("Assign buffertjes\n");

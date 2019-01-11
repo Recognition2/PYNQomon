@@ -51,7 +51,13 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	const u32 pokedata = draw_pokemon(draw_moved, x_new, y_new, pIn.data);
 	const u16 buf_which_old = buf_which;
 	const u16 buf_which_min_old = buf_which_minus_one;
-	argmax corrmax_old = corrmax;
+	static argmax corrmax_in_progress;
+	// Only the last iteration;
+	if (!pIn.user) {
+		corrmax = corrmax_in_progress;
+
+	}
+
 	// Draw block
 //#pragma HLS dependence variable=corrmax intra false
 //#pragma HLS dependence variable=corrmax inter false
@@ -68,8 +74,8 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 		// The only time that `corr` is actually valid
 		// Translate movement in small frame to movement in real frame
 		if (corrmax.v != 0) {
-			const i16 xdiff = ((corrmax.x - SMALL_WIDTH )* WIDTH) / SMALL_WIDTH;
-			const i16 ydiff = ((corrmax.y - SMALL_HEIGHT) * HEIGHT)	/ SMALL_HEIGHT;
+			const i16 xdiff = (corrmax.x - SMALL_WIDTH )* (WIDTH / SMALL_WIDTH);
+			const i16 ydiff = (corrmax.y - SMALL_HEIGHT) * (HEIGHT / SMALL_HEIGHT);
 
 			if (moved.x + xdiff + pokesize.x > WIDTH || moved.x + xdiff < 0) {
 				moved.x = WIDTH / 2;
@@ -107,18 +113,18 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	{
 		if (pIn.user) {
 			newFrame(&buf_which, &buf_which_minus_one);
-			resetCorrelationData(&corrmax);
+			resetCorrelationData(&corrmax_in_progress);
 
-			frame_fill(x, y, pIn.data, &buf_which_plus_one, buf_which_old);
+			frame_fill(x, y, pIn.data, &buf_which_plus_one, buf_which_old,true);
 
 		} else if ((x + 1) % (WIDTH / SMALL_WIDTH) == 0
 				&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0) {
 
-			frame_fill(x, y, pIn.data, &buf_which_plus_one,  buf_which_old);
+			frame_fill(x, y, pIn.data, &buf_which_plus_one,  buf_which_old,true);
 
 		} else {
-			corrmax = correlationStep(buf_which_old, buf_which_min_old, corrmax_old);
-			frame_fill(x, y, pIn.data, &buf_which_plus_one, buf_which_old);
+			corrmax_in_progress = correlationStep(buf_which_old, buf_which_min_old, corrmax_in_progress);
+			frame_fill(x, y, pIn.data, &buf_which_plus_one, buf_which_old,false); // Do not allow store
 
 		}
 
