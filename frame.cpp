@@ -12,18 +12,28 @@ u16 applyHamming(u16 newx, u16 newy, u8 px) {
 	return (res >>16) & 0xFFFF;
 }
 
-void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which, bool storeAllowed) {
-#pragma HLS inline
-	static px_t px_store_buf[SMALL_WIDTH];
+/**
+ * @param x: Current x coordinate in the large frame
+ * @param y: Current y coordinate in the large frame
+ * @param futureFrame: index in the `data` buffer for the frame-to-fill
+ * @param currentFrame: index in the `data` buffer of one of the frames currently being correlated
+ * @param storeAllowed: Useless parameter, only used to 'allow a store on the global array'
+ * 						However, the behaviour was correct anyway. The parameter is necessary because otherwise
+ * 						Vivado HLS cannot make assumptions that hold
+ *
+ */
+void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool storeAllowed) {
+#pragma HLS inline // must be inlined
+	static Pixel px_store_buf[SMALL_WIDTH];
 #pragma HLS array_partition variable=px_store_buf complete
 
 	static u16 newx = 0;
 	static u16 newy = 0;
 
 //	const px_t newpx = compressRGB(px);
-	const px_t newpx = (px_t) applyHamming(newx,newy,compressRGB(px));
+	const Pixel newpx = (Pixel) applyHamming(newx,newy,compressRGB(px));
 	const u16 bufRead = px_store_buf[newx];
-	const px_t apparaat = bufRead + newpx;
+	const Pixel apparaat = bufRead + newpx;
 #ifndef __SYNTHESIS__
 	if (apparaat < bufRead) {
 		printf("number added by `frame_fill` is overflowing!\n");
@@ -38,38 +48,20 @@ void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which, boo
 	if( is_start_frame){
 //		buffertje[newx] = newpx;
 //		px_store_buf[newx] = newpx;
-//#ifndef __SYNTHESIS__
-//		printf("Reset buffertjes\n");
-//#endif
-	} else if ((x + 1) % (WIDTH / SMALL_WIDTH) == 0
-			&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0) {
+	} else if (is_end_frame) {
 #ifndef __SYNTHESIS__
-		if (idx > ((*buf_which_plus_one+1) * SMALL_WIDTH * SMALL_HEIGHT)) {
+		if (idx > ((*futureFrame+1) * SMALL_WIDTH * SMALL_HEIGHT)) {
 			printf("De index van het getal wat we gaan fillen is onmogelijk groot\n");
-			printf("buf_which+1 = %d, idx=%d\n", *buf_which_plus_one,idx);
+			printf("buf_which+1 = %d, idx=%d\n", *futureFrame,idx);
 		}
 #endif
 		if (storeAllowed) {
 			frame_get(idx, apparaat, true);
 		}
-//		px_store_buf[newx] = 0;
-//#ifndef __SYNTHESIS__
-//		printf("Assign buffertjes\n");
-//#endif
-	} else {
-//		px_store_buf[newx] = apparaat;
-//#ifndef __SYNTHESIS__
-//		printf("Iter\n");
-//#endif
 	}
-	*buf_which_plus_one = (buf_which >= 2 ? 0 : buf_which + 1);
+	*futureFrame = (currentFrame >= 2 ? 0 : currentFrame + 1);
 
-//	if( x % (WIDTH / SMALL_WIDTH) == 0 && y % (HEIGHT / SMALL_HEIGHT) == 0){
-//		buf_data[idx] = px;
-//	} else {
-//		buf_data[idx] += px;
-//	}
-	idx = *buf_which_plus_one * SMALL_WIDTH * SMALL_HEIGHT + newx	+ newy * SMALL_WIDTH;
+	idx = *futureFrame * SMALL_WIDTH * SMALL_HEIGHT + newx	+ newy * SMALL_WIDTH;
 
 	newx = (((x == WIDTH-1) ? 0 : x+1)* SMALL_WIDTH) / WIDTH;
 	if (x == WIDTH-1) {
@@ -77,27 +69,23 @@ void frame_fill(u16 x, u16 y, u32 px, u16*buf_which_plus_one, u16 buf_which, boo
 	}
 }
 
-void newFrame(u16 *buf_which, u16 *buf_which_minus_one) {
-
-//#pragma HLS dependence variable=buf_which inter false
-//#pragma HLS dependence variable=buf_which intra false
-
-	u16 a;
-//#pragma HLS dependence variable=a inter false
-//#pragma HLS dependence variable=a intra false
-	switch (*buf_which) {
+void newFrame(u16 *currentFrame, u16 *pastFrame) {
+	u16 tmp;
+	switch (*currentFrame) {
 	case 0:
-		a = 1;
+		tmp = 1;
 		break;
 	case 1:
-		a = 2;
+		tmp = 2;
 		break;
 	case 2:
-		a = 0;
+		tmp = 0;
 	}
-	*buf_which_minus_one = *buf_which;
-	*buf_which = a;
+	*pastFrame = *currentFrame;
+	*currentFrame = tmp;
 }
+
+// Greyscale
 u8 compressRGB(u32 p) {
 	u8 B = (p & 0xFF);
 	u8 G = (p & 0xFF00) >> 8;
@@ -116,7 +104,7 @@ u8 compressRGB(u32 p) {
 	return (u8) (res & 0xFF);
 }
 
-px_t frame_get(u16 idx, u16 px, bool doWrite) {
+Pixel frame_get(u16 idx, u16 px, bool doWrite) {
 //#pragma HLS inline off
 //#pragma HLS function_instantiate variable=doWrite
 	if (doWrite) {

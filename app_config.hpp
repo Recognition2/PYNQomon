@@ -24,14 +24,14 @@ typedef struct {
 	u64 v;
 	i16 x;
 	i16 y;
-} argmax;
+} maxCorrelationIndex;
 
 typedef struct {
 	u16 x;
 	u16 y;
-} p16;
+} Point;
 
-typedef u16 px_t;
+typedef u16 Pixel;
 
 // What's the type of a saved pixel?
 
@@ -47,7 +47,7 @@ typedef hls::stream<pixel_data> pixel_stream;
 #define FRAME_COUNT 3
 
 extern u16 buf_which, buf_which_minus_one, buf_which_plus_one;
-extern px_t buf_data[FRAME_COUNT * SMALL_HEIGHT * SMALL_WIDTH];
+extern Pixel buf_data[FRAME_COUNT * SMALL_HEIGHT * SMALL_WIDTH];
 //extern argmax corrmax;
 
 #endif

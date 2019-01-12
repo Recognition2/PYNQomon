@@ -40,7 +40,7 @@ inline i16 get_t_start_value() {
 	return custom_max(0,Y-j);
 }
 
-void resetCorrelationData(argmax *corrmax) {
+void resetCorrelationData(maxCorrelationIndex *corrmax) {
 //#pragma HLS inline off
 //#pragma HLS dependence variable=value intra false
 //#pragma HLS dependence variable=value inter false
@@ -61,7 +61,7 @@ void resetCorrelationData(argmax *corrmax) {
  * @param start whether this is the start of a new frame = new correlation calculation
  * @param corrmax is used for calculating the max of the correlation.
  */
-argmax correlationStep(u16 buf_which, u16 buf_which_minus_one, argmax corrmax) {
+maxCorrelationIndex correlationStep(u16 buf_which, u16 buf_which_minus_one, maxCorrelationIndex corrmax) {
 #pragma HLS inline
 //#pragma HLS dependence variable=corrmax intra false
 //#pragma HLS dependence variable=corrmax inter false
