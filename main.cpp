@@ -32,6 +32,11 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 #pragma HLS INTERFACE s_axilite port=mask
 #pragma HLS PIPELINE II=1
 
+	const bool outputVideo = mask & (1<<0);
+	const bool writeFigure = mask & (1<<1);
+	const bool useDownscaled = (mask & (1<<2));
+
+
 	// Data to be stored across 'function calls'
 	// Coordinates of current pixel
 	static u16 x = 0;
@@ -59,10 +64,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	const u16 buf_which_min_old = pastFrame;
 	static maxCorrelationIndex corrmax_in_progress;
 	// Only the last iteration;
-	if (!pIn.user) {
-		corrmax = corrmax_in_progress;
 
-	}
 	const Point resized = {x - (WIDTH/2 - SMALL_WIDTH/2), y - (HEIGHT/2 - SMALL_HEIGHT/2)};
 	// Draw block
 //	// Reset X and Y counters on user signal
@@ -71,8 +73,14 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 		// Translate movement in small frame to movement in real frame
 		if (corrmax.v != 0) {
 			// Adjust coordinates of figure on screen
+#ifdef DO_DOWNSAMPLE
 			const i16 xdiff = (corrmax.x - SMALL_WIDTH )* (WIDTH / SMALL_WIDTH);
 			const i16 ydiff = (corrmax.y - SMALL_HEIGHT) * (HEIGHT / SMALL_HEIGHT);
+#else
+			const i16 xdiff = (corrmax.x - SMALL_WIDTH );
+			const i16 ydiff = (corrmax.y - SMALL_HEIGHT);
+#endif
+
 
 			if (moved.x + xdiff + pokesize.x > WIDTH || moved.x + xdiff < 0) {
 				moved.x = WIDTH / 2;
@@ -107,6 +115,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	} else if (resized.x < SMALL_WIDTH && resized.y < SMALL_HEIGHT) {
 #endif
 		frame_fill(x, y, pIn.data, &FutureFrame,  buf_which_old,true);
+		corrmax = corrmax_in_progress;
 
 	} else {
 		corrmax_in_progress = correlationStep(buf_which_old, buf_which_min_old, corrmax_in_progress);
@@ -132,7 +141,12 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	////////////////////////////////
 	///// END LOGIC
 
-	pIn.data = pokedata;
+	if (writeFigure) {
+		pIn.data = pokedata;
+	}
+	if (!outputVideo) {
+		pIn.data = 0;
+	}
 	draw_moved = moved;
 	// Write pixel to destination
 	dst << pOut;

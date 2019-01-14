@@ -1,6 +1,6 @@
 #include "frame.hpp"
 #include "app_config.hpp"
-#include "hammingcoefficients_sqrt.h"
+#include "hammingcoefficients.h"
 
 
 u16 applyHamming(u16 newx, u16 newy, u8 px) {
@@ -9,7 +9,11 @@ u16 applyHamming(u16 newx, u16 newy, u8 px) {
 	if (res > (0xFF0000)) {
 		printf("Number returned by `applyHamming` is too large to fit in the allocated space (0xFF0000) \n");
 	}
+#ifdef DO_DOWNSAMPLE
 	return (res >>16) & 0xFFFF;
+#else
+	return (res >>8) & 0xFFFF;
+#endif
 }
 
 void newFrame(u16 *currentFrame, u16 *pastFrame) {
