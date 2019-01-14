@@ -12,6 +12,10 @@
 //#include <hls_opencv.h>
 #include <ap_axi_sdata.h>
 
+
+//#define DO_DOWNSAMPLE
+
+
 typedef uint8_t u8;
 typedef int8_t i8;
 typedef uint16_t u16;

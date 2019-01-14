@@ -127,7 +127,7 @@ maxCorrelationIndex correlationStep(u16 buf_which, u16 buf_which_minus_one, maxC
 	if (t_copy == custom_min(Y-1, 2 * Y - j-1)) {
 		if (s_copy == custom_min(X-1, 2 * X - i-1)) {
 #ifndef __SYNTHESIS__
-			const int shft_amt = 35;
+			const int shft_amt = 33;
 			if ((value>>shft_amt) > 0xFF) {
 				printf("De correlatie is wel heel erg groot, wel groter dan FF: %llu\n", (value>>shft_amt));
 			}

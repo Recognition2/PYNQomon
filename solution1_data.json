@@ -17,7 +17,7 @@
     "ClockName": "ap_clk",
     "ClockPeriod": "10",
     "IsCombLogic": "0",
-    "II": "1",
+    "II": "2",
     "Latency": "7",
     "Uncertainty": "1.25"
   },
@@ -42,13 +42,11 @@
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
       "impl\/vhdl\/stream_buf_data.vhd",
       "impl\/vhdl\/stream_hamming.vhd",
+      "impl\/vhdl\/stream_mac_muladdbkb.vhd",
       "impl\/vhdl\/stream_mac_muladdcud.vhd",
       "impl\/vhdl\/stream_mac_muladddEe.vhd",
       "impl\/vhdl\/stream_mac_muladdeOg.vhd",
-      "impl\/vhdl\/stream_mac_muladdfYi.vhd",
-      "impl\/vhdl\/stream_mac_muladdg8j.vhd",
-      "impl\/vhdl\/stream_mul_mul_8nhbi.vhd",
-      "impl\/vhdl\/stream_mul_mul_16bkb.vhd",
+      "impl\/vhdl\/stream_mul_mul_8nfYi.vhd",
       "impl\/vhdl\/stream_pokemon.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
@@ -58,13 +56,11 @@
       "impl\/verilog\/stream_buf_data_ram.dat",
       "impl\/verilog\/stream_hamming.v",
       "impl\/verilog\/stream_hamming_rom.dat",
+      "impl\/verilog\/stream_mac_muladdbkb.v",
       "impl\/verilog\/stream_mac_muladdcud.v",
       "impl\/verilog\/stream_mac_muladddEe.v",
       "impl\/verilog\/stream_mac_muladdeOg.v",
-      "impl\/verilog\/stream_mac_muladdfYi.v",
-      "impl\/verilog\/stream_mac_muladdg8j.v",
-      "impl\/verilog\/stream_mul_mul_8nhbi.v",
-      "impl\/verilog\/stream_mul_mul_16bkb.v",
+      "impl\/verilog\/stream_mul_mul_8nfYi.v",
       "impl\/verilog\/stream_pokemon.v",
       "impl\/verilog\/stream_pokemon_rom.dat",
       "impl\/verilog\/stream.v"
@@ -463,37 +459,37 @@
     "dst_V_data_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "6"
+      "firstOutLatency": "5"
     },
     "dst_V_dest_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "6"
+      "firstOutLatency": "5"
     },
     "dst_V_keep_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "6"
+      "firstOutLatency": "5"
     },
     "dst_V_strb_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "6"
+      "firstOutLatency": "5"
     },
     "dst_V_user_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "6"
+      "firstOutLatency": "5"
     },
     "dst_V_last_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "6"
+      "firstOutLatency": "5"
     },
     "dst_V_id_V": {
       "interfaceRef": "dst",
       "dir": "out",
-      "firstOutLatency": "6"
+      "firstOutLatency": "5"
     }
   },
   "ModuleInfo": {
@@ -503,20 +499,20 @@
           "LatencyBest": "7",
           "LatencyAvg": "7",
           "LatencyWorst": "7",
-          "PipelineII": "1",
+          "PipelineII": "2",
           "PipelineDepth": "8",
           "PipelineType": "function"
         },
         "Timing": {
           "Target": "10.00",
           "Uncertainty": "1.25",
-          "Estimate": "13.150"
+          "Estimate": "11.000"
         },
         "Area": {
-          "BRAM_18K": "26",
-          "DSP48E": "18",
-          "FF": "4121",
-          "LUT": "6865"
+          "BRAM_18K": "18",
+          "DSP48E": "5",
+          "FF": "2035",
+          "LUT": "3173"
         }
       }}
   },
@@ -527,7 +523,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-12 00:37:21 CET",
+    "Time": "2019-01-14 12:31:22 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

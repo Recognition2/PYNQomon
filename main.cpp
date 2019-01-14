@@ -8,6 +8,8 @@
 //#include "opencv2/opencv.hpp"
 #endif
 
+
+
 #include "pokemon.h"
 
 u32 draw_pokemon(Point moved, u16 x, u16 y, u32 p) {
@@ -61,7 +63,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 		corrmax = corrmax_in_progress;
 
 	}
-
+	const Point resized = {x - (WIDTH/2 - SMALL_WIDTH/2), y - (HEIGHT/2 - SMALL_HEIGHT/2)};
 	// Draw block
 //	// Reset X and Y counters on user signal
 	if (pIn.user) {
@@ -98,9 +100,12 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 
 		frame_fill(x, y, pIn.data, &FutureFrame, buf_which_old,true);
 
+#ifdef DO_DOWNSAMPLE
 	} else if ((x + 1) % (WIDTH / SMALL_WIDTH) == 0
 			&& (y + 1) % (HEIGHT / SMALL_HEIGHT) == 0) {
-
+#else
+	} else if (resized.x < SMALL_WIDTH && resized.y < SMALL_HEIGHT) {
+#endif
 		frame_fill(x, y, pIn.data, &FutureFrame,  buf_which_old,true);
 
 	} else {

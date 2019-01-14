@@ -1,6 +1,6 @@
 #include "frame.hpp"
 #include "app_config.hpp"
-#include "hammingcoefficients.h"
+#include "hammingcoefficients_sqrt.h"
 
 
 u16 applyHamming(u16 newx, u16 newy, u8 px) {
@@ -12,6 +12,24 @@ u16 applyHamming(u16 newx, u16 newy, u8 px) {
 	return (res >>16) & 0xFFFF;
 }
 
+void newFrame(u16 *currentFrame, u16 *pastFrame) {
+	u16 tmp;
+	switch (*currentFrame) {
+	case 0:
+		tmp = 1;
+		break;
+	case 1:
+		tmp = 2;
+		break;
+	case 2:
+		tmp = 0;
+	}
+	*pastFrame = *currentFrame;
+	*currentFrame = tmp;
+}
+
+
+#ifdef DO_DOWNSAMPLE
 /**
  * @param x: Current x coordinate in the large frame
  * @param y: Current y coordinate in the large frame
@@ -30,7 +48,7 @@ void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool st
 	static u16 newx = 0;
 	static u16 newy = 0;
 
-//	const px_t newpx = compressRGB(px);
+//	const Pixel newpx = compressRGB(px);
 	const Pixel newpx = (Pixel) applyHamming(newx,newy,compressRGB(px));
 	const u16 bufRead = px_store_buf[newx];
 	const Pixel apparaat = bufRead + newpx;
@@ -69,22 +87,26 @@ void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool st
 	}
 }
 
-void newFrame(u16 *currentFrame, u16 *pastFrame) {
-	u16 tmp;
-	switch (*currentFrame) {
-	case 0:
-		tmp = 1;
-		break;
-	case 1:
-		tmp = 2;
-		break;
-	case 2:
-		tmp = 0;
-	}
-	*pastFrame = *currentFrame;
-	*currentFrame = tmp;
-}
+#else
+void frame_fill(u16 x, u16 y, u32 px, u16* futureFrame, u16 currentFrame, bool storeAllowed) {
+#pragma HLS inline // must be inlined
 
+	const Point resized = {x - (WIDTH/2 - SMALL_WIDTH/2), y - (HEIGHT/2 - SMALL_HEIGHT/2)};
+
+//	const Pixel newpx = compressRGB(px);
+	static u16 idx = 0;
+
+	if (resized.x < SMALL_WIDTH && resized.y < SMALL_HEIGHT) {
+		const Pixel newpx = (Pixel) applyHamming(resized.x,resized.y,compressRGB(px));
+		if (storeAllowed) {
+			buf_data[resized.x + resized.y * SMALL_WIDTH + *futureFrame * SMALL_WIDTH * SMALL_HEIGHT] = newpx;
+		}
+	}
+	*futureFrame = (currentFrame >= 2 ? 0 : currentFrame + 1);
+
+
+}
+#endif
 // Greyscale
 u8 compressRGB(u32 p) {
 	u8 B = (p & 0xFF);
