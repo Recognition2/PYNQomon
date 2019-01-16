@@ -1,6 +1,6 @@
 #include "frame.hpp"
 #include "app_config.hpp"
-#include "hammingcoefficients.h"
+#include "hammingcoefficients_tukey.h"
 
 
 u16 applyHamming(u16 newx, u16 newy, u8 px) {

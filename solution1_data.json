@@ -34,11 +34,13 @@
   },
   "Files": {
     "CSource": [
+      "snake.cpp",
       "phase_correlation.cpp",
       "main.cpp",
       "frame.cpp"
     ],
     "Vhdl": [
+      "impl\/vhdl\/run_snake_machine.vhd",
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
       "impl\/vhdl\/stream_buf_data.vhd",
       "impl\/vhdl\/stream_hamming.vhd",
@@ -52,6 +54,7 @@
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
+      "impl\/verilog\/run_snake_machine.v",
       "impl\/verilog\/stream_AXILiteS_s_axi.v",
       "impl\/verilog\/stream_buf_data.v",
       "impl\/verilog\/stream_buf_data_ram.dat",
@@ -495,8 +498,36 @@
     }
   },
   "ModuleInfo": {
-    "Hierarchy": {"ModuleName": "stream"},
-    "Metrics": {"stream": {
+    "Hierarchy": {
+      "ModuleName": "stream",
+      "Instances": [{
+          "ModuleName": "run_snake_machine",
+          "InstanceName": "grp_run_snake_machine_fu_1450"
+        }]
+    },
+    "Metrics": {
+      "run_snake_machine": {
+        "Latency": {
+          "LatencyBest": "2",
+          "LatencyAvg": "2",
+          "LatencyWorst": "2",
+          "PipelineII": "1",
+          "PipelineDepth": "3",
+          "PipelineType": "function"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "1.25",
+          "Estimate": "9.147"
+        },
+        "Area": {
+          "FF": "388",
+          "LUT": "7438",
+          "BRAM_18K": "0",
+          "DSP48E": "0"
+        }
+      },
+      "stream": {
         "Latency": {
           "LatencyBest": "6",
           "LatencyAvg": "6",
@@ -513,10 +544,11 @@
         "Area": {
           "BRAM_18K": "26",
           "DSP48E": "6",
-          "FF": "2319",
-          "LUT": "3424"
+          "FF": "2716",
+          "LUT": "10932"
         }
-      }}
+      }
+    }
   },
   "Sdx": {
     "Target": "none",
@@ -525,7 +557,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-14 13:46:09 CET",
+    "Time": "2019-01-16 10:48:20 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

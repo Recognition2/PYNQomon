@@ -8,8 +8,6 @@
 //#include "opencv2/opencv.hpp"
 #endif
 
-
-
 #include "pokemon.h"
 
 u32 draw_pokemon(Point moved, u16 x, u16 y, u32 p) {
@@ -34,8 +32,8 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 
 	const bool outputVideo = mask & (1<<0);
 	const bool writeFigure = mask & (1<<1);
-	const bool useDownscaled = (mask & (1<<2));
-
+	const bool useDownscaled = (mask & (1<<2)); // Ignored as of yet, is an `ifdef`
+	const bool doSnake = (mask & (1<<3));
 
 	// Data to be stored across 'function calls'
 	// Coordinates of current pixel
@@ -65,10 +63,17 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	static maxCorrelationIndex corrmax_in_progress;
 	// Only the last iteration;
 
+	static u8 old_snakecontrols[SNAKE_COUNT];
+	const u8 snakecontrols[SNAKE_COUNT] = {((mask>>SNAKE_P1) & 0x3), ((mask>>SNAKE_P2) & 0x3)};
+	const u32 snakecolor = run_snake_machine(snakecontrols, pIn.user,x,y,draw_moved);
+
 	const Point resized = {x - (WIDTH/2 - SMALL_WIDTH/2), y - (HEIGHT/2 - SMALL_HEIGHT/2)};
 	// Draw block
 //	// Reset X and Y counters on user signal
 	if (pIn.user) {
+#ifndef __SYNTHESIS__
+		printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+#endif
 		// The only time that indices of max correlation are actually valid
 		// Translate movement in small frame to movement in real frame
 		if (corrmax.v != 0) {
@@ -94,7 +99,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 			}
 
 #ifndef __SYNTHESIS__ // Simulation
-			printf("moved is now {x: %d, y: %d}; diff is {%d %d, v: %llu}\n",
+			printf("New Pokemon location is now {x: %d, y: %d}; diff is {%d %d, v: %llu}\n",
 					moved.x, moved.y, xdiff, ydiff, corrmax.v);
 #endif
 		}
@@ -142,7 +147,11 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	///// END LOGIC
 
 	if (writeFigure) {
-		pIn.data = pokedata;
+		if (doSnake) {
+			pIn.data = (snakecolor == 0) ? pokedata : snakecolor;
+		} else {
+			pIn.data = pokedata;
+		}
 	}
 	if (!outputVideo) {
 		pIn.data = 0;

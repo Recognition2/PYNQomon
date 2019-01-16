@@ -127,13 +127,14 @@ maxCorrelationIndex correlationStep(u16 buf_which, u16 buf_which_minus_one, maxC
 	if (t_copy == custom_min(Y-1, 2 * Y - j-1)) {
 		if (s_copy == custom_min(X-1, 2 * X - i-1)) {
 #ifndef __SYNTHESIS__
-			const int shft_amt = 33;
+			static int shft_amt = 1;
 			if ((value>>shft_amt) > 0xFF) {
-				printf("De correlatie is wel heel erg groot, wel groter dan FF: %llu\n", (value>>shft_amt));
+//				printf("De correlatie is wel heel erg groot, wel groter dan FF: %llu\n", (value>>shft_amt));
+				shft_amt++;
 			}
 			correlatieVisualisatie[i - I_START_VALUE][j-J_START_VALUE] = (value>>shft_amt) & 0xFF;
 			if (i_copy == SMALL_WIDTH - 1 && j_copy == SMALL_HEIGHT - 1) {
-				printf("De midden is de beste beest %lld\n", value);
+//				printf("De midden is de beste beest %lld\n", value);
 			}
 //			printf("At point {%d, %d} the correlation is %d\n",i,j,value);
 #endif
@@ -141,7 +142,7 @@ maxCorrelationIndex correlationStep(u16 buf_which, u16 buf_which_minus_one, maxC
 				if (i_copy == I_END_VALUE) {
 					done = true;
 #ifndef __SYNTHESIS__
-					printf("De correlatie is klaar!\n");
+//					printf("De correlatie is klaar!\n");
 					goto PRINTFREEM;
 #endif
 				} else {
@@ -192,7 +193,7 @@ maxCorrelationIndex correlationStep(u16 buf_which, u16 buf_which_minus_one, maxC
 	static u32 counter = 0;
 	char buf[100];
 	counter++;
-	printf("Het einde van een freem is bereikt\n");
+//	printf("Het einde van een freem is bereikt\n");
 	cv::Mat m;
 	m = cv::Mat(cv::Size(J_END_VALUE - J_START_VALUE + 1, I_END_VALUE - I_START_VALUE + 1), CV_8UC1, (void*)correlatieVisualisatie);
 	cv::resize(m, m, cv::Size(480,640));

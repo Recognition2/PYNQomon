@@ -52,7 +52,7 @@ int main ()
 
 	    // Call stream processing function
 	    while (!inputStream.empty())
-			stream(inputStream, outputStream, 1); // Add extra arguments here
+			stream(inputStream, outputStream, 0xF); // Add extra arguments here
 
 
 	    // Read output data

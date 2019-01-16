@@ -13,7 +13,13 @@
 #include <ap_axi_sdata.h>
 
 
-//#define DO_DOWNSAMPLE
+#define SNAKE_MAX_LENGTH 100
+
+#define SNAKE_P1 8
+#define SNAKE_P2 10
+
+
+#define DO_DOWNSAMPLE
 
 
 typedef uint8_t u8;
@@ -37,6 +43,21 @@ typedef struct {
 
 typedef u16 Pixel;
 
+enum Direction {
+	Right = 0,
+	Down = 1,
+	Left = 2,
+	Up = 3,
+};
+
+typedef struct {
+	u8 maxlen;
+	Direction dir;
+	u32 color;
+	u8 len;
+//	Point pos[SNAKE_MAX_LENGTH];
+} Snake;
+
 // What's the type of a saved pixel?
 
 typedef ap_axiu<32, 1, 1, 1> pixel_data;
@@ -50,6 +71,9 @@ typedef hls::stream<pixel_data> pixel_stream;
 
 #define FRAME_COUNT 3
 
+#define SNAKE_COUNT 2
+extern u32 run_snake_machine(const u8[2], bool reset,u16,u16,Point);
+extern const Point pokesize;
 extern u16 buf_which, buf_which_minus_one, buf_which_plus_one;
 extern Pixel buf_data[FRAME_COUNT * SMALL_HEIGHT * SMALL_WIDTH];
 //extern argmax corrmax;
