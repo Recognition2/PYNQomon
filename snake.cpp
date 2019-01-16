@@ -1,20 +1,24 @@
 #include "app_config.hpp"
 
+#define SWIDTH (WIDTH/2)
+#define SHEIGHT (HEIGHT/2)
+
 bool init = false;
+
 static Snake snakes[SNAKE_COUNT];
 static Point snakePositions[SNAKE_COUNT][SNAKE_MAX_LENGTH];
 void do_init() {
 	Snake *snake = &snakes[0];
-	snakePositions[0][0].x = WIDTH/2;
-	snakePositions[0][0].y = HEIGHT/2;
+	snakePositions[0][0].x = SWIDTH/2;
+	snakePositions[0][0].y = SHEIGHT/2;
 	snake->len = 3;
 	snake->maxlen = 0;
 	snake->color = 0xFFFF0000;
 	snake->dir = Right;
 
 	snake = &snakes[1];
-	snakePositions[1][0].x = WIDTH/2 - 100;
-	snakePositions[1][0].y = HEIGHT/2 ;
+	snakePositions[1][0].x = SWIDTH/2 - 100;
+	snakePositions[1][0].y = SHEIGHT/2 ;
 	snake->len = 3;
 	snake->maxlen = 0;
 	snake->color = 0xFF00FF00;
@@ -55,8 +59,8 @@ void check_pokemon_hits(Point moved) {
 		Snake *snake = &snakes[i];
 		Point *snakePos = snakePositions[i];
 		Point pos = snakePos[0];
-		if (pos.x > moved.x && pos.x < moved.x + pokesize.x &&
-			pos.y > moved.y && pos.y < moved.y + pokesize.y) {
+		if (pos.x > (moved.x/2) && pos.x < (moved.x + pokesize.x)/2 &&
+			pos.y > (moved.y/2) && pos.y < (moved.y + pokesize.y)/2) {
 			snake->len++;
 #ifndef __SYNTHESIS__
 			printf("Snake %d has grown to %d!\n", i, snake->len);
@@ -69,20 +73,14 @@ void parse_user_input(const u8 ps[SNAKE_COUNT]) {
 #pragma HLS inline
 	u8 dir = ps[snake_state_counter];
 	Snake *snake = &snakes[snake_state_counter];
-	u8 tmp = (u8) snake->dir;
-	if ((dir&0x2) == 2) {
-		tmp = (tmp == 3) ? 0 : tmp + 1;
-#ifndef __SYNTHESIS__
-		printf("Snake %d verandert z'n richting naar is %d\n", snake_state_counter, tmp);
-#endif
-	} else if ((dir&0x01)) {
-		tmp = (tmp == 0) ? 3 : tmp-1;
-#ifndef __SYNTHESIS__
-		printf("Snake %d verandert z'n richting naar is %d\n",snake_state_counter,  tmp);
-#endif
-	}
+//	u8 tmp = (u8) snake->dir;
+//	if ((dir&0x2) == 2) {
+//		tmp = (tmp == 3) ? 0 : tmp + 1;
+//	} else if ((dir&0x01)) {
+//		tmp = (tmp == 0) ? 3 : tmp-1;
+//	}
 
-	snake->dir = (Direction) tmp;
+	snake->dir = (Direction) dir;
 }
 
 void move_snake_through() {
@@ -156,8 +154,8 @@ void parse_crash_snake() {
 	}
 	if (collision) {
 		snake->len = 3;
-		p->x = (comparison[0].x + WIDTH/2) % WIDTH;
-		p->y = (comparison[0].y + HEIGHT/2) % HEIGHT;
+		p->x = (comparison[0].x + SWIDTH/2) % SWIDTH;
+		p->y = (comparison[0].y + SHEIGHT/2) % SHEIGHT;
 	}
 
 }
@@ -169,12 +167,12 @@ void parse_crash_wall() {
 #if SNAKE_COUNT != 2
 #error "De sneek count is te hoog"
 #endif
-	const bool outOfBoundsX = (p->x == 0 || p->x > WIDTH-1);
-	const bool outOfBoundsY = ( p->y == 0 || p->y > HEIGHT-1);
+	const bool outOfBoundsX = (p->x == 0 || p->x > (SWIDTH-1)/2);
+	const bool outOfBoundsY = ( p->y == 0 || p->y > (SHEIGHT-1)/2);
 	if (outOfBoundsX || outOfBoundsY){
 		snake->len = 3;
-		p->x = (snakePositions[!snake_state_counter][0].x + WIDTH/2) % WIDTH;
-		p->y = (snakePositions[!snake_state_counter][0].y + HEIGHT/2) % HEIGHT;
+		p->x = (snakePositions[!snake_state_counter][0].x + SWIDTH/2) % SWIDTH;
+		p->y = (snakePositions[!snake_state_counter][0].y + SHEIGHT/2) % SHEIGHT;
 	}
 }
 u32 snake_draw_maybe(u16 x, u16 y) {
@@ -186,7 +184,7 @@ u32 snake_draw_maybe(u16 x, u16 y) {
 		for (int j = 0; j < SNAKE_MAX_LENGTH; j++) {
 #pragma HLS unroll
 			Point pos = snakePositions[i][j];
-			if (pos.x == x && pos.y == y && j < snake->len) {
+			if (pos.x == x/2 && pos.y == y/2 && j < snake->len) {
 				shouldReturnThisSnake = true;
 			}
 		}
@@ -218,7 +216,7 @@ u32 run_snake_machine(const u8 ps[SNAKE_COUNT], bool reset, u16 x, u16 y, Point 
 
 			printf("Position of snake %d (length %d):\n[", i, s.len);
 			for (int j = 0; j < s.len; j++) {
-				printf("{%d,%d}, ", snakePositions[i][j].x, snakePositions[i][j].y);
+				printf("{%d,%d}, ", snakePositions[i][j].x*2, snakePositions[i][j].y*2);
 			}
 			printf("]\n");
 		}

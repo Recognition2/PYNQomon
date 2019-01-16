@@ -13,7 +13,7 @@
 #include <ap_axi_sdata.h>
 
 
-#define SNAKE_MAX_LENGTH 100
+#define SNAKE_MAX_LENGTH 200
 
 #define SNAKE_P1 8
 #define SNAKE_P2 10
