@@ -167,9 +167,8 @@ void parse_crash_wall() {
 #if SNAKE_COUNT != 2
 #error "De sneek count is te hoog"
 #endif
-	const bool outOfBoundsX = (p->x == 0 || p->x > (SWIDTH-1)/2);
-	const bool outOfBoundsY = ( p->y == 0 || p->y > (SHEIGHT-1)/2);
-	if (outOfBoundsX || outOfBoundsY){
+	const bool outOfBounds = (p->x == 0 || p->x > (SWIDTH-1)/2 || p->y == 0 || p->y > (SHEIGHT-1)/2);
+	if (outOfBounds){
 		snake->len = 3;
 		p->x = (snakePositions[!snake_state_counter][0].x + SWIDTH/2) % SWIDTH;
 		p->y = (snakePositions[!snake_state_counter][0].y + SHEIGHT/2) % SHEIGHT;
