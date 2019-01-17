@@ -44,17 +44,16 @@
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
       "impl\/vhdl\/stream_buf_data.vhd",
       "impl\/vhdl\/stream_hamming.vhd",
+      "impl\/vhdl\/stream_mac_muladddEe.vhd",
       "impl\/vhdl\/stream_mac_muladdeOg.vhd",
       "impl\/vhdl\/stream_mac_muladdfYi.vhd",
-      "impl\/vhdl\/stream_mac_muladdg8j.vhd",
+      "impl\/vhdl\/stream_mac_muladdibs.vhd",
       "impl\/vhdl\/stream_mac_muladdjbC.vhd",
-      "impl\/vhdl\/stream_mac_muladdkbM.vhd",
-      "impl\/vhdl\/stream_mul_mul_8nibs.vhd",
-      "impl\/vhdl\/stream_mul_mul_16hbi.vhd",
+      "impl\/vhdl\/stream_mul_mul_8nhbi.vhd",
+      "impl\/vhdl\/stream_mul_mul_16g8j.vhd",
       "impl\/vhdl\/stream_pokemon.vhd",
       "impl\/vhdl\/stream_urem_17ns_bkb.vhd",
       "impl\/vhdl\/stream_urem_17ns_cud.vhd",
-      "impl\/vhdl\/stream_urem_17ns_dEe.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
@@ -64,18 +63,17 @@
       "impl\/verilog\/stream_buf_data_ram.dat",
       "impl\/verilog\/stream_hamming.v",
       "impl\/verilog\/stream_hamming_rom.dat",
+      "impl\/verilog\/stream_mac_muladddEe.v",
       "impl\/verilog\/stream_mac_muladdeOg.v",
       "impl\/verilog\/stream_mac_muladdfYi.v",
-      "impl\/verilog\/stream_mac_muladdg8j.v",
+      "impl\/verilog\/stream_mac_muladdibs.v",
       "impl\/verilog\/stream_mac_muladdjbC.v",
-      "impl\/verilog\/stream_mac_muladdkbM.v",
-      "impl\/verilog\/stream_mul_mul_8nibs.v",
-      "impl\/verilog\/stream_mul_mul_16hbi.v",
+      "impl\/verilog\/stream_mul_mul_8nhbi.v",
+      "impl\/verilog\/stream_mul_mul_16g8j.v",
       "impl\/verilog\/stream_pokemon.v",
       "impl\/verilog\/stream_pokemon_rom.dat",
       "impl\/verilog\/stream_urem_17ns_bkb.v",
       "impl\/verilog\/stream_urem_17ns_cud.v",
-      "impl\/verilog\/stream_urem_17ns_dEe.v",
       "impl\/verilog\/stream.v"
     ],
     "SwDriver": [
@@ -510,7 +508,7 @@
       "ModuleName": "stream",
       "Instances": [{
           "ModuleName": "run_snake_machine",
-          "InstanceName": "grp_run_snake_machine_fu_3172"
+          "InstanceName": "grp_run_snake_machine_fu_2372"
         }]
     },
     "Metrics": {
@@ -529,8 +527,8 @@
           "Estimate": "9.102"
         },
         "Area": {
-          "FF": "15581",
-          "LUT": "41665",
+          "FF": "7826",
+          "LUT": "21358",
           "BRAM_18K": "0",
           "DSP48E": "0"
         }
@@ -552,8 +550,8 @@
         "Area": {
           "BRAM_18K": "26",
           "DSP48E": "18",
-          "FF": "18843",
-          "LUT": "48084"
+          "FF": "11088",
+          "LUT": "27777"
         }
       }
     }
@@ -565,7 +563,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-17 00:40:08 CET",
+    "Time": "2019-01-17 01:03:20 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

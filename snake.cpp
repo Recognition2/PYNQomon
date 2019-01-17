@@ -6,6 +6,7 @@
 bool init = false;
 
 static Snake snakes[SNAKE_COUNT];
+static bool collision[SNAKE_COUNT];
 static Point snakePositions[SNAKE_COUNT][SNAKE_MAX_LENGTH];
 void do_init() {
 	Snake *snake = &snakes[0];
@@ -84,6 +85,7 @@ void parse_user_input(const u8 ps[SNAKE_COUNT]) {
 }
 
 void move_snake_through() {
+	collision[snake_state_counter] = false;
 #pragma HLS inline
 	Snake *snake = &snakes[snake_state_counter];
 	for (int i = SNAKE_MAX_LENGTH - 2; i >= 0; i--) {
@@ -129,7 +131,6 @@ void add_current_point() {
 		break;
 	}
 }
-
 void parse_crash_snake() {
 #pragma HLS inline
 	Snake *snake = &snakes[snake_state_counter];
@@ -143,35 +144,39 @@ void parse_crash_snake() {
 
 	Snake* de_andere_snake = &snakes[!snake_state_counter];
 
-	bool collision = false;
 	Point *comparison = snakePositions[!snake_state_counter];
 
+	bool local_collision = false;
 	for (int i = 0; i < SNAKE_MAX_LENGTH; i++) {
 #pragma HLS unroll
 		if (comparison[i].x == x && comparison[i].y == y && i < de_andere_snake->len) {
-			collision = true;
+			local_collision = true;
 		}
 	}
-	if (collision) {
-		snake->len = 3;
-		p->x = (comparison[0].x + SWIDTH/2) % SWIDTH;
-		p->y = (comparison[0].y + SHEIGHT/2) % SHEIGHT;
-	}
-
+	collision[snake_state_counter] = collision;
+//	if (collision) {
+//		snake->len = 3;
+//		p->x = (comparison[0].x + SWIDTH/2) % SWIDTH;
+//		p->y = (comparison[0].y + SHEIGHT/2) % SHEIGHT;
+//	}
 }
 void parse_crash_wall() {
 #pragma HLS inline
 	Snake *snake = &snakes[snake_state_counter];
 	Point *p = &snakePositions[snake_state_counter][0];
+	u16 x = snakePositions[snake_state_counter][0].x;
+	u16 y = snakePositions[snake_state_counter][0].y;
 
 #if SNAKE_COUNT != 2
 #error "De sneek count is te hoog"
 #endif
-	const bool outOfBounds = (p->x == 0 || p->x > (SWIDTH-1)/2 || p->y == 0 || p->y > (SHEIGHT-1)/2);
-	if (outOfBounds){
+	const bool outOfBounds = (x == 0 || x > (SWIDTH-1)/2 || y == 0 || y > (SHEIGHT-1)/2);
+	if (outOfBounds || collision[snake_state_counter]){
 		snake->len = 3;
-		p->x = (snakePositions[!snake_state_counter][0].x + SWIDTH/2) % SWIDTH;
-		p->y = (snakePositions[!snake_state_counter][0].y + SHEIGHT/2) % SHEIGHT;
+		u16 a = (snakePositions[!snake_state_counter][0].x + SWIDTH/4);
+		u16 b = (snakePositions[!snake_state_counter][0].y + SHEIGHT/4);
+		snakePositions[snake_state_counter][0].x = a > SWIDTH ? a-SWIDTH : a;
+		snakePositions[snake_state_counter][0].y = b > SHEIGHT ? b-SHEIGHT : b;
 	}
 }
 u32 snake_draw_maybe(u16 x, u16 y) {
