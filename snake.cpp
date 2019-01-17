@@ -12,7 +12,7 @@ void do_init() {
 	Snake *snake = &snakes[0];
 	snakePositions[0][0].x = SWIDTH/2;
 	snakePositions[0][0].y = SHEIGHT/2;
-	snake->len = 3;
+	snake->len = 10;
 	snake->maxlen = 0;
 	snake->color = 0xFFFF0000;
 	snake->dir = Right;
@@ -60,8 +60,8 @@ void check_pokemon_hits(Point moved) {
 		Snake *snake = &snakes[i];
 		Point *snakePos = snakePositions[i];
 		Point pos = snakePos[0];
-		if (pos.x > (moved.x/2) && pos.x < (moved.x + pokesize.x)/2 &&
-			pos.y > (moved.y/2) && pos.y < (moved.y + pokesize.y)/2) {
+		if (pos.x >= (moved.x/2) && pos.x <= (moved.x + pokesize.x)/2 &&
+			pos.y >= (moved.y/2) && pos.y <= (moved.y + pokesize.y)/2) {
 			snake->len++;
 #ifndef __SYNTHESIS__
 			printf("Snake %d has grown to %d!\n", i, snake->len);
@@ -85,7 +85,6 @@ void parse_user_input(const u8 ps[SNAKE_COUNT]) {
 }
 
 void move_snake_through() {
-	collision[snake_state_counter] = false;
 #pragma HLS inline
 	Snake *snake = &snakes[snake_state_counter];
 	for (int i = SNAKE_MAX_LENGTH - 2; i >= 0; i--) {
@@ -101,28 +100,29 @@ void add_current_point() {
 	printf("Het huidige point wordt nu toegevoegd\n");
 #endif
 
+	const u8 n = 1;
 	Snake *snake = &snakes[snake_state_counter];
 	Point *oldPoint = &snakePositions[snake_state_counter][1];
 	Point *newPoint = &snakePositions[snake_state_counter][0];
 	switch (snake->dir) {
 	case Left:
-		newPoint->x = oldPoint->x - 1;
+		newPoint->x = oldPoint->x - n;
 		newPoint->y = oldPoint->y;
 		break;
 
 	case Right:
-		newPoint->x = oldPoint->x + 1;
+		newPoint->x = oldPoint->x + n;
 		newPoint->y = oldPoint->y;
 		break;
 
 	case Up:
 		newPoint->x = oldPoint->x;
-		newPoint->y = oldPoint->y - 1;
+		newPoint->y = oldPoint->y - n;
 		break;
 
 	case Down:
 		newPoint->x = oldPoint->x;
-		newPoint->y = oldPoint->y + 1;
+		newPoint->y = oldPoint->y + n;
 		break;
 	default:
 #ifndef __SYNTHESIS__
@@ -153,7 +153,7 @@ void parse_crash_snake() {
 			local_collision = true;
 		}
 	}
-	collision[snake_state_counter] = collision;
+	collision[snake_state_counter] = local_collision;
 //	if (collision) {
 //		snake->len = 3;
 //		p->x = (comparison[0].x + SWIDTH/2) % SWIDTH;
@@ -175,8 +175,8 @@ void parse_crash_wall() {
 		snake->len = 3;
 		u16 a = (snakePositions[!snake_state_counter][0].x + SWIDTH/4);
 		u16 b = (snakePositions[!snake_state_counter][0].y + SHEIGHT/4);
-		snakePositions[snake_state_counter][0].x = a > SWIDTH ? a-SWIDTH : a;
-		snakePositions[snake_state_counter][0].y = b > SHEIGHT ? b-SHEIGHT : b;
+		snakePositions[snake_state_counter][0].x = a >= SWIDTH ? a-SWIDTH : a;
+		snakePositions[snake_state_counter][0].y = b >= SHEIGHT ? b-SHEIGHT : b;
 	}
 }
 u32 snake_draw_maybe(u16 x, u16 y) {
@@ -188,7 +188,7 @@ u32 snake_draw_maybe(u16 x, u16 y) {
 		for (int j = 0; j < SNAKE_MAX_LENGTH; j++) {
 #pragma HLS unroll
 			Point pos = snakePositions[i][j];
-			if (pos.x == x/2 && pos.y == y/2 && j < snake->len) {
+			if (pos.x == x/2 && pos.y == y/2 && j <= snake->len) {
 				shouldReturnThisSnake = true;
 			}
 		}
@@ -220,7 +220,7 @@ u32 run_snake_machine(const u8 ps[SNAKE_COUNT], bool reset, u16 x, u16 y, Point 
 
 			printf("Position of snake %d (length %d):\n[", i, s.len);
 			for (int j = 0; j < s.len; j++) {
-				printf("{%d,%d}, ", snakePositions[i][j].x*2, snakePositions[i][j].y*2);
+				printf("{%d,%d}, ", snakePositions[i][j].x, snakePositions[i][j].y);
 			}
 			printf("]\n");
 		}
@@ -287,11 +287,6 @@ u32 run_snake_machine(const u8 ps[SNAKE_COUNT], bool reset, u16 x, u16 y, Point 
 
 	case CHECKING_INPUTS:
 		res = snake_draw_maybe(x,y);
-#ifndef __SYNTHESIS__
-		if (res != 0) {
-			printf("De slang bestaat! {x: %d, y: %d}: %x\n",x,y,res);
-		}
-#endif
 		return res;
 		break;
 	default:

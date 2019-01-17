@@ -27,7 +27,7 @@ int main ()
     }
 
     Mat frame;
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 240; i++) {
 	    // Read input image
 		cap >> frame;
 		char buffer[100];
@@ -52,7 +52,7 @@ int main ()
 
 	    // Call stream processing function
 	    while (!inputStream.empty())
-			stream(inputStream, outputStream, 0xF); // Add extra arguments here
+			stream(inputStream, outputStream, 0x110F); // Add extra arguments here
 
 
 	    // Read output data
