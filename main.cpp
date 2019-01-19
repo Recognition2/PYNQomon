@@ -5,7 +5,6 @@
 #include <hls_stream.h>
 #include <hls_opencv.h>
 #include <stdio.h>
-//#include "opencv2/opencv.hpp"
 #endif
 
 #include "pokemon.h"
@@ -21,7 +20,7 @@ u32 draw_pokemon(Point moved, u16 x, u16 y, u32 p) {
 	}
 }
 
-Pixel buf_data[FRAME_COUNT * SMALL_HEIGHT * SMALL_WIDTH];
+Pixel framebuffer[FRAME_COUNT * SMALL_HEIGHT * SMALL_WIDTH];
 
 void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 #pragma HLS INTERFACE ap_ctrl_none port=return

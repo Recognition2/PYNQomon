@@ -4,22 +4,12 @@
 #include "frame.hpp"
 #include "buffer.hpp"
 
-#define custom_max(a,b) \
-   ({ __typeof__ (a) _a = (a); \
-      __typeof__ (b) _b = (b); \
-     _a > _b ? _a : _b; })
-
-#define custom_min(a,b) \
-   ({ __typeof__ (a) _a = (a); \
-      __typeof__ (b) _b = (b); \
-     _a < _b ? _a : _b; })
-
 #ifndef __SYNTHESIS__
 using namespace cv;
 #endif
 
-#define X SMALL_WIDTH
-#define Y SMALL_HEIGHT
+#define X 			   SMALL_WIDTH
+#define Y 			   SMALL_HEIGHT
 #define I_START_VALUE  ((X * 7) / 8)
 #define I_END_VALUE    ((X * 9) / 8)
 #define J_START_VALUE  ((Y * 7) / 8)
@@ -93,17 +83,15 @@ maxCorrelationIndex correlationStep(u16 buf_which, u16 buf_which_minus_one, maxC
 //	static u32 bb = buf_data[frame_idx_b] & 0xFFFF;4482300247842
 	static u64 added = 0;
 	if (value > corrmax.v) {
-//				printf("i is %d, j is %d\n",i,j);
 		corrmax.v = value;
 		corrmax.x = i;
 		corrmax.y = j;
 	}
-	added = aa*bb;
+	added = aa*bb; // Full 32-bit mult, takes ~6.4ns
 
 #ifndef __SYNTHESIS__
 	static u8 correlatieVisualisatie[I_END_VALUE - I_START_VALUE + 1][J_END_VALUE - J_START_VALUE +1] {};
 #endif
-//	printf("Trying to perform calculations\n");
 
 #ifndef __SYNTHESIS__
 	if (value + added < value) {
@@ -177,8 +165,8 @@ maxCorrelationIndex correlationStep(u16 buf_which, u16 buf_which_minus_one, maxC
 #pragma HLS dependence variable=aa inter RAW false
 #pragma HLS dependence variable=bb intra RAW false
 #pragma HLS dependence variable=bb inter RAW false
-	aa = buf_data[frame_idx_a] & 0xFFFF;
-	bb = buf_data[frame_idx_b] & 0xFFFF;
+	aa = framebuffer[frame_idx_a] & 0xFFFF; // Two memory accesses
+	bb = framebuffer[frame_idx_b] & 0xFFFF;
 #ifndef __SYNTHESIS__
 	} else {
 		printf("ILLEGAL memory access at i: %d, j: %d, s: %d, t: %d\n",i,j,s,t);
@@ -189,6 +177,8 @@ maxCorrelationIndex correlationStep(u16 buf_which, u16 buf_which_minus_one, maxC
 	return corrmax;
 
 #ifndef __SYNTHESIS__
+	// Unreachable code
+	// Write current frame to a buffer
 	PRINTFREEM:
 	static u32 counter = 0;
 	char buf[100];
@@ -202,7 +192,7 @@ maxCorrelationIndex correlationStep(u16 buf_which, u16 buf_which_minus_one, maxC
 
 	u8 buff[SMALL_WIDTH * SMALL_HEIGHT];
 	for (int i = 0; i < SMALL_WIDTH * SMALL_HEIGHT; i++) {
-		buff[i] = buf_data[i + SMALL_WIDTH * SMALL_HEIGHT * buf_which]>>8;
+		buff[i] = framebuffer[i + SMALL_WIDTH * SMALL_HEIGHT * buf_which]>>8;
 	}
 
 	m = cv::Mat(cv::Size(SMALL_WIDTH,SMALL_HEIGHT),CV_8UC1, buff);

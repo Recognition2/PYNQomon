@@ -504,17 +504,17 @@
       "ModuleName": "stream",
       "Instances": [{
           "ModuleName": "run_snake_machine",
-          "InstanceName": "grp_run_snake_machine_fu_2368"
+          "InstanceName": "grp_run_snake_machine_fu_9696"
         }]
     },
     "Metrics": {
       "run_snake_machine": {
         "Latency": {
-          "LatencyBest": "1",
-          "LatencyAvg": "1",
-          "LatencyWorst": "1",
+          "LatencyBest": "2",
+          "LatencyAvg": "2",
+          "LatencyWorst": "2",
           "PipelineII": "1",
-          "PipelineDepth": "2",
+          "PipelineDepth": "3",
           "PipelineType": "function"
         },
         "Timing": {
@@ -523,8 +523,8 @@
           "Estimate": "10.497"
         },
         "Area": {
-          "FF": "6632",
-          "LUT": "12877",
+          "FF": "16713",
+          "LUT": "50491",
           "BRAM_18K": "0",
           "DSP48E": "0"
         }
@@ -546,8 +546,8 @@
         "Area": {
           "BRAM_18K": "26",
           "DSP48E": "18",
-          "FF": "11054",
-          "LUT": "20000"
+          "FF": "21103",
+          "LUT": "57614"
         }
       }
     }
@@ -559,7 +559,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-17 09:35:59 CET",
+    "Time": "2019-01-17 13:13:45 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

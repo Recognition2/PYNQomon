@@ -5,19 +5,19 @@
 ############################################################
 open_project Reconfigurable
 set_top stream
-add_files Reconfigurable/solution1/app_config.hpp
-add_files Reconfigurable/solution1/frame.cpp
-add_files Reconfigurable/solution1/frame.hpp
-add_files Reconfigurable/solution1/hammingcoefficients.h
-add_files Reconfigurable/solution1/hammingcoefficients_sqrt.h
-add_files Reconfigurable/solution1/hammingcoefficients_tukey.h
-add_files Reconfigurable/solution1/main.cpp
-add_files Reconfigurable/solution1/phase_correlation.cpp
-add_files Reconfigurable/solution1/phase_correlation.hpp
-add_files Reconfigurable/solution1/pokemon.h
 add_files Reconfigurable/solution1/snake.cpp
-add_files -tb Reconfigurable/solution1/app_config.hpp -cflags "-Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas"
-add_files -tb Reconfigurable/solution1/streamulator.cpp -cflags "-Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas"
+add_files Reconfigurable/solution1/pokemon.h
+add_files Reconfigurable/solution1/phase_correlation.hpp
+add_files Reconfigurable/solution1/phase_correlation.cpp
+add_files Reconfigurable/solution1/main.cpp
+add_files Reconfigurable/solution1/hammingcoefficients_tukey.h
+add_files Reconfigurable/solution1/hammingcoefficients_sqrt.h
+add_files Reconfigurable/solution1/hammingcoefficients.h
+add_files Reconfigurable/solution1/frame.hpp
+add_files Reconfigurable/solution1/frame.cpp
+add_files Reconfigurable/solution1/app_config.hpp
+add_files -tb Reconfigurable/solution1/streamulator.cpp -cflags "-Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas"
+add_files -tb Reconfigurable/solution1/app_config.hpp -cflags "-Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas"
 open_solution "solution1"
 set_part {xc7z020clg400-1} -tool vivado
 create_clock -period 10 -name default

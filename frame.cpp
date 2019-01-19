@@ -2,10 +2,10 @@
 #include "app_config.hpp"
 #include "hammingcoefficients_tukey.h"
 
-
-u16 applyHamming(u16 newx, u16 newy, u8 px) {
+// Apply a filter to the current (downscaled) pixel
+u16 applyFilter(u16 newx, u16 newy, u8 px) {
 	// 24 bits result, only allowed to return the last byte
-	u32 res = (u32) (hamming[newx][newy]) * (u32) (px);
+	u32 res = (u32) (filter[newx][newy]) * (u32) (px);
 	if (res > (0xFF0000)) {
 		printf("Number returned by `applyHamming` is too large to fit in the allocated space (0xFF0000) \n");
 	}
@@ -32,7 +32,7 @@ void newFrame(u16 *currentFrame, u16 *pastFrame) {
 	*currentFrame = tmp;
 }
 
-
+// Provide one or the other implementation
 #ifdef DO_DOWNSAMPLE
 /**
  * @param x: Current x coordinate in the large frame
@@ -53,7 +53,7 @@ void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool st
 	static u16 newy = 0;
 
 //	const Pixel newpx = compressRGB(px);
-	const Pixel newpx = (Pixel) applyHamming(newx,newy,compressRGB(px));
+	const Pixel newpx = (Pixel) applyFilter(newx,newy,compressRGB(px));
 	const u16 bufRead = px_store_buf[newx];
 	const Pixel apparaat = bufRead + newpx;
 #ifndef __SYNTHESIS__
@@ -78,7 +78,7 @@ void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool st
 		}
 #endif
 		if (storeAllowed) {
-			frame_get(idx, apparaat, true);
+			framebuffer_interact(idx, apparaat, true);
 		}
 	}
 	*futureFrame = (currentFrame >= 2 ? 0 : currentFrame + 1);
@@ -91,6 +91,7 @@ void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool st
 	}
 }
 
+// other implementation
 #else
 void frame_fill(u16 x, u16 y, u32 px, u16* futureFrame, u16 currentFrame, bool storeAllowed) {
 #pragma HLS inline // must be inlined
@@ -101,9 +102,9 @@ void frame_fill(u16 x, u16 y, u32 px, u16* futureFrame, u16 currentFrame, bool s
 	static u16 idx = 0;
 
 	if (resized.x < SMALL_WIDTH && resized.y < SMALL_HEIGHT) {
-		const Pixel newpx = (Pixel) applyHamming(resized.x,resized.y,compressRGB(px));
+		const Pixel newpx = (Pixel) applyFilter(resized.x,resized.y,compressRGB(px));
 		if (storeAllowed) {
-			buf_data[resized.x + resized.y * SMALL_WIDTH + *futureFrame * SMALL_WIDTH * SMALL_HEIGHT] = newpx;
+			framebuffer[resized.x + resized.y * SMALL_WIDTH + *futureFrame * SMALL_WIDTH * SMALL_HEIGHT] = newpx;
 		}
 	}
 	*futureFrame = (currentFrame >= 2 ? 0 : currentFrame + 1);
@@ -111,12 +112,13 @@ void frame_fill(u16 x, u16 y, u32 px, u16* futureFrame, u16 currentFrame, bool s
 
 }
 #endif
+
 // Greyscale
 u8 compressRGB(u32 p) {
-	u8 B = (p & 0xFF);
-	u8 G = (p & 0xFF00) >> 8;
-	u8 R = (p & 0xFF0000) >> 16;// Red, certain
-	u8 A = (p & 0xFF000000) >> 24; // ALpha channel, certain
+	u8 B = (p & 0xFF); // Blue, checked
+	u8 G = (p & 0xFF00) >> 8; // Green, checked
+	u8 R = (p & 0xFF0000) >> 16;// Red, checked
+	u8 A = (p & 0xFF000000) >> 24; // Alpha channel, checked
 	u32 res = (R>>2) + (R>>5) 	// 1/4 + 1/32
 			+ (G>>1) + (G>>4)		// 1/2 + 1/16
 			+ (B>>3); // 1/8
@@ -125,24 +127,19 @@ u8 compressRGB(u32 p) {
 	if (res > 0xFF) {
 		printf("Number returned by `compressRGB` is too large to fit\n");
 	}
-
 #endif
 	return (u8) (res & 0xFF);
 }
 
-Pixel frame_get(u16 idx, u16 px, bool doWrite) {
+// This function is necessary because otherwise HLS complains.
+// I'm sorry.
+Pixel framebuffer_interact(u16 idx, u16 px, bool doWrite) {
 //#pragma HLS inline off
 //#pragma HLS function_instantiate variable=doWrite
 	if (doWrite) {
-		buf_data[idx] = px;
+		framebuffer[idx] = px;
 		return 0;
 	} else {
-		return buf_data[idx];
+		return framebuffer[idx];
 	}
 }
-//u32 shitpixel(u16 x, u16 y){
-//  const u32 newx = (x * SMALL_WIDTH) / WIDTH;
-//  const u32 newy = (y * SMALL_HEIGHT) / HEIGHT;
-//  px_t out = frame_get(buf_which * SMALL_WIDTH * SMALL_HEIGHT + newx + newy * SMALL_WIDTH, 0, false);
-//  return (u32) (out >> 8) * 0x010101;
-//}
