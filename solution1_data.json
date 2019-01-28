@@ -40,34 +40,63 @@
       "frame.cpp"
     ],
     "Vhdl": [
+      "impl\/vhdl\/applyFilter.vhd",
+      "impl\/vhdl\/applyFilter_filtebkb.vhd",
+      "impl\/vhdl\/applyFilter_filtecud.vhd",
+      "impl\/vhdl\/applyFilter_filtedEe.vhd",
+      "impl\/vhdl\/applyFilter_filteeOg.vhd",
+      "impl\/vhdl\/applyFilter_filtefYi.vhd",
+      "impl\/vhdl\/applyFilter_filteg8j.vhd",
+      "impl\/vhdl\/applyFilter_filtehbi.vhd",
       "impl\/vhdl\/run_snake_machine.vhd",
       "impl\/vhdl\/stream_AXILiteS_s_axi.vhd",
-      "impl\/vhdl\/stream_buf_data.vhd",
-      "impl\/vhdl\/stream_hamming.vhd",
-      "impl\/vhdl\/stream_mac_muladdcud.vhd",
-      "impl\/vhdl\/stream_mac_muladddEe.vhd",
-      "impl\/vhdl\/stream_mac_muladdeOg.vhd",
-      "impl\/vhdl\/stream_mac_muladdfYi.vhd",
-      "impl\/vhdl\/stream_mac_muladdg8j.vhd",
-      "impl\/vhdl\/stream_mul_mul_8nhbi.vhd",
-      "impl\/vhdl\/stream_mul_mul_16bkb.vhd",
+      "impl\/vhdl\/stream_framebuffer.vhd",
+      "impl\/vhdl\/stream_mac_muladdibs.vhd",
+      "impl\/vhdl\/stream_mac_muladdlbW.vhd",
+      "impl\/vhdl\/stream_mac_muladdmb6.vhd",
+      "impl\/vhdl\/stream_mac_muladdncg.vhd",
+      "impl\/vhdl\/stream_mac_muladdocq.vhd",
+      "impl\/vhdl\/stream_matti.vhd",
+      "impl\/vhdl\/stream_mattirat1.vhd",
+      "impl\/vhdl\/stream_mattirat2.vhd",
+      "impl\/vhdl\/stream_mul_mul_16jbC.vhd",
+      "impl\/vhdl\/stream_mul_mul_16kbM.vhd",
       "impl\/vhdl\/stream_pokemon.vhd",
       "impl\/vhdl\/stream.vhd"
     ],
     "Verilog": [
+      "impl\/verilog\/applyFilter.v",
+      "impl\/verilog\/applyFilter_filtebkb.v",
+      "impl\/verilog\/applyFilter_filtebkb_rom.dat",
+      "impl\/verilog\/applyFilter_filtecud.v",
+      "impl\/verilog\/applyFilter_filtecud_rom.dat",
+      "impl\/verilog\/applyFilter_filtedEe.v",
+      "impl\/verilog\/applyFilter_filtedEe_rom.dat",
+      "impl\/verilog\/applyFilter_filteeOg.v",
+      "impl\/verilog\/applyFilter_filteeOg_rom.dat",
+      "impl\/verilog\/applyFilter_filtefYi.v",
+      "impl\/verilog\/applyFilter_filtefYi_rom.dat",
+      "impl\/verilog\/applyFilter_filteg8j.v",
+      "impl\/verilog\/applyFilter_filteg8j_rom.dat",
+      "impl\/verilog\/applyFilter_filtehbi.v",
+      "impl\/verilog\/applyFilter_filtehbi_rom.dat",
       "impl\/verilog\/run_snake_machine.v",
       "impl\/verilog\/stream_AXILiteS_s_axi.v",
-      "impl\/verilog\/stream_buf_data.v",
-      "impl\/verilog\/stream_buf_data_ram.dat",
-      "impl\/verilog\/stream_hamming.v",
-      "impl\/verilog\/stream_hamming_rom.dat",
-      "impl\/verilog\/stream_mac_muladdcud.v",
-      "impl\/verilog\/stream_mac_muladddEe.v",
-      "impl\/verilog\/stream_mac_muladdeOg.v",
-      "impl\/verilog\/stream_mac_muladdfYi.v",
-      "impl\/verilog\/stream_mac_muladdg8j.v",
-      "impl\/verilog\/stream_mul_mul_8nhbi.v",
-      "impl\/verilog\/stream_mul_mul_16bkb.v",
+      "impl\/verilog\/stream_framebuffer.v",
+      "impl\/verilog\/stream_framebuffer_ram.dat",
+      "impl\/verilog\/stream_mac_muladdibs.v",
+      "impl\/verilog\/stream_mac_muladdlbW.v",
+      "impl\/verilog\/stream_mac_muladdmb6.v",
+      "impl\/verilog\/stream_mac_muladdncg.v",
+      "impl\/verilog\/stream_mac_muladdocq.v",
+      "impl\/verilog\/stream_matti.v",
+      "impl\/verilog\/stream_matti_rom.dat",
+      "impl\/verilog\/stream_mattirat1.v",
+      "impl\/verilog\/stream_mattirat1_rom.dat",
+      "impl\/verilog\/stream_mattirat2.v",
+      "impl\/verilog\/stream_mattirat2_rom.dat",
+      "impl\/verilog\/stream_mul_mul_16jbC.v",
+      "impl\/verilog\/stream_mul_mul_16kbM.v",
       "impl\/verilog\/stream_pokemon.v",
       "impl\/verilog\/stream_pokemon_rom.dat",
       "impl\/verilog\/stream.v"
@@ -502,10 +531,16 @@
   "ModuleInfo": {
     "Hierarchy": {
       "ModuleName": "stream",
-      "Instances": [{
+      "Instances": [
+        {
           "ModuleName": "run_snake_machine",
-          "InstanceName": "grp_run_snake_machine_fu_9696"
-        }]
+          "InstanceName": "grp_run_snake_machine_fu_9747"
+        },
+        {
+          "ModuleName": "applyFilter",
+          "InstanceName": "grp_applyFilter_fu_17903"
+        }
+      ]
     },
     "Metrics": {
       "run_snake_machine": {
@@ -523,10 +558,31 @@
           "Estimate": "10.497"
         },
         "Area": {
-          "FF": "16713",
-          "LUT": "50491",
+          "FF": "16689",
+          "LUT": "50509",
           "BRAM_18K": "0",
           "DSP48E": "0"
+        }
+      },
+      "applyFilter": {
+        "Latency": {
+          "LatencyBest": "2",
+          "LatencyAvg": "2",
+          "LatencyWorst": "2",
+          "PipelineII": "1",
+          "PipelineDepth": "3",
+          "PipelineType": "function"
+        },
+        "Timing": {
+          "Target": "10.00",
+          "Uncertainty": "1.25",
+          "Estimate": "9.634"
+        },
+        "Area": {
+          "BRAM_18K": "28",
+          "DSP48E": "2",
+          "FF": "38",
+          "LUT": "220"
         }
       },
       "stream": {
@@ -544,10 +600,10 @@
           "Estimate": "13.150"
         },
         "Area": {
-          "BRAM_18K": "26",
-          "DSP48E": "18",
-          "FF": "21103",
-          "LUT": "57614"
+          "BRAM_18K": "68",
+          "DSP48E": "14",
+          "FF": "21355",
+          "LUT": "58094"
         }
       }
     }
@@ -559,7 +615,7 @@
   },
   "GenData": {
     "DataVersion": "0.1",
-    "Time": "2019-01-17 13:13:45 CET",
+    "Time": "2019-01-20 22:02:23 CET",
     "ToolName": "vivado_hls",
     "ToolVersion": "2018.2"
   }

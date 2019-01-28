@@ -3,6 +3,7 @@
 // For the snake, the 'playing field' (display) is twice as small as it actually is
 // Because every pixel is actually 4px, 2 horizontal and 2 vertical.
 // Otherwise the snake is barely visible
+
 #define SWIDTH (WIDTH/2)
 #define SHEIGHT (HEIGHT/2)
 
@@ -53,6 +54,7 @@ static u16 snake_state_counter = 0;
  * Was the head of the snake in the same place as the pokemon? If so, grow the snake
  */
 void check_pokemon_hits(Point pokemonPosition) {
+#pragma HLS inline
 	Snake *snake = &snakes[snake_state_counter];
 	Point *snakePos = snakePositions[snake_state_counter];
 	Point head = snakePos[0];
@@ -64,7 +66,6 @@ void check_pokemon_hits(Point pokemonPosition) {
 #endif
 	}
 }
-
 /**
  * Check whether the player wants the snake to go somewhere else
  */
@@ -85,10 +86,11 @@ void parse_user_input(const u8 newDirection[SNAKE_COUNT]) {
  */
 void move_snake_through() {
 #pragma HLS inline
-	for (int i = SNAKE_MAX_LENGTH - 2; i >= 0; i--) {
+	printf("Moving snek through\n");
+	for (int i = SNAKE_MAX_LENGTH - 1; i > 0; i--) {
 #pragma HLS unroll
-		snakePositions[snake_state_counter][i+1].x = snakePositions[snake_state_counter][i].x;
-		snakePositions[snake_state_counter][i+1].y = snakePositions[snake_state_counter][i].y;
+		snakePositions[snake_state_counter][i].x = snakePositions[snake_state_counter][i-1].x;
+		snakePositions[snake_state_counter][i].y = snakePositions[snake_state_counter][i-1].y;
 	}
 }
 
@@ -101,7 +103,7 @@ void add_current_point() {
 	printf("Add the new head of the snake\n");
 #endif
 
-	const u8 n = 1;
+	const u16 n = 1;
 	Snake *snake = &snakes[snake_state_counter];
 	Point *oldPoint = &snakePositions[snake_state_counter][1];
 	Point *newPoint = &snakePositions[snake_state_counter][0];
@@ -201,6 +203,9 @@ u32 snake_draw_maybe(u16 x, u16 y) {
 #pragma HLS unroll
 			Point pos = snakePositions[i][j];
 			if (pos.x == x/2 && pos.y == y/2 && j <= snake->len) {
+#ifndef __SYNTHESIS__
+//				printf("Snake drawn at %d %d\n",x,y);
+#endif
 				shouldReturnThisSnake = true;
 			}
 		}
@@ -214,7 +219,7 @@ u32 snake_draw_maybe(u16 x, u16 y) {
 /**
  * main state machine function
  */
-u32 run_snake_machine(const u8 ps[SNAKE_COUNT], bool reset, u16 x, u16 y, Point moved) {
+u32 run_snake_machine(const u8 ps[SNAKE_COUNT], bool reset, u16 x, u16 y, Point moved, u8 n_frames) {
 //#pragma HLS array_partition variable=snakes complete
 #pragma HLS data_pack variable=snakes struct_level
 #pragma HLS array_partition variable=snakePositions complete dim=0
@@ -238,11 +243,12 @@ u32 run_snake_machine(const u8 ps[SNAKE_COUNT], bool reset, u16 x, u16 y, Point 
 	}
 #endif
 	static snake_machine state;
+	u16 snake_state_counter_copy = snake_state_counter;
 
 	if (reset) {
-		const int n_frames = 10;
-		static int once_per_n_frames = 0;
-		if (once_per_n_frames == n_frames-1) {
+//		const int n_frames = 10; // Get from mask instead
+		static u8 once_per_n_frames = 0;
+		if (once_per_n_frames == n_frames) {
 			state = CHECK_POKEMON_HITS;
 			once_per_n_frames = 0;
 		} else {
@@ -252,18 +258,18 @@ u32 run_snake_machine(const u8 ps[SNAKE_COUNT], bool reset, u16 x, u16 y, Point 
 		snake_state_counter = 0;
 		return 0;
 	}
-	if (snake_state_counter == SNAKE_COUNT) { // Move state machine through
+	if (snake_state_counter_copy == SNAKE_COUNT) { // Move state machine through
 		switch (state) {
 		case CHECK_POKEMON_HITS:
 		case HANDLE_USER_INPUT:
-		case ADD_POINT:
 		case MOVE_SNAKE_THROUGH:
+		case ADD_POINT:
 		case PARSE_CRASHES_SNAKE:
 		case PARSE_CRASHES_WALL:
 			state = (snake_machine) (state + 1);
 			break;
 		case WAITING:
-			if (y > 0) {
+			if (y > 1) {
 				state = CHECKING_INPUTS;
 			}
 			break;
@@ -315,6 +321,6 @@ u32 run_snake_machine(const u8 ps[SNAKE_COUNT], bool reset, u16 x, u16 y, Point 
 #endif
 		break;
 	}
-	snake_state_counter++;
+	snake_state_counter=snake_state_counter_copy+1;
 	return 0;
 }

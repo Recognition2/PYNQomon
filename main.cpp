@@ -8,13 +8,30 @@
 #endif
 
 #include "pokemon.h"
+#include "matti.h"
+#include "mattirat1.h"
+#include "mattirat2.h"
 
-u32 draw_pokemon(Point moved, u16 x, u16 y, u32 p) {
+
+u32 draw_pokemon(Point moved, u16 x, u16 y, u32 p, u8 select_pokeface) {
 	const u32 magic_number = 0xFFcd5723;
 	if ((x >= moved.x && x < moved.x + pokesize.x)
 			&& (y >= moved.y && y < moved.y + pokesize.y)) {
-		return (pokemon[x - moved.x][y - moved.y] != magic_number ?
-				pokemon[x - moved.x][y - moved.y] : p);
+		Point point = {x - moved.x, y-moved.y};
+		u32 getpokemon = pokemon[point.x][point.y];
+		u32 getmatti = matti[point.x][point.y];
+		u32 getmattirat1 = mattirat1[point.x][point.y];
+		u32 getmattirat2 = mattirat2[point.x][point.y];
+
+		u32 res = 0;
+		switch (select_pokeface) {
+		case POKEMON: 	res = getpokemon; break;
+		case MATTI: 	res = getmatti; break;
+		case MATTIRAT1: res = getmattirat1; break;
+		case MATTIRAT2: res = getmattirat2; break;
+		default: res = 0;
+		}
+		return (res != magic_number ? res : p);
 	} else {
 		return p;
 	}
@@ -33,6 +50,11 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	const bool writeFigure = mask & (1<<1);
 	const bool useDownscaled = (mask & (1<<2)); // Ignored as of yet, is an `ifdef`
 	const bool doSnake = (mask & (1<<3));
+	const u8 snakecontrols[SNAKE_COUNT] = {((mask>>SNAKE_P1) & 0x3), ((mask>>SNAKE_P2) & 0x3)};
+	const u8 snake_every_n_frames = (mask>>24) & 0xFF;
+	const u8 select_pokeface = (mask >> 5) & 0x3;
+	const u8 select_filter = (mask>>12) & 0x7;
+
 
 	// Data to be stored across 'function calls'
 	// Coordinates of current pixel
@@ -51,20 +73,20 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 	static Point moved = { WIDTH / 2, HEIGHT / 2 };
 	static Point draw_moved = moved;
 	u16 x_new = x;
+
 	u16 y_new = y;
 	pixel_data pIn;
 	src >> pIn;
 	static pixel_data pOut = pIn;
 
-	const u32 pokedata = draw_pokemon(draw_moved, x_new, y_new, pIn.data);
+	const u32 pokedata = draw_pokemon(draw_moved, x_new, y_new, pIn.data, select_pokeface);
 	const u16 buf_which_old = currentFrame;
 	const u16 buf_which_min_old = pastFrame;
 	static maxCorrelationIndex corrmax_in_progress;
 	// Only the last iteration;
 
 	static u8 old_snakecontrols[SNAKE_COUNT];
-	const u8 snakecontrols[SNAKE_COUNT] = {((mask>>SNAKE_P1) & 0x3), ((mask>>SNAKE_P2) & 0x3)};
-	const u32 snakecolor = run_snake_machine(snakecontrols, pIn.user,x,y,draw_moved);
+	const u32 snakecolor = run_snake_machine(snakecontrols, pIn.user,x,y,draw_moved, snake_every_n_frames);
 
 	const Point resized = {x - (WIDTH/2 - SMALL_WIDTH/2), y - (HEIGHT/2 - SMALL_HEIGHT/2)};
 	// Draw block
@@ -110,7 +132,7 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 
 		resetCorrelationData(&corrmax_in_progress);
 
-		frame_fill(x, y, pIn.data, &FutureFrame, buf_which_old,true);
+		frame_fill(x, y, pIn.data, &FutureFrame, buf_which_old,true, select_filter);
 
 #ifdef DO_DOWNSAMPLE
 	} else if ((x + 1) % (WIDTH / SMALL_WIDTH) == 0
@@ -118,12 +140,12 @@ void stream(pixel_stream &src, pixel_stream &dst, u32 mask) {
 #else
 	} else if (resized.x < SMALL_WIDTH && resized.y < SMALL_HEIGHT) {
 #endif
-		frame_fill(x, y, pIn.data, &FutureFrame,  buf_which_old,true);
+		frame_fill(x, y, pIn.data, &FutureFrame,  buf_which_old,true, select_filter);
 		corrmax = corrmax_in_progress;
 
 	} else {
 		corrmax_in_progress = correlationStep(buf_which_old, buf_which_min_old, corrmax_in_progress);
-		frame_fill(x, y, pIn.data, &FutureFrame, buf_which_old,false); // Do not allow store
+		frame_fill(x, y, pIn.data, &FutureFrame, buf_which_old,false, select_filter); // Do not allow store
 
 	}
 

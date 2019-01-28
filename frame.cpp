@@ -1,11 +1,40 @@
 #include "frame.hpp"
 #include "app_config.hpp"
+#include "hammingcoefficients.h"
+#include "hammingcoefficients_sqrt.h"
+#include "hammingcoefficients_blackman.h"
+#include "hammingcoefficients_bohman.h"
+#include "hammingcoefficients_nuttall.h"
+#include "hammingcoefficients_parzen.h"
 #include "hammingcoefficients_tukey.h"
 
 // Apply a filter to the current (downscaled) pixel
-u16 applyFilter(u16 newx, u16 newy, u8 px) {
+u16 applyFilter(u16 newx, u16 newy, u8 px, u8 select_filter) {
+	const u16 fNone = 0xFFFF;
+	const u16 fHamm = filter_hamming[newx][newy];
+	const u16 fHSqr = filter_hamming_sqrt[newx][newy];
+	const u16 fBlac = filter_blackman[newx][newy];
+	const u16 fBohm = filter_bohman[newx][newy];
+	const u16 fNutt = filter_nuttall[newx][newy];
+	const u16 fParz = filter_parzen[newx][newy];
+	const u16 fTuke = filter_tukey[newx][newy];
+
+	u16 filterVal;
+	switch (select_filter) {
+	case None: 			filterVal = fNone; break;
+	case Hamming:		filterVal = fHamm; break;
+	case HammingSqrt:	filterVal = fHSqr; break;
+	case Blackman:		filterVal = fBlac; break;
+	case Bohman:		filterVal = fBohm; break;
+	case Nuttall:		filterVal = fNutt; break;
+	case Parzen:		filterVal = fParz; break;
+	case Tukey:			filterVal = fTuke; break;
+	default: filterVal = 0;
+	}
+
+
 	// 24 bits result, only allowed to return the last byte
-	u32 res = (u32) (filter[newx][newy]) * (u32) (px);
+	u32 res = (u32) filterVal * (u32) (px);
 	if (res > (0xFF0000)) {
 		printf("Number returned by `applyHamming` is too large to fit in the allocated space (0xFF0000) \n");
 	}
@@ -44,7 +73,7 @@ void newFrame(u16 *currentFrame, u16 *pastFrame) {
  * 						Vivado HLS cannot make assumptions that hold
  *
  */
-void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool storeAllowed) {
+void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool storeAllowed,u8 select_filter) {
 #pragma HLS inline // must be inlined
 	static Pixel px_store_buf[SMALL_WIDTH];
 #pragma HLS array_partition variable=px_store_buf complete
@@ -53,7 +82,7 @@ void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool st
 	static u16 newy = 0;
 
 //	const Pixel newpx = compressRGB(px);
-	const Pixel newpx = (Pixel) applyFilter(newx,newy,compressRGB(px));
+	const Pixel newpx = (Pixel) applyFilter(newx,newy,compressRGB(px), select_filter);
 	const u16 bufRead = px_store_buf[newx];
 	const Pixel apparaat = bufRead + newpx;
 #ifndef __SYNTHESIS__
@@ -93,7 +122,7 @@ void frame_fill(u16 x, u16 y, u32 px, u16*futureFrame, u16 currentFrame, bool st
 
 // other implementation
 #else
-void frame_fill(u16 x, u16 y, u32 px, u16* futureFrame, u16 currentFrame, bool storeAllowed) {
+void frame_fill(u16 x, u16 y, u32 px, u16* futureFrame, u16 currentFrame, bool storeAllowed, u8 select_filter) {
 #pragma HLS inline // must be inlined
 
 	const Point resized = {x - (WIDTH/2 - SMALL_WIDTH/2), y - (HEIGHT/2 - SMALL_HEIGHT/2)};
@@ -102,7 +131,7 @@ void frame_fill(u16 x, u16 y, u32 px, u16* futureFrame, u16 currentFrame, bool s
 	static u16 idx = 0;
 
 	if (resized.x < SMALL_WIDTH && resized.y < SMALL_HEIGHT) {
-		const Pixel newpx = (Pixel) applyFilter(resized.x,resized.y,compressRGB(px));
+		const Pixel newpx = (Pixel) applyFilter(resized.x,resized.y,compressRGB(px), select_filter);
 		if (storeAllowed) {
 			framebuffer[resized.x + resized.y * SMALL_WIDTH + *futureFrame * SMALL_WIDTH * SMALL_HEIGHT] = newpx;
 		}

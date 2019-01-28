@@ -56,6 +56,20 @@ typedef struct {
 	u16 y;
 } Point;
 
+// Which window filter to use
+enum Filters {
+	None,
+	Hamming,
+	HammingSqrt,
+	Blackman,
+	Bohman,
+	Nuttall,
+	Parzen,
+	Tukey,
+};
+
+
+
 // Size of a pixel in the low-res frame
 typedef u16 Pixel;
 
@@ -76,7 +90,12 @@ typedef struct {
 
 // Pokemon drawing
 extern const Point pokesize;
-
+enum pokeSelect {
+	POKEMON = 0,
+	MATTI = 1,
+	MATTIRAT1 = 2,
+	MATTIRAT2 = 3,
+};
 
 // Snake
 #define SNAKE_COUNT 2 // Amount of snakes
@@ -84,8 +103,8 @@ extern const Point pokesize;
 #define SNAKE_MAX_LENGTH 1024
 
 #define SNAKE_P1 8  // Offset in the mask used for controls of snake 1
-#define SNAKE_P2 12 // Similarly, snake 2
-extern u32 run_snake_machine(const u8[2], bool reset,u16,u16,Point);
+#define SNAKE_P2 10 // Similarly, snake 2
+extern u32 run_snake_machine(const u8[2], bool reset,u16,u16,Point,u8);
 
 // What direction is the snake
 enum Direction {

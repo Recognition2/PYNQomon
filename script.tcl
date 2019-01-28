@@ -5,17 +5,24 @@
 ############################################################
 open_project Reconfigurable
 set_top stream
-add_files Reconfigurable/solution1/snake.cpp
-add_files Reconfigurable/solution1/pokemon.h
-add_files Reconfigurable/solution1/phase_correlation.hpp
-add_files Reconfigurable/solution1/phase_correlation.cpp
-add_files Reconfigurable/solution1/main.cpp
-add_files Reconfigurable/solution1/hammingcoefficients_tukey.h
-add_files Reconfigurable/solution1/hammingcoefficients_sqrt.h
-add_files Reconfigurable/solution1/hammingcoefficients.h
-add_files Reconfigurable/solution1/frame.hpp
-add_files Reconfigurable/solution1/frame.cpp
 add_files Reconfigurable/solution1/app_config.hpp
+add_files Reconfigurable/solution1/frame.cpp
+add_files Reconfigurable/solution1/frame.hpp
+add_files Reconfigurable/solution1/hammingcoefficients.h
+add_files Reconfigurable/solution1/hammingcoefficients_blackman.h
+add_files Reconfigurable/solution1/hammingcoefficients_bohman.h
+add_files Reconfigurable/solution1/hammingcoefficients_nuttall.h
+add_files Reconfigurable/solution1/hammingcoefficients_parzen.h
+add_files Reconfigurable/solution1/hammingcoefficients_sqrt.h
+add_files Reconfigurable/solution1/hammingcoefficients_tukey.h
+add_files Reconfigurable/solution1/main.cpp
+add_files Reconfigurable/solution1/matti.h
+add_files Reconfigurable/solution1/mattirat1.h
+add_files Reconfigurable/solution1/mattirat2.h
+add_files Reconfigurable/solution1/phase_correlation.cpp
+add_files Reconfigurable/solution1/phase_correlation.hpp
+add_files Reconfigurable/solution1/pokemon.h
+add_files Reconfigurable/solution1/snake.cpp
 add_files -tb Reconfigurable/solution1/streamulator.cpp -cflags "-Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas"
 add_files -tb Reconfigurable/solution1/app_config.hpp -cflags "-Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas -Wno-unknown-pragmas"
 open_solution "solution1"
